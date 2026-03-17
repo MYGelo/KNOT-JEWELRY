@@ -83,9 +83,9 @@ function filter_posts() {
                             $links = [];
 
                             foreach ($terms as $term) {
-                                $links[] = '<a class="all-posts__category scroll-animate--off" href="' . esc_url(get_term_link($term)) . '">'
+                                $links[] = '<span class="all-posts__category scroll-animate--off" href="' . esc_url(get_term_link($term)) . '">'
                                     . esc_html($term->name)
-                                    . '</a>';
+                                    . '</span>';
                             }
 
                             echo implode(' ', $links);
