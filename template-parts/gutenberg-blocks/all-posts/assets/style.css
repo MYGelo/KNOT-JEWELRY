@@ -1,0 +1,191 @@
+.all-posts {
+
+    .all-posts__wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .all-posts__posts-wrapper {
+        display: grid;
+        /*grid-template-columns: 280px 5fr;*/
+        grid-template-columns: 1fr;
+        gap: 24px clamp(12px, 1.25vw,24px);
+
+        &.filter-open {
+            /*grid-template-columns: 0px 5fr;;*/
+
+            .all-posts__filters {
+                /*position: fixed;*/
+                /*top: 0;*/
+                left: 0;
+                /*width: fit-content;*/
+                /*margin-top: 100px;*/
+                /*opacity: 1;*/
+            }
+        }
+    }
+
+    .all-posts__posts-wrap {
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(2 , 1fr);
+        gap: 24px clamp(12px, 1.25vw,24px);
+        height: fit-content;
+
+        @media (min-width: 992px) {
+            grid-template-columns: repeat(4 , 1fr);
+        }
+
+        @media (min-width: 768px) and (max-width: 991px) {
+            grid-template-columns: repeat(3 , 1fr);
+        }
+    }
+
+    .all-posts__title-wrapper {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+
+        .all-posts__filter {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            margin-left: auto;
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 1px solid black;
+        }
+    }
+
+    /*POST*/
+
+    .all-posts__post-item {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+
+        @media (max-width: 768px) {
+            &:nth-child(5n + 5) {
+                grid-column: span 2;
+
+                .all-posts__item-title {
+                    font-size: clamp(18px, 1.667vw, 22px);
+                }
+            }
+
+        }
+
+        .all-posts__post-thumb {
+            position: relative;
+            aspect-ratio: 1;
+
+            & img {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                box-shadow: 0 0 12px 0 #0000004f;
+                border-radius: 20px 20px 20px 0;
+            }
+        }
+
+        .all-post__text-content {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: clamp(8px,0.84vw,16px);
+        }
+
+        .all-posts__price {
+            font-size: clamp(18px,1.667vw,32px);
+            margin: auto 0 0 auto;
+        }
+        .all-posts__item-title {
+            font-size: clamp(18px, 1.667vw, 22px);
+            text-transform: uppercase;
+        }
+
+        .all-posts__item-desc {
+            font-size: clamp(14px,0.94vw,18px);
+        }
+
+        .all-posts__categories {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 5px;
+
+            & a {
+                /*padding: 2px 5px;*/
+                /*background-color: #74070717;*/
+                /*color: #67676778;*/
+                /*border-radius: 5px;*/
+                /*font-size: clamp(10px,0.73vw,14px);*/
+
+                padding: 2px 5px;
+                background-color: #7407070d;
+                color: #6767678f;
+                border-radius: 5px;
+                font-size: clamp(10px, 0.73vw, 14px);
+            }
+        }
+    }
+    /*END POST*/
+
+
+
+
+    /*DROP*/
+
+    .all-posts__filters {
+        position: absolute;
+        top: 0;
+        left: -110%;
+        /*opacity: 0;*/
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #f2f2f2;
+        height: fit-content;
+        width: fit-content;
+        min-width: 280px;
+        /*margin-top: 100px;*/
+        z-index: 2;
+        box-shadow: 0 0 12px 0 #0000004f;
+        transition: all 300ms;
+    }
+
+    .filter-dropdown__content {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        input {
+            background: transparent;
+        }
+    }
+    .filter-dropdown__item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .filter-dropdown__buttons {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: space-between;
+    }
+
+
+    /*LOAD MORE   */
+
+    .load-more {
+        margin: 25px auto 0;
+    }
+}
