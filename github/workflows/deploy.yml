@@ -1,0 +1,102 @@
+name: 🚀 Deploy to FTP
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [ closed ]
+    branches:
+      - main
+
+jobs:
+  sftp-deploy:
+    if: github.event_name == 'push' || (github.event.pull_request.merged == true)
+    name: Upload via FTP
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Notify Slack (start)
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          set -e
+          repo="${{ github.repository }}"
+          branch="${{ github.ref_name }}"
+          actor="${{ github.actor }}"
+          event="${{ github.event_name }}"
+          run_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          sha="${{ github.sha }}"
+          short_sha="$(echo "$sha" | cut -c1-7)"
+          commit_url="${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
+
+          if [ "$event" = "pull_request" ]; then
+            pr_url="${{ github.event.pull_request.html_url }}"
+            pr_number="${{ github.event.pull_request.number }}"
+            pr_title="${{ github.event.pull_request.title }}"
+            payload=$(printf '{"text":"🟡 DEPLOY Valeksa-Market started\nRepo: %s\nPR: <%s|#%s> %s\nCommit: <%s|%s>\nBy: %s\nRun: %s"}' \
+              "$repo" "$pr_url" "$pr_number" "$pr_title" "$commit_url" "$short_sha" "$actor" "$run_url")
+          else
+            payload=$(printf '{"text":"🟡 DEPLOY Valeksa-Market started\nRepo: %s\nBranch: %s\nCommit: <%s|%s>\nBy: %s\nRun: %s"}' \
+              "$repo" "$branch" "$commit_url" "$short_sha" "$actor" "$run_url")
+          fi
+
+          curl -sS -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL"
+
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install terser postcss postcss-nesting cssnano
+
+      - name: Minify CSS and JS
+        run: node minify.js
+
+      - name: Deploy to FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.SERVER }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          protocol: ftp
+          port: ${{ secrets.PORT }}
+          server-dir: ${{ secrets.THEME_PATH }}
+          dangerous-clean-slate: false
+          exclude: |
+            **/node_modules/**
+            **/.git/**
+            **/.github/**
+            package.json
+            package-lock.json
+
+      - name: Notify Slack (success)
+        if: success()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          set -e
+          run_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          sha="${{ github.sha }}"
+          short_sha="$(echo "$sha" | cut -c1-7)"
+          commit_url="${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
+          payload=$(printf '{"text":"🟢 DEPLOY Valeksa-Market SUCCESS\nCommit: <%s|%s>\nRun: %s"}' "$commit_url" "$short_sha" "$run_url")
+          curl -sS -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL"
+
+      - name: Notify Slack (failure)
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          set -e
+          run_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          sha="${{ github.sha }}"
+          short_sha="$(echo "$sha" | cut -c1-7)"
+          commit_url="${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
+          payload=$(printf '{"text":"🔴 DEPLOY Valeksa-Market FAILED\nCommit: <%s|%s>\nRun: %s"}' "$commit_url" "$short_sha" "$run_url")
+          curl -sS -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL"
