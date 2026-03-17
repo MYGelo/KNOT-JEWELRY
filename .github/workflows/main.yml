@@ -1,0 +1,48 @@
+name: 🚀 Deploy to FTP
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+jobs:
+  sftp-deploy:
+    if: github.event_name == 'push' || (github.event.pull_request.merged == true)
+    name: Upload via FTP
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install terser postcss postcss-nesting cssnano
+
+      - name: Minify CSS and JS
+        run: node minify.js
+
+      - name: Deploy to FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.SERVER }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          protocol: ftp
+          port: ${{ secrets.PORT }}
+          server-dir: ${{ secrets.THEME_PATH }}
+          dangerous-clean-slate: false
+          exclude: |
+            **/node_modules/**
+            **/.git/**
+            **/.github/**
+            package.json
+            package-lock.json
