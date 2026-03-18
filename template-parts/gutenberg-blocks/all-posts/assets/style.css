@@ -12,12 +12,37 @@
         grid-template-columns: 1fr;
         gap: 24px clamp(12px, 1.25vw,24px);
 
+        .filter-dropdown__bg {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000000bd;
+            z-index: 9;
+            opacity: 0;
+            transition: all 300ms;
+            pointer-events: none;
+            visibility: hidden;
+        }
+
         &.filter-open {
 
             .all-posts__filters {
-
                 left: 0;
                 opacity: 1;
+            }
+
+            .filter-dropdown__bg {
+                opacity: 1;
+                visibility: visible;
+                pointer-events: all;
+            }
+
+            .all-posts__posts-wrap {
+                pointer-events: none;
             }
         }
     }
@@ -50,7 +75,7 @@
             align-items: center;
             justify-content: center;
             margin-left: auto;
-            padding: 10px 20px;
+            padding: clamp(5px,0.7vw,10px) clamp(10px,1.4vw,20px);
             border-radius: 25px;
             border: 1px solid black;
             font-size: clamp(14px,1.11112vw,16px);
@@ -139,14 +164,14 @@
         top: 50%;
         transform: translateY(-50%);
         left: -110%;
-        /*opacity: 0;*/
+        opacity: 0;
         padding: 20px;
-        border-radius: 10px;
+        border-radius: 0 10px 10px 0;
         background-color: #f2f2f2;
         height: 100%;
         width: fit-content;
-        min-width: 280px;
-        z-index: 2;
+        min-width: 340px;
+        z-index: 10;
         box-shadow: 0 0 12px 0 #0000004f;
         transition: all 300ms;
     }
@@ -158,13 +183,76 @@
         margin-top: 70px;
 
         input {
-            background: transparent;
+            /*background: transparent;*/
+            outline: 0;
+            border-radius: 15px;
+            padding: 10px;
         }
     }
     .filter-dropdown__item {
         display: flex;
         flex-direction: column;
         gap: 4px;
+
+        input {
+
+            &:focus {
+                outline: none;
+            }
+        }
+    }
+
+    /* Скрываем нативный чекбокс */
+    .filter-dropdown__item input[type="checkbox"] {
+        display: none;
+    }
+
+    /* Создаём кастомный квадрат */
+    .filter-dropdown__item label {
+        position: relative;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        user-select: none;
+    }
+
+    /* квадрат чекбокса */
+    .filter-dropdown__item label::before {
+        content: "";
+        display: block;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #ccc;
+        border-radius: 4px; /* скругление углов */
+        background-color: #fff;
+        transition: all 0.2s;
+    }
+
+    .filter-dropdown__item input[type="checkbox"]:checked + .filter-arrow::after,
+    .filter-dropdown__item input[type="checkbox"]:checked::after {
+
+    }
+
+    .filter-dropdown__item input[type="checkbox"] + .filter-arrow::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 20px;
+        height: 20px;
+        background: linear-gradient(135deg, #0D9E79, #14B093, #0b8264, #0e9d84);
+        background-size: 300% 100%;
+        animation: gradientShift 6s ease infinite;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        transition: all 300ms;
+        opacity: 0;
+    }
+
+    /* когда чекбокс отмечен */
+    .filter-dropdown__item input[type="checkbox"]:checked + .filter-arrow::after {
+        opacity: 1;
     }
 
     .filter-dropdown__buttons {
@@ -175,6 +263,54 @@
         justify-content: space-between;
     }
 
+    .filter-dropdown__close {
+        height: 14px;
+        width: 14px;
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 15px 15px 0 0;
+        cursor: pointer;
+        rotate: 45deg;
+        transition: all 300ms;
+
+        &:hover {
+            rotate: 180deg;
+        }
+
+        & span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            display: block;
+            background-color: black;
+            border-radius: 40%;
+
+
+            &:first-child {
+                width: 14px;
+                height: 2px;
+            }
+            &:last-child {
+                width: 2px;
+                height: 14px;
+            }
+        }
+    }
+
+    #ajax-reset-btn {
+        transition: all 300ms;
+        cursor: pointer;
+
+        &:hover {
+            color: #6a6a6a;
+        }
+    }
+
+    #ajax-search-btn {
+        margin-right: 0;
+    }
 
     /*LOAD MORE   */
 
