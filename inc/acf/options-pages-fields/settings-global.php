@@ -33,6 +33,15 @@ acf_add_local_field_group(array(
                 'width' => '50%',
             ),
         ),
+        array(
+            'key'     => 'field_post_form_title',
+            'label'   => 'Contact Form 7',
+            'name'    => 'post_form_shortcode',
+            'type'          => 'post_object',
+            'post_type'     => array('wpcf7_contact_form'),
+            'return_format' => 'id',
+            'ui'            => 1,
+        ),
 
 //        404
         array(
