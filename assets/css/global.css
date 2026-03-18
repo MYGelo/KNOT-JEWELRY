@@ -19,7 +19,7 @@
 	--bg-color-blur: #0E0E0E26;
 	--card-bg: #F4F7FD;
 
-	--section-space: clamp(80px,11.389vw,164px);
+	--section-space: clamp(40px,6.95vw,100px);
 	--bg-blur: 30px;
 }
 
@@ -34,7 +34,6 @@
 	backdrop-filter: blur(var(--bg-blur));
 	background: var(--bg-color-blur);
 }
-
 body {
 	font: 400 clamp(14px,1.25vw,18px)/1.5 var(--font), sans-serif;
 	/*background-color: var(--bg);*/
@@ -886,6 +885,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /*===== BTN's Animate  =====*/
+.btn-animate,
 .main-btn {
 
 	&.first {

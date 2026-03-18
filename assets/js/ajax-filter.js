@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const searchBtn = document.getElementById('ajax-search-btn');
     const resetBtn = document.getElementById('ajax-reset-btn');
     const loadMoreBtn = document.getElementById('ajax-load-more-btn');
+    const closeBtn = document.querySelector('.filter-dropdown__close');
+    const filterDropdownBg = document.querySelector('.filter-dropdown__bg');
 
     const filterBtn = document.querySelector('.all-posts__filter');
     const wrapper = document.querySelector('.all-posts__posts-wrapper');
@@ -121,6 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
             searchInput.value = '';
             document.querySelectorAll('.filter-material, .filter-stone, .filter-product_type').forEach(el => el.checked = false);
             loadPosts(true);
+            toggleResetBtn();
         });
     }
 
@@ -136,6 +139,32 @@ document.addEventListener('DOMContentLoaded', function () {
             wrapper.classList.toggle('filter-open');
         })
     }
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            wrapper.classList.remove('filter-open');
+        });
+    }
+
+    if (filterDropdownBg) {
+        filterDropdownBg.addEventListener('click', () => {
+            wrapper.classList.remove('filter-open');
+        });
+    }
+
+    // RESET BTN
+    function toggleResetBtn() {
+        const anyChecked = Array.from(document.querySelectorAll('.filter-material:checked, .filter-stone:checked, .filter-product_type:checked')).length > 0;
+        resetBtn.style.opacity = anyChecked ? '1' : '0';
+        resetBtn.style.pointerEvents = anyChecked ? 'auto' : 'none';
+    }
+
+    document.querySelectorAll('.filter-material, .filter-stone, .filter-product_type').forEach(cb => {
+        cb.addEventListener('change', toggleResetBtn);
+    });
+
+// и сразу вызываем, чтобы корректно инициализировать кнопку
+    toggleResetBtn();
 
 
     // IntersectionObserver для инфинити скролла

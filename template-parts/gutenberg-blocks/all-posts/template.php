@@ -48,9 +48,11 @@ if (!empty($block['className'])) $block_classes .= ' ' . $block['className'];
 
 
             <div class="all-posts__posts-wrapper">
+                <!-- ПОСТЫ -->
+                <div id="posts-wrap" class="all-posts__posts-wrap"></div>
                 <!-- ФИЛЬТРЫ -->
+                <div class="filter-dropdown__bg"></div>
                 <div class="all-posts__filters">
-
                     <div class="filter-dropdown">
                         <div class="filter-dropdown__content">
                             <!-- ПОИСК -->
@@ -61,6 +63,7 @@ if (!empty($block['className'])) $block_classes .= ' ' . $block['className'];
                                 <?php foreach (get_terms(['taxonomy' => 'product_type', 'hide_empty' => false]) as $term): ?>
                                     <label>
                                         <input type="checkbox" class="filter-product_type" value="<?= esc_attr($term->slug); ?>">
+                                        <div class="filter-arrow"></div>
                                         <?= esc_html($term->name); ?>
                                     </label>
                                 <?php endforeach; ?>
@@ -71,6 +74,7 @@ if (!empty($block['className'])) $block_classes .= ' ' . $block['className'];
                                 <?php foreach (get_terms(['taxonomy' => 'material', 'hide_empty' => false]) as $term): ?>
                                     <label>
                                         <input type="checkbox" class="filter-material" value="<?= esc_attr($term->slug); ?>">
+                                        <div class="filter-arrow"></div>
                                         <?= esc_html($term->name); ?>
                                     </label>
                                 <?php endforeach; ?>
@@ -81,6 +85,7 @@ if (!empty($block['className'])) $block_classes .= ' ' . $block['className'];
                                 <?php foreach (get_terms(['taxonomy' => 'stone', 'hide_empty' => false]) as $term): ?>
                                     <label>
                                         <input type="checkbox" class="filter-stone" value="<?= esc_attr($term->slug); ?>">
+                                        <div class="filter-arrow"></div>
                                         <?= esc_html($term->name); ?>
                                     </label>
                                 <?php endforeach; ?>
@@ -88,14 +93,14 @@ if (!empty($block['className'])) $block_classes .= ' ' . $block['className'];
 
                             <div class="filter-dropdown__buttons">
                                 <button type="button" id="ajax-reset-btn">Обнулити</button>
-                                <button type="button" id="ajax-search-btn">Пошук</button>
+                                <button type="button" id="ajax-search-btn" class="main-btn third">Пошук</button>
                             </div>
                         </div>
                     </div>
+                    <div class="filter-dropdown__close">
+                        <span></span><span></span>
+                    </div>
                 </div>
-
-                <!-- ПОСТЫ -->
-                <div id="posts-wrap" class="all-posts__posts-wrap"></div>
                 <!-- Лоадер -->
                 <div class="loader" id="ajax-loader">
                     <div class="loader__spinner"></div>
