@@ -1,6 +1,7 @@
 <?php
 // Разворачиваем переданные аргументы
 extract($args);
+$cf7_id = get_field('post_form_shortcode', 'option');
 ?>
 
 <div class="product-info">
@@ -63,6 +64,10 @@ extract($args);
     </ul>
 
     <!-- Кнопка заказа -->
-    <a href="#order" class="btn-buy main-btn third">Замовити виріб</a>
+<!--    <a href="#order" class="btn-buy main-btn third">Замовити виріб</a>-->
+
+    <?php if ($cf7_id): ?>
+        <?= do_shortcode('[contact-form-7 id="' . $cf7_id . '"]'); ?>
+    <?php endif; ?>
 
 </div>
