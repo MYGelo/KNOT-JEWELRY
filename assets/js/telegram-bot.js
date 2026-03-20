@@ -3,7 +3,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const form = document.querySelector('form.wpcf7-form');
     if (!form) return; // Если формы нет, выходим
     // wpcf7submit
-    document.addEventListener('wpcf7mailsent', function(event) {
+    document.addEventListener('wpcf7submit', function(event) {
+        if (event.detail.status === 'validation_failed') {
+            console.log('validation_failed');
+            return
+        }
 
         // Сбор данных из формы
         const formData = event.detail.inputs;
