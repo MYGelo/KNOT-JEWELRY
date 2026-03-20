@@ -32,7 +32,9 @@ $bg_mob = $thank_you['background_image_mob'] ?? '';
                     padding: clamp(24px,2.78vw,40px);
                     border-radius: 16px;
                     margin: 0 auto;
-                    
+                    /*box-shadow: 5px 6px 20px #00000082;*/
+                    /*text-shadow: 0px 0px 10px #00000082;*/
+
                     @media (max-width: 991px) {
                         & a {
                             width: 100%;
@@ -44,9 +46,9 @@ $bg_mob = $thank_you['background_image_mob'] ?? '';
                     }
                 }
 
-                h1,h2,p,a {
-                    color: var(--white);
-                }
+                /*h1,h2,p,a {*/
+                /*    color: var(--white);*/
+                /*}*/
 
                 h1 {
                     font-size: clamp(132px,11.112vw,160px);
@@ -78,7 +80,7 @@ $bg_mob = $thank_you['background_image_mob'] ?? '';
         </style>
         <div class="container">
 
-            <div class="thank-you__wrapper main-blur">
+            <div class="thank-you__wrapper">
                 <?php if ($main_title): ?>
                     <h1><?php echo esc_html($main_title); ?></h1>
                 <?php endif; ?>

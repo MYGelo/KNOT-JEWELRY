@@ -32,11 +32,12 @@ $bg_mob = $page_404['background_image_mob'] ?? '';
                     max-width: clamp(443px,47.0833vw,678px);
                     padding: clamp(24px,2.78vw,40px);
                     border-radius: 16px;
+                    /*box-shadow: 5px 6px 20px #00000082;*/
                 }
 
-                h1,h2,p,a {
-                    color: var(--white);
-                }
+                /*h1,h2,p,a {*/
+                /*    color: var(--white);*/
+                /*}*/
 
                 h1 {
                     font-size: clamp(132px,11.112vw,160px);
@@ -69,7 +70,7 @@ $bg_mob = $page_404['background_image_mob'] ?? '';
         <section class="error-404">
             <div class="container">
 
-                <div class="error-404__wrapper main-blur">
+                <div class="error-404__wrapper">
                     <?php if ($main_title): ?>
                         <h1><?php echo esc_html($main_title); ?></h1>
                     <?php endif; ?>
