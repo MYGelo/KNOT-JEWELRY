@@ -69,6 +69,8 @@ function theme_scripts()
 	wp_enqueue_script('swiper-script', get_template_directory_uri() . '/assets/js/swiper.min.js', [], filemtime(get_template_directory() . '/assets/js/swiper.min.js'), true);
     wp_enqueue_script( 'scroll-animate', get_template_directory_uri() . '/assets/js/scroll-animate.js', [], filemtime( get_template_directory() . '/assets/js/scroll-animate.js' ), true );
     wp_enqueue_script( 'product', get_template_directory_uri() . '/assets/js/product.js', [], filemtime( get_template_directory() . '/assets/js/product.js' ), true );
+    wp_enqueue_script( 'telegram-bot', get_template_directory_uri() . '/assets/js/telegram-bot.js', [], filemtime( get_template_directory() . '/assets/js/telegram-bot.js' ), true );
+
 }
 
 add_action('wp_enqueue_scripts', 'theme_scripts');

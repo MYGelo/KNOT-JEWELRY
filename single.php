@@ -9,15 +9,15 @@ if (have_posts()) :
 
         ?>
 
-        <main class="product-page container">
+        <main class="product-page">
+            <div class="container">
+                <section class="product scroll-animate">
 
-            <section class="product scroll-animate">
+                        <?php get_template_part('template-parts/product/gallery', null, $product); ?>
+                        <?php get_template_part('template-parts/product/info', null, $product); ?>
 
-                <?php get_template_part('template-parts/product/gallery', null, $product); ?>
-                <?php get_template_part('template-parts/product/info', null, $product); ?>
-
-            </section>
-
+                </section>
+            </div>
         </main>
 
     <?php
@@ -25,3 +25,5 @@ if (have_posts()) :
 endif;
 
 get_footer(); ?>
+
+<?php get_template_part('template-parts/popups/example-popup'); ?>
