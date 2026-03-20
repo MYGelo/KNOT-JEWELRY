@@ -4,6 +4,13 @@
 		// 	var pageUrl = '/?page_id=318';
 		// 	window.location.href = pageUrl;
 		// }, false);
+		//
+
+		// /thank-you-page/
+		document.addEventListener('wpcf7mailsent', function(event) {
+			var pageUrl = '/thank-you-page/';
+			window.location.href = pageUrl;
+		}, false);
 
 		// global events
 		document.addEventListener('click', function(event) {
