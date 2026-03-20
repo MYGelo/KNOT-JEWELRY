@@ -4,23 +4,7 @@
 		// 	var pageUrl = '/?page_id=318';
 		// 	window.location.href = pageUrl;
 		// }, false);
-		//
 
-		// /thank-you-page/
-		// document.addEventListener('wpcf7mailsent', function(event) {
-		// document.addEventListener('wpcf7mailsent', function(event) {
-		//
-		// 	var pageUrl = '/thank-you-page/';
-		// 	window.location.href = pageUrl;
-		// }, false);
-
-		document.addEventListener('wpcf7submit', function(event) {
-			if (event.detail.status !== 'validation_failed') {
-				window.location.href = '/thank-you-page/';
-			}
-		}, false);
-
-		// global events
 		document.addEventListener('click', function(event) {
 			const target = event.target
 

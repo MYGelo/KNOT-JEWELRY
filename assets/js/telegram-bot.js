@@ -73,7 +73,10 @@ Email: ${data['your-email']};
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ chat_id: "@KnotJewelryOrders", text: message })
         })
-            .then(res => console.log('Telegram OK'))
+            .then(res => {
+                console.log('Telegram OK');
+                window.location.href = '/thank-you-page/';
+            })
             .catch(err => console.error('Telegram ERROR', err));
 
     }, false);
