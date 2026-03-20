@@ -92,7 +92,7 @@ $bg_mob = $thank_you['background_image_mob'] ?? '';
                 <?php endif; ?>
 
                 <?php if ($link_text): ?>
-                    <a href="<?= !empty($link_url) ? esc_url($link_url) : '/';?>" class="main-btn">
+                    <a href="<?= !empty($link_url) ? esc_url($link_url) : '/';?>" class="main-btn third">
                         <?= esc_html($link_text); ?>
                     </a>
                 <?php endif; ?>

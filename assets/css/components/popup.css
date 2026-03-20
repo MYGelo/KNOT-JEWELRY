@@ -36,8 +36,11 @@
 	}
 
 	.popup_container {
-		max-height: 100%;
-		padding: clamp(10px,1.68vw,24px);
+		display: grid;
+		gap: 20px;
+		max-height: 95%;
+		overflow-y: auto;
+		padding: clamp(15px,1.68vw,25px);
 		background-color: #fff;
 		border-radius: 16px;
 		/*width: 100%;*/

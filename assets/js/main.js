@@ -8,10 +8,16 @@
 
 		// /thank-you-page/
 		// document.addEventListener('wpcf7mailsent', function(event) {
-		document.addEventListener('wpcf7mailsent', function(event) {
+		// document.addEventListener('wpcf7mailsent', function(event) {
+		//
+		// 	var pageUrl = '/thank-you-page/';
+		// 	window.location.href = pageUrl;
+		// }, false);
 
-			var pageUrl = '/thank-you-page/';
-			window.location.href = pageUrl;
+		document.addEventListener('wpcf7submit', function(event) {
+			if (event.detail.status !== 'validation_failed') {
+				window.location.href = '/thank-you-page/';
+			}
 		}, false);
 
 		// global events
@@ -69,10 +75,14 @@
 
 				const popup = target.closest('[data-action="togglePopup"]').getAttribute('data-target')
 				if(popup) document.querySelector(popup).classList.toggle('open')
+				if (popup) {
+					document.body.classList.add('overflow')
+				}
 			}
 
 			if(target.closest('[data-action="closePopup"]')) {
 				target.closest('.popup_inner').classList.remove('open')
+				document.body.classList.remove('overflow')
 			}
 		})
 

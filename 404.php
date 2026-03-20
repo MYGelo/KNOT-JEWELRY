@@ -83,7 +83,7 @@ $bg_mob = $page_404['background_image_mob'] ?? '';
                     <?php endif; ?>
 
                     <?php if ($link_text): ?>
-                        <a href="<?php echo esc_url(home_url('/')); ?>" class="main-btn">
+                        <a href="<?php echo esc_url(home_url('/')); ?>" class="main-btn third">
                             <?php echo esc_html($link_text); ?>
                         </a>
                     <?php endif; ?>
