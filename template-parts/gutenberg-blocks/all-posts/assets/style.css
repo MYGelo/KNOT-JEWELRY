@@ -66,7 +66,6 @@
     .all-posts__title-wrapper {
         display: flex;
         gap: 10px;
-        align-items: center;
         justify-content: space-between;
 
         .all-posts__search,
@@ -84,8 +83,6 @@
         }
         .all-posts__search {
             margin-left: 0;
-            border-color: #777777;
-            color: #777777;
 
             &:focus {
                 outline: transparent;

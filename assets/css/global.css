@@ -930,3 +930,59 @@ h1, h2, h3, h4, h5, h6 {
 	100% { background-position: 0% 50%; }
 }
 /*===== End LLM =====*/
+
+/*===== BTN TO TOP =====*/
+.scroll-top-btn {
+	position: fixed;
+	bottom: 30px;
+	right: clamp(10px,2.1vw,30px);
+	z-index: 999;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	width: clamp(50px,4.9vw,70px);
+	height:  clamp(50px,4.9vw,70px);
+	border-radius: 50%;
+	border: none;
+
+	color: #fff;
+	opacity: 0;
+	visibility: hidden;
+	transition: all 300ms cubic-bezier(.68, -.55, .27, 1.55);
+
+	transform: translateX(100px) scale(.6);
+	box-shadow: #676767 0 0 20px 0px;
+	cursor: pointer;
+
+	background: linear-gradient(135deg, #000000, #676767, #1a1a1a, #444);
+	background-size: 300% 100%;
+	animation: gradientShift 6s ease infinite;
+
+	-webkit-tap-highlight-color: transparent;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+
+
+	svg {
+		width: 80%;
+		height: 80%;
+		background-color: transparent;
+	}
+
+	&.show {
+		opacity: 0.9;
+		visibility: visible;
+		pointer-events: all;
+		transform: translateX(0) scale(1);
+	}
+	&:hover {
+		opacity: 0.7;
+	}
+}
+/*===== end BTN TO TOP =====*/
