@@ -12,11 +12,13 @@ if (!empty($block['className'])) $block_classes .= ' ' . $block['className'];
 <section class="<?= esc_attr($block_classes) ?>" id="<?= esc_attr($block_anchor) ?>">
     <div class="container">
         <div class="all-posts__wrapper">
+            <?php if ($main_title): ?>
+                <h2><?= wp_kses_post($main_title); ?></h2>
+            <?php endif; ?>
 
             <div class="all-posts__title-wrapper">
-                <?php if ($main_title): ?>
-                    <h2><?= wp_kses_post($main_title); ?></h2>
-                <?php endif; ?>
+                <!-- ПОИСК -->
+                <input class="all-posts__search" type="text" id="ajax-search" placeholder="Пошук..." autocomplete="off">
 
                 <button class="all-posts__filter">
                     ФІЛЬТР
@@ -55,8 +57,6 @@ if (!empty($block['className'])) $block_classes .= ' ' . $block['className'];
                 <div class="all-posts__filters">
                     <div class="filter-dropdown">
                         <div class="filter-dropdown__content">
-                            <!-- ПОИСК -->
-                            <input type="text" id="ajax-search" placeholder="Пошук..." autocomplete="off">
 
                             <div class="filter-dropdown__item">
                                 <strong>Тип виробу</strong>

@@ -15,6 +15,14 @@
 	onload="this.rel=`stylesheet`"
 >
 
+<?php $ver = filemtime(get_template_directory() . '/assets/css/components/popup.css'); ?>
+<link
+        rel="preload"
+        href="<?= get_template_directory_uri() ?>/assets/css/components/popup.css?ver=<?= $ver ?>"
+        as="style"
+        onload="this.rel=`stylesheet`"
+>
+
 
 <link
 	rel="preload"

@@ -1,7 +1,7 @@
 
 
 document.addEventListener('DOMContentLoaded', function () {
-
+    const body = document.querySelector('body');
     const searchInput = document.getElementById('ajax-search');
     const postsWrap = document.getElementById('posts-wrap');
     const loader = document.getElementById('ajax-loader');
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
     //     if (
     //         e.target.classList.contains('filter-material') ||
     //         e.target.classList.contains('filter-stone') ||
-    //         e.target.classList.contains('filter-product_type') // <- сюда
+    //         e.target.classList.contains('filter-product_type')
     //     ) {
     //         loadPosts(true);
     //     }
@@ -114,6 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
         searchBtn.addEventListener('click', () => {
             loadPosts(true);
             wrapper.classList.remove('filter-open');
+            body.classList.remove('overflow');
         });
     }
 
@@ -137,18 +138,21 @@ document.addEventListener('DOMContentLoaded', function () {
     if (filterBtn) {
         filterBtn.addEventListener('click', () => {
             wrapper.classList.toggle('filter-open');
+            body.classList.toggle('overflow');
         })
     }
 
     if (closeBtn) {
         closeBtn.addEventListener('click', () => {
             wrapper.classList.remove('filter-open');
+            body.classList.remove('overflow');
         });
     }
 
     if (filterDropdownBg) {
         filterDropdownBg.addEventListener('click', () => {
             wrapper.classList.remove('filter-open');
+            body.classList.remove('overflow');
         });
     }
 

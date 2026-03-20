@@ -1,3 +1,4 @@
+<?php $cf7_id = get_field('post_form_shortcode', 'option');?>
 <div
 	class="popup_inner"
 	id="example_popup"
@@ -15,11 +16,15 @@
 				<span data-action="closePopup">&times;</span>
 			</div>
 			<div class="body">
-				Popup Body
-			</div>
-			<div class="end">
-				Popup Footer
-			</div>
+
+                <?php if ($cf7_id): ?>
+                    <?= do_shortcode('[contact-form-7 id="' . $cf7_id . '"]'); ?>
+                <?php endif; ?>
+
+            </div>
+<!--			<div class="end">-->
+<!--				Popup Footer-->
+<!--			</div>-->
 		</div>
 	</div>
 </div>

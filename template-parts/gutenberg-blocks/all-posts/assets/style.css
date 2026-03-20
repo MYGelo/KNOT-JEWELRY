@@ -69,6 +69,7 @@
         align-items: center;
         justify-content: space-between;
 
+        .all-posts__search,
         .all-posts__filter {
             display: flex;
             gap: 15px;
@@ -80,6 +81,15 @@
             border: 1px solid black;
             font-size: clamp(14px,1.11112vw,16px);
             cursor: pointer;
+        }
+        .all-posts__search {
+            margin-left: 0;
+            border-color: #777777;
+            color: #777777;
+
+            &:focus {
+                outline: transparent;
+            }
         }
     }
 

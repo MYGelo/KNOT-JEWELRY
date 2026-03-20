@@ -1,13 +1,13 @@
 <?php
 // Разворачиваем переданные аргументы
 extract($args);
-$cf7_id = get_field('post_form_shortcode', 'option');
+
 ?>
 
 <div class="product-info">
 
     <!-- Название -->
-    <h1 class="body-xl"><?= esc_html(get_the_title()); ?></h1>
+    <h1 class="body-xl product-title--js"><?= esc_html(get_the_title()); ?></h1>
 
     <!-- Описание -->
     <?php if (get_the_content()): ?>
@@ -17,7 +17,7 @@ $cf7_id = get_field('post_form_shortcode', 'option');
     <?php endif; ?>
 
     <!-- Цена -->
-    <div class="product-price">
+    <div class="product-price product-price--js">
         <?php if (!empty($price)): ?>
             <h2 class="current"><?= esc_html($price); ?> ₴</h2>
         <?php endif; ?>
@@ -29,45 +29,38 @@ $cf7_id = get_field('post_form_shortcode', 'option');
 
     <!-- Свойства продукта -->
     <ul class="product-props">
-        <!-- Поля из ACF/meta -->
-        <?php if (!empty($metal)): ?>
-            <li><strong>Метал:</strong> <?= esc_html($metal); ?></li>
-        <?php endif; ?>
-
-        <?php if (!empty($test)): ?>
-            <li><strong>Проба:</strong> <?= esc_html($test); ?></li>
-        <?php endif; ?>
-
         <!-- Кастомные таксономии -->
         <?php
         // Матеріал
         $material_terms = get_the_terms(get_the_ID(), 'material');
         if ($material_terms && !is_wp_error($material_terms)) {
             $material_names = wp_list_pluck($material_terms, 'name');
-            echo '<li><strong>Матеріал:</strong> ' . esc_html(implode(', ', $material_names)) . '</li>';
+            echo '<li>Матеріал: <span class="product-material--js">' . esc_html(implode(', ', $material_names)) . '</span></li>';
         }
 
         // Камінь
         $stone_terms = get_the_terms(get_the_ID(), 'stone');
         if ($stone_terms && !is_wp_error($stone_terms)) {
             $stone_names = wp_list_pluck($stone_terms, 'name');
-            echo '<li><strong>Камінь:</strong> ' . esc_html(implode(', ', $stone_names)) . '</li>';
+            echo '<li>Камінь: <span class="product-stone--js">' . esc_html(implode(', ', $stone_names)) . '</span></li>';
         }
 
         // Тип виробу
         $type_terms = get_the_terms(get_the_ID(), 'product_type');
         if ($type_terms && !is_wp_error($type_terms)) {
             $type_names = wp_list_pluck($type_terms, 'name');
-            echo '<li><strong>Тип виробу:</strong> ' . esc_html(implode(', ', $type_names)) . '</li>';
+            echo '<li>Тип виробу: <span class="product-type--js">' . esc_html(implode(', ', $type_names)) . '</span></li>';
         }
         ?>
     </ul>
 
     <!-- Кнопка заказа -->
-<!--    <a href="#order" class="btn-buy main-btn third">Замовити виріб</a>-->
-
-    <?php if ($cf7_id): ?>
-        <?= do_shortcode('[contact-form-7 id="' . $cf7_id . '"]'); ?>
-    <?php endif; ?>
-
+<!--    <a href="https://api.telegram.org/bot8622055916:AAG9C41IjiLjaIqSskYbfOyi0wTrX_A90Ls/sendMessage?chat_id=@KnotJewelryOrders&text=TEST_MESSAGE🚀" class="btn-buy main-btn third">Замовити виріб</a>-->
+    <button
+            class="btn-buy main-btn third"
+            data-action="togglePopup"
+            data-target="#example_popup"
+    >
+        Замовити виріб
+    </button>
 </div>
