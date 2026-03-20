@@ -306,9 +306,11 @@ section {
 	color: var(--white);
 	transition: all 300ms;
 
+	&:focus,
 	&:hover {
 		background-color: #000000A3;
 		cursor: pointer;
+		outline: none;
 	}
 }
 

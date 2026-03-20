@@ -11,7 +11,7 @@
 	<div class="popup_content">
 		<div class="popup_container">
 			<div class="head">
-				<h3>Example Popup</h3>
+				<h3>Формуємо замовлення :</h3>
 
 				<span data-action="closePopup">&times;</span>
 			</div>
