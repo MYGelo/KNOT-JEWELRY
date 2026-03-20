@@ -2,8 +2,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const form = document.querySelector('form.wpcf7-form');
     if (!form) return; // Если формы нет, выходим
-
-    document.addEventListener('wpcf7submit', function(event) {
+    // wpcf7submit
+    document.addEventListener('wpcf7mailsent', function(event) {
 
         // Сбор данных из формы
         const formData = event.detail.inputs;

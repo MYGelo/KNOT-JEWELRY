@@ -7,7 +7,9 @@
 		//
 
 		// /thank-you-page/
+		// document.addEventListener('wpcf7mailsent', function(event) {
 		document.addEventListener('wpcf7mailsent', function(event) {
+
 			var pageUrl = '/thank-you-page/';
 			window.location.href = pageUrl;
 		}, false);
