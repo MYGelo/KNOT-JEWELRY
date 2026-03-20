@@ -42,8 +42,6 @@ if (!empty($block['className'])) {
                 <?php if (!empty($link['url'])):?>
                     <div class="main-banner__link_wrap scroll-animate">
                         <a class="main-btn primary_button five"
-                           data-action="togglePopup"
-                           data-target="#example_popup"
                            href="<?=esc_url($link['url']);?>"
                            target="<?=esc_attr($link['target']) ?: '_self';?>"
                         ><?= wp_kses_post($link['title']);?>
