@@ -1,0 +1,71 @@
+.select-post{
+    position: relative;
+
+    .select-post__swiper {
+        padding: 10px 30px;
+    }
+
+
+    .swiper-slide {
+        position: relative;
+        overflow: hidden;
+        aspect-ratio: 1;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        color: #fff;
+        padding: clamp(10px,1.39vw,20px);
+        border-radius: 25px 25px 25px 0;
+        box-shadow: 0 0 12px 0 #0000004f;
+        opacity: 0;
+        transition: all 300ms;
+        scale: 0;
+    }
+    .swiper-slide-prev,
+    .swiper-slide-next,
+    .swiper-slide-active {
+        opacity: 1;
+        scale: 1;
+    }
+
+    .select-post__item img{
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        transition: transform 0.3s ease;
+        object-fit: cover;
+        border-radius: 20px 20px 20px 0;
+    }
+
+    .slide-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        width: 100%;
+        background: rgba(0,0,0,0.4); /* затемнённый фон под текстом для читаемости */
+        padding: 10px;
+        border-radius: 10px 10px 20px 0;
+    }
+
+    .slide-content__link {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+    }
+
+    .slide-content h4 {
+        color: #fff;
+    }
+
+    .swiper-button-next,
+    .swiper-button-prev {
+        color: black;
+        width: 15px;
+    }
+}

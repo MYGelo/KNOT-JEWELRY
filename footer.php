@@ -110,6 +110,7 @@ $company_city_zip = $company_info['city_zip'] ?? '';
 
 
 <?php //get_template_part('template-parts/popups/example-popup'); ?>
+<?php include(get_template_directory() . '/template-parts/components/btn-top.php'); ?>
 
 <?php wp_footer(); ?>
 
