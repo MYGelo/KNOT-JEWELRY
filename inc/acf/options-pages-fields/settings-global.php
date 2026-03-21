@@ -43,6 +43,43 @@ acf_add_local_field_group(array(
             'ui'            => 1,
         ),
 
+        array(
+            'key'   => 'tab_social_links',
+            'label' => 'Social Links',
+            'name'  => '',
+            'type'  => 'tab',
+            'placement' => 'top',
+        ),
+
+        array(
+            'key'           => 'footer_social_repeater',
+            'label'         => 'Social Links List',
+            'name'          => 'footer_social_repeater',
+            'type'          => 'repeater',
+            'button_label'  => 'Add Social Link',
+            'min'           => 1,
+            'max'           => 0,
+            'layout'        => 'row',
+            'instructions'  => 'Add and configure social media links',
+            'sub_fields'    => array(
+
+                array(
+                    'key'   => 'footer_social_url',
+                    'label' => 'Social URL',
+                    'name'  => 'url',
+                    'type'  => 'url',
+                ),
+
+                array(
+                    'key'           => 'footer_social_icon',
+                    'label'         => 'Social Icon',
+                    'name'          => 'icon',
+                    'type'          => 'image',
+                    'return_format' => 'array',
+                ),
+            ),
+        ),
+
 //        404
         array(
             'key'   => 'tab_404_page',

@@ -68,7 +68,22 @@ $company_city_zip = $company_info['city_zip'] ?? '';
                            target="_blank"
                            rel="noopener"
                         >
-                            <img src="<?= esc_url($social['icon']); ?>" alt="Social Icon">
+
+                             <?php if (!empty($social['icon']['url'])): ?>
+                                 <picture>
+                                     <!-- Mobile --> <source srcset="<?= $social['icon']['sizes']['medium_large']; ?>" media="(max-width: 551px)">
+                                     <!-- Desktop --><source srcset="<?= $social['icon']['url']; ?>" media="(min-width: 552px)">
+                                     <img
+                                         class=""
+                                         src="<?= esc_url($social['icon']['sizes']['large'] ?: $social['icon']['sizes']['medium_large']); ?>"
+                                         alt="<?= esc_attr($social['icon']['alt'] ?: $social['icon']['title']); ?>"
+                                         width="<?= esc_attr($social['icon']['width'] ?? ''); ?>"
+                                         height="<?= esc_attr($social['icon']['height'] ?? ''); ?>"
+                                         loading="lazy"
+                                         decoding="async"
+                                     >
+                                 </picture>
+                             <?php endif; ?>
                         </a>
                     <?php endforeach; ?>
                 </li>
