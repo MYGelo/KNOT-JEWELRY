@@ -1,6 +1,7 @@
 <?php
 $button_text = get_field( 'button_text', 'option' );
 $button_link = get_field( 'button_link', 'option' );
+$footer_social = get_field('footer_social_repeater', 'option');
 ?>
 
     <!doctype html>
@@ -105,6 +106,34 @@ $button_link = get_field( 'button_link', 'option' );
                 'container'      => false,
                 'menu_class'     => 'header_menu',
             ] ); ?>
+            <?php if ($footer_social): ?>
+                <li class="header__social">
+                    <?php foreach ($footer_social as $social): ?>
+                        <a class="header__social-link media-bounce"
+                           href="<?= esc_url($social['url']); ?>"
+                           target="_blank"
+                           rel="noopener"
+                        >
+
+                            <?php if (!empty($social['icon']['url'])): ?>
+                                <picture>
+                                    <!-- Mobile --> <source srcset="<?= $social['icon']['sizes']['medium_large']; ?>" media="(max-width: 551px)">
+                                    <!-- Desktop --><source srcset="<?= $social['icon']['url']; ?>" media="(min-width: 552px)">
+                                    <img
+                                            class=""
+                                            src="<?= esc_url($social['icon']['sizes']['large'] ?: $social['icon']['sizes']['medium_large']); ?>"
+                                            alt="<?= esc_attr($social['icon']['alt'] ?: $social['icon']['title']); ?>"
+                                            width="<?= esc_attr($social['icon']['width'] ?? ''); ?>"
+                                            height="<?= esc_attr($social['icon']['height'] ?? ''); ?>"
+                                            loading="lazy"
+                                            decoding="async"
+                                    >
+                                </picture>
+                            <?php endif; ?>
+                        </a>
+                    <?php endforeach; ?>
+                </li>
+            <?php endif; ?>
         </div>
     </header>
 

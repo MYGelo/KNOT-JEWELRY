@@ -14,35 +14,6 @@ acf_add_local_field_group(array(
         ),
 
         array(
-            'key'           => 'footer_social_repeater',
-            'label'         => 'Social Links List',
-            'name'          => 'footer_social_repeater',
-            'type'          => 'repeater',
-            'button_label'  => 'Add Social Link',
-            'min'           => 1,
-            'max'           => 0,
-            'layout'        => 'row',
-            'instructions'  => 'Add and configure social media links',
-            'sub_fields'    => array(
-
-                array(
-                    'key'   => 'footer_social_url',
-                    'label' => 'Social URL',
-                    'name'  => 'url',
-                    'type'  => 'url',
-                ),
-
-                array(
-                    'key'           => 'footer_social_icon',
-                    'label'         => 'Social Icon',
-                    'name'          => 'icon',
-                    'type'          => 'image',
-                    'return_format' => 'url',
-                ),
-            ),
-        ),
-
-        array(
             'key'   => 'footer_company_info_group',
             'label' => 'Company Info',
             'name'  => 'footer_company_info',
@@ -127,7 +98,7 @@ acf_add_local_field_group(array(
                     'label'         => 'Background Image',
                     'name'          => 'bg_footer_bottom_group',
                     'type'          => 'image',
-                    'return_format' => 'url', // можно поставить 'array'
+                    'return_format' => 'array', // можно поставить 'array'
                     'wrapper'       => array('width' => '100%'),
                 ),
             ),

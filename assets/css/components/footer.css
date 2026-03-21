@@ -28,6 +28,11 @@
         display: flex;
         /*grid-template-columns: repeat(4 , 1fr);*/
         gap: 16px;
+
+        img {
+            height: 30px;
+            width: 30px;
+        }
     }
 
     .footer__menu
