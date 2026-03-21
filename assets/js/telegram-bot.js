@@ -29,6 +29,34 @@ document.addEventListener('DOMContentLoaded', function () {
             const field = form.querySelector(`input[name="${name}"]`);
             if (field) field.value = value;
         }
+        function cleanUsername(value) {
+            if (!value) return '';
+
+            value = value.trim();
+
+            // если ссылка — достаем username из URL
+            if (value.startsWith('http')) {
+                try {
+                    const url = new URL(value);
+                    return url.pathname.replace(/\//g, '');
+                } catch (e) {
+                    return '';
+                }
+            }
+
+            // убираем @ если есть
+            return value.replace('@', '');
+        }
+
+        function formatTelegram(value) {
+            const username = cleanUsername(value);
+            return username ? '@' + username : '';
+        }
+
+        function formatInstagramLink(value) {
+            const username = cleanUsername(value);
+            return username ? `https://www.instagram.com/${username}` : '-';
+        }
 
         // Обновляем hidden-поля
         setHiddenValue('product-title', productTitle);
@@ -46,25 +74,30 @@ document.addEventListener('DOMContentLoaded', function () {
         data['product-price'] = productPrice;
         data['product-link'] = productLink;
 
+        const telegram = formatTelegram(data['your-telegram']);
+        const instagramLink = formatInstagramLink(data['your-instagram']);
+
         // Формируем сообщение для Telegram
         let message = `
-            💎 Новое сообщение с сайта KNŌT JEWELRY:
-            
-Имя: ${data['first-name']} ${data['last-name']};
+💎 Новое сообщение с сайта KNŌT JEWELRY:
 
-Телефон: ${data['your-phone']};
-Email: ${data['your-email']};
+👤 Имя: ${data['full-name']}
 
-Сообщение:${data['your-message']};
-            
-Товар: ${data['product-title']};
-Цена: ${data['product-price']};
-Размер: ${data['ring-size']};
-Материал: ${data['product-material']};
-Камень: ${data['product-stone']};
-Тип: ${data['product-type']};
-            
-Ссылка: ${data['product-link']}
+📞 Телефон: ${data['your-phone']}
+💬 Telegram: ${telegram || '-'}
+📷 Instagram: ${instagramLink || '-'}
+
+📝 Сообщение:
+${data['your-message']}
+
+💍 Товар: ${data['product-title']}
+💰 Цена: ${data['product-price']}
+📏 Размер: ${data['ring-size']}
+⚙️ Материал: ${data['product-material']}
+💎 Камень: ${data['product-stone']}
+📦 Тип: ${data['product-type']}
+
+🔗 Ссылка: ${data['product-link']}
 `;
 
         // Отправка через Telegram API
