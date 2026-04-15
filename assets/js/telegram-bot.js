@@ -117,7 +117,8 @@ ${data['your-message']}
             .then(res => res.json())
             .then(res => {
                 if (!res?.success) {
-                    throw new Error('Telegram request failed');
+                    const message = res?.data?.message || 'Telegram request failed';
+                    throw new Error(message);
                 }
                 console.log('Telegram OK');
                 window.location.href = '/thank-you-page/';
