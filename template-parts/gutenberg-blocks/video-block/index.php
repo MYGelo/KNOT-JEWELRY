@@ -15,9 +15,9 @@ if (function_exists('acf_register_block_type')) {
 			$uri_base = get_template_directory_uri() . str_replace(get_template_directory(), '', __DIR__);
 
 
-			$script = __DIR__ . "/script.js";
+			$script = __DIR__ . '/assets/script.js';
 			if (file_exists($script)) {
-				wp_enqueue_script("block-video-block", "{$uri_base}/script.js", null, filemtime($script), true);
+				wp_enqueue_script('block-video-block', "{$uri_base}/assets/script.js", null, filemtime($script), true);
 			}
 
 			// Specific styles and scripts

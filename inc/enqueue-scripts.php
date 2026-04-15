@@ -18,9 +18,18 @@ function auto_enqueue_styles()
 		return;
 	}
 
-	$files_root = glob($base_dir . '/*.css');
-	$files_subdirs = glob($base_dir . '/**/*.css', GLOB_BRACE);
-	$files = array_merge($files_root ?: [], $files_subdirs ?: []);
+	$files = [];
+	$iterator = new RecursiveIteratorIterator(
+		new RecursiveDirectoryIterator($base_dir, FilesystemIterator::SKIP_DOTS)
+	);
+
+	foreach ($iterator as $file_info) {
+		if (!$file_info instanceof SplFileInfo || $file_info->getExtension() !== 'css') {
+			continue;
+		}
+
+		$files[] = $file_info->getPathname();
+	}
 
 	if (empty($files)) {
 		error_log("No CSS files found in: " . $base_dir);
@@ -58,7 +67,10 @@ function theme_scripts()
 	wp_enqueue_style('style', get_stylesheet_uri(), array(), null);
 	wp_enqueue_style('fonts', get_stylesheet_directory_uri() . '/assets/font/fonts.css', array(), null);
 	auto_enqueue_styles();
-	wp_enqueue_style('swiper-styles', get_stylesheet_directory_uri() . '/assets/css/swiper.css', array(), null);
+	$swiper_css_path = get_template_directory() . '/assets/css/swiper.css';
+	if (file_exists($swiper_css_path)) {
+		wp_enqueue_style('swiper-styles', get_stylesheet_directory_uri() . '/assets/css/swiper.css', array(), filemtime($swiper_css_path));
+	}
 
 
 	// uncomment next line to remove jQuery if woocommerce isn't use
@@ -66,10 +78,18 @@ function theme_scripts()
 
 	//scripts
 	wp_enqueue_script('main-js', get_template_directory_uri() . '/assets/js/main.js', [], filemtime(get_template_directory() . '/assets/js/main.js'), true);
-	wp_enqueue_script('swiper-script', get_template_directory_uri() . '/assets/js/swiper.min.js', [], filemtime(get_template_directory() . '/assets/js/swiper.min.js'), true);
-    wp_enqueue_script( 'scroll-animate', get_template_directory_uri() . '/assets/js/scroll-animate.js', [], filemtime( get_template_directory() . '/assets/js/scroll-animate.js' ), true );
-    wp_enqueue_script( 'product', get_template_directory_uri() . '/assets/js/product.js', [], filemtime( get_template_directory() . '/assets/js/product.js' ), true );
-    wp_enqueue_script( 'telegram-bot', get_template_directory_uri() . '/assets/js/telegram-bot.js', [], filemtime( get_template_directory() . '/assets/js/telegram-bot.js' ), true );
+	$swiper_js_path = get_template_directory() . '/assets/js/swiper.min.js';
+	if (file_exists($swiper_js_path)) {
+		wp_enqueue_script('swiper-script', get_template_directory_uri() . '/assets/js/swiper.min.js', [], filemtime($swiper_js_path), true);
+	}
+	wp_enqueue_script('scroll-animate', get_template_directory_uri() . '/assets/js/scroll-animate.js', [], filemtime(get_template_directory() . '/assets/js/scroll-animate.js'), true);
+	wp_enqueue_script('product', get_template_directory_uri() . '/assets/js/product.js', [], filemtime(get_template_directory() . '/assets/js/product.js'), true);
+	wp_enqueue_script('telegram-bot', get_template_directory_uri() . '/assets/js/telegram-bot.js', [], filemtime(get_template_directory() . '/assets/js/telegram-bot.js'), true);
+
+	wp_localize_script('telegram-bot', 'knotTelegram', [
+		'ajax_url' => admin_url('admin-ajax.php'),
+		'nonce'    => wp_create_nonce('knot_telegram_nonce'),
+	]);
 
 }
 

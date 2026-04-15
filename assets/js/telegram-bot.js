@@ -100,13 +100,25 @@ ${data['your-message']}
 🔗 Ссылка: ${data['product-link']}
 `;
 
-        // Отправка через Telegram API
-        fetch(`https://api.telegram.org/bot8622055916:AAG9C41IjiLjaIqSskYbfOyi0wTrX_A90Ls/sendMessage`, {
+        // Отправка через WordPress AJAX (токен хранится только на сервере)
+        if (!window.knotTelegram?.ajax_url || !window.knotTelegram?.nonce) {
+            return;
+        }
+
+        fetch(window.knotTelegram.ajax_url, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: "@KnotJewelryOrders", text: message })
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+            body: new URLSearchParams({
+                action: 'send_telegram_message',
+                nonce: window.knotTelegram.nonce,
+                message
+            }).toString()
         })
+            .then(res => res.json())
             .then(res => {
+                if (!res?.success) {
+                    throw new Error('Telegram request failed');
+                }
                 console.log('Telegram OK');
                 window.location.href = '/thank-you-page/';
             })
