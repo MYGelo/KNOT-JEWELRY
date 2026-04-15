@@ -55,6 +55,7 @@ extract($args);
     </ul>
 
     <!-- Кнопка заказа -->
+<!--    <a href="https://api.telegram.org/bot8622055916:AAG9C41IjiLjaIqSskYbfOyi0wTrX_A90Ls/sendMessage?chat_id=@KnotJewelryOrders&text=TEST_MESSAGE🚀" class="btn-buy main-btn third">Замовити виріб</a>-->
     <button
             class="btn-buy main-btn third"
             data-action="togglePopup"
