@@ -67,15 +67,17 @@ $faq = [
     "mainEntity" => []
 ];
 
-foreach ($items as $key => $item) {
-    $faq['mainEntity'][] = [
-        "@type" => "Question",
-        "name" => $item['title'],
-        "acceptedAnswer" => [
-            "@type" => "Answer",
-            "text" => $item['description']
-        ]
-    ];
+if (is_array($items)) {
+    foreach ($items as $item) {
+        $faq['mainEntity'][] = [
+            "@type" => "Question",
+            "name" => $item['title'],
+            "acceptedAnswer" => [
+                "@type" => "Answer",
+                "text" => $item['description']
+            ]
+        ];
+    }
 }
 ?>
 <script type="application/ld+json">
