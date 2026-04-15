@@ -15,7 +15,6 @@ function knot_send_telegram_message() {
 
 	$bot_token = defined('KNOT_TELEGRAM_BOT_TOKEN') ? KNOT_TELEGRAM_BOT_TOKEN : '';
 	$chat_id = defined('KNOT_TELEGRAM_CHAT_ID') ? KNOT_TELEGRAM_CHAT_ID : '';
-
 	if (empty($bot_token) || empty($chat_id)) {
 		wp_send_json_error(['message' => 'Telegram credentials are not configured'], 500);
 	}
