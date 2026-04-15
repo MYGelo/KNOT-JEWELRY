@@ -15,14 +15,14 @@ $footer_social = get_field('footer_social_repeater', 'option');
         >
         <title>
             <?php
-            $title = wp_get_document_title();
+            $title = '';
             if ( class_exists( 'WPSEO_Frontend' ) ) {
                 $yoast = WPSEO_Frontend::get_instance();
                 $title = $yoast->title( get_the_ID() );
                 if ( ! $title ) {
-                    $title = get_bloginfo( 'name' );
+                    $title = bloginfo( 'name' );
                     if ( ! is_front_page() ) {
-                        $title = get_the_title() . ' - ' . get_bloginfo( 'name' );
+                        $title = get_the_title() . ' - ' . bloginfo( 'name' );
                     }
                 }
             }
@@ -107,34 +107,32 @@ $footer_social = get_field('footer_social_repeater', 'option');
                 'menu_class'     => 'header_menu',
             ] ); ?>
             <?php if ($footer_social): ?>
-                <ul class="header__social">
+                <li class="header__social">
                     <?php foreach ($footer_social as $social): ?>
-                        <li>
-                            <a class="header__social-link media-bounce"
-                               href="<?= esc_url($social['url']); ?>"
-                               target="_blank"
-                               rel="noopener"
-                            >
+                        <a class="header__social-link media-bounce"
+                           href="<?= esc_url($social['url']); ?>"
+                           target="_blank"
+                           rel="noopener"
+                        >
 
-                                <?php if (!empty($social['icon']['url'])): ?>
-                                    <picture>
-                                        <!-- Mobile --> <source srcset="<?= $social['icon']['sizes']['medium_large']; ?>" media="(max-width: 551px)">
-                                        <!-- Desktop --><source srcset="<?= $social['icon']['url']; ?>" media="(min-width: 552px)">
-                                        <img
-                                                class=""
-                                                src="<?= esc_url($social['icon']['sizes']['large'] ?: $social['icon']['sizes']['medium_large']); ?>"
-                                                alt="<?= esc_attr($social['icon']['alt'] ?: $social['icon']['title']); ?>"
-                                                width="<?= esc_attr($social['icon']['width'] ?? ''); ?>"
-                                                height="<?= esc_attr($social['icon']['height'] ?? ''); ?>"
-                                                loading="lazy"
-                                                decoding="async"
-                                        >
-                                    </picture>
-                                <?php endif; ?>
-                            </a>
-                        </li>
+                            <?php if (!empty($social['icon']['url'])): ?>
+                                <picture>
+                                    <!-- Mobile --> <source srcset="<?= $social['icon']['sizes']['medium_large']; ?>" media="(max-width: 551px)">
+                                    <!-- Desktop --><source srcset="<?= $social['icon']['url']; ?>" media="(min-width: 552px)">
+                                    <img
+                                            class=""
+                                            src="<?= esc_url($social['icon']['sizes']['large'] ?: $social['icon']['sizes']['medium_large']); ?>"
+                                            alt="<?= esc_attr($social['icon']['alt'] ?: $social['icon']['title']); ?>"
+                                            width="<?= esc_attr($social['icon']['width'] ?? ''); ?>"
+                                            height="<?= esc_attr($social['icon']['height'] ?? ''); ?>"
+                                            loading="lazy"
+                                            decoding="async"
+                                    >
+                                </picture>
+                            <?php endif; ?>
+                        </a>
                     <?php endforeach; ?>
-                </ul>
+                </li>
             <?php endif; ?>
         </div>
     </header>

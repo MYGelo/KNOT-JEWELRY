@@ -4,9 +4,7 @@
 	<?php
 	$page_for_posts_id = get_option( 'page_for_posts' );
 	$page_for_posts_obj = get_post( $page_for_posts_id );
-	if ( $page_for_posts_obj instanceof WP_Post ) {
-		echo apply_filters( 'the_content', $page_for_posts_obj->post_content );
-	}
+	echo apply_filters( 'the_content', $page_for_posts_obj->post_content );
 	?>
 </main>
 

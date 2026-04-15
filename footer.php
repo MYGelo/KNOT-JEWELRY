@@ -61,34 +61,32 @@ $company_city_zip = $company_info['city_zip'] ?? '';
             </ul>
 
             <?php if ($footer_social): ?>
-                <ul class="footer__social">
+                <li class="footer__social">
                     <?php foreach ($footer_social as $social): ?>
-                        <li>
-                            <a class="footer__social-link media-bounce"
-                               href="<?= esc_url($social['url']); ?>"
-                               target="_blank"
-                               rel="noopener"
-                            >
+                        <a class="footer__social-link media-bounce"
+                           href="<?= esc_url($social['url']); ?>"
+                           target="_blank"
+                           rel="noopener"
+                        >
 
-                                 <?php if (!empty($social['icon']['url'])): ?>
-                                     <picture>
-                                         <!-- Mobile --> <source srcset="<?= $social['icon']['sizes']['medium_large']; ?>" media="(max-width: 551px)">
-                                         <!-- Desktop --><source srcset="<?= $social['icon']['url']; ?>" media="(min-width: 552px)">
-                                         <img
-                                             class=""
-                                             src="<?= esc_url($social['icon']['sizes']['large'] ?: $social['icon']['sizes']['medium_large']); ?>"
-                                             alt="<?= esc_attr($social['icon']['alt'] ?: $social['icon']['title']); ?>"
-                                             width="<?= esc_attr($social['icon']['width'] ?? ''); ?>"
-                                             height="<?= esc_attr($social['icon']['height'] ?? ''); ?>"
-                                             loading="lazy"
-                                             decoding="async"
-                                         >
-                                     </picture>
-                                 <?php endif; ?>
-                            </a>
-                        </li>
+                             <?php if (!empty($social['icon']['url'])): ?>
+                                 <picture>
+                                     <!-- Mobile --> <source srcset="<?= $social['icon']['sizes']['medium_large']; ?>" media="(max-width: 551px)">
+                                     <!-- Desktop --><source srcset="<?= $social['icon']['url']; ?>" media="(min-width: 552px)">
+                                     <img
+                                         class=""
+                                         src="<?= esc_url($social['icon']['sizes']['large'] ?: $social['icon']['sizes']['medium_large']); ?>"
+                                         alt="<?= esc_attr($social['icon']['alt'] ?: $social['icon']['title']); ?>"
+                                         width="<?= esc_attr($social['icon']['width'] ?? ''); ?>"
+                                         height="<?= esc_attr($social['icon']['height'] ?? ''); ?>"
+                                         loading="lazy"
+                                         decoding="async"
+                                     >
+                                 </picture>
+                             <?php endif; ?>
+                        </a>
                     <?php endforeach; ?>
-                </ul>
+                </li>
             <?php endif; ?>
         </div>
     </div>
