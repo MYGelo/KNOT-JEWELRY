@@ -1,5 +1,5 @@
-<div class="scroll-top-btn">
-    <svg viewBox="0 0 24 24">
-        <path d="M12 4L3 15H9V20H15V15H21L12 4Z" fill="currentColor"/>
+<button type="button" class="scroll-top-btn main-btn primary_button five" aria-label="Наверх">
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="24" height="24" viewBox="0 0 24 24">
+        <path d="M17.707 10.293l-5-5c-0.391-0.391-1.024-0.391-1.414 0l-5 5c-0.391 0.391-0.391 1.024 0 1.414s1.024 0.391 1.414 0l4.293-4.293 4.293 4.293c0.391 0.391 1.024 0.391 1.414 0s0.391-1.024 0-1.414zM17.707 17.293l-5-5c-0.391-0.391-1.024-0.391-1.414 0l-5 5c-0.391 0.391-0.391 1.024 0 1.414s1.024 0.391 1.414 0l4.293-4.293 4.293 4.293c0.391 0.391 1.024 0.391 1.414 0s0.391-1.024 0-1.414z"/>
     </svg>
-</div>
+</button>
