@@ -971,7 +971,21 @@ h1, h2, h3, h4, h5, h6 {
 	-ms-user-select: none;
 	user-select: none;
 
-	background: linear-gradient(90deg, #d2b48c59, #F1E3D259, #d2b48c59, #d2b48c59);
+	background: linear-gradient(90deg,
+	#f0f5f9,
+	#c9d7e5,
+	#aebfd3,
+	#8fa9c2,
+	#b9cfe3,
+	#f1f6fb,
+	#f0f5f9,
+	#c9d7e5,
+	#aebfd3,
+	#8fa9c2,
+	#b9cfe3
+	);
+
+	fill: #00000091;
 	background-size: 300% 100%;
 	animation: gradientShift 6s ease infinite;
 

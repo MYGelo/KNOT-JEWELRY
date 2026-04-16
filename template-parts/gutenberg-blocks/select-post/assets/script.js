@@ -1,33 +1,29 @@
 document.addEventListener('DOMContentLoaded', function () {
-    new Swiper('.select-post__swiper', {
-        speed: 600,
-        parallax: true,
-        slidesPerView: 3,
-        spaceBetween: 24,
-        // pagination: {
-        //     el: '.select_post .swiper-pagination',
-        //     clickable: true,
-        // },
-        navigation: {
-            nextEl: '.select_post__swiper-button-next',
-            prevEl: '.select_post__swiper-button-prev',
-        },
-        // loop: true,
-        // centeredSlides: true,
+    const slider = document.querySelector('.select-post__swiper');
+    const wrapper = slider?.querySelector('.swiper-wrapper');
+    const slides = slider?.querySelectorAll('.swiper-slide') || [];
 
-        breakpoints: {
-            0: {
-                slidesPerView: 1,
-                // spaceBetween: 50,
-            },
-            551: {
-                slidesPerView: 2,
-                spaceBetween: 12,
-            },
-            767: {
-                slidesPerView: 3,
-                spaceBetween: 18,
-            },
-        }
+
+    if (slides.length <= 6) {
+        slides.forEach(slide => {
+            wrapper.appendChild(slide.cloneNode(true));
+        });
+    }
+
+    new Swiper('.select-post__swiper', {
+        loop: true,
+        slidesPerView: 4,
+        spaceBetween: 18,
+
+        speed: 8000,
+        autoplay: {
+            delay: 0,
+            disableOnInteraction: false,
+        },
+
+        allowTouchMove: false,
+        disableOnInteraction: false,
+
+        freeMode: false
     });
 });
