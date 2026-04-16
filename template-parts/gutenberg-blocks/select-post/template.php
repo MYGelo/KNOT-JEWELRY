@@ -12,12 +12,13 @@ if (!empty($block['className'])) $block_classes .= ' ' . $block['className'];
         <?php if ($main_title): ?>
             <h2 class="select-post__title"><?= wp_kses_post($main_title); ?></h2>
         <?php endif; ?>
+    </div>
 
         <?php if ($selected_posts && is_array($selected_posts)): ?>
             <div class="select-post__wrap">
-                <div class="select_post__swiper-button-prev">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="32" height="32"><path d="m12.59 27.41-10-10a2 2 0 0 1 0-2.82l10-10A2 2 0 1 1 15.4 7.4L8.83 14H28a2 2 0 1 1 0 4H8.83l6.58 6.59a2 2 0 0 1 0 2.82 2 2 0 0 1-2.82 0"/></svg>
-                </div>
+<!--                <div class="select_post__swiper-button-prev">-->
+<!--                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="32" height="32"><path d="m12.59 27.41-10-10a2 2 0 0 1 0-2.82l10-10A2 2 0 1 1 15.4 7.4L8.83 14H28a2 2 0 1 1 0 4H8.83l6.58 6.59a2 2 0 0 1 0 2.82 2 2 0 0 1-2.82 0"/></svg>-->
+<!--                </div>-->
 
                 <div class="swiper select-post__swiper">
                     <div class="swiper-wrapper">
@@ -66,10 +67,10 @@ if (!empty($block['className'])) $block_classes .= ' ' . $block['className'];
                     </div>
                 </div>
 
-                <div class="select_post__swiper-button-next">
-                    <svg style="rotate: 180deg" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="32" height="32"><path d="m12.59 27.41-10-10a2 2 0 0 1 0-2.82l10-10A2 2 0 1 1 15.4 7.4L8.83 14H28a2 2 0 1 1 0 4H8.83l6.58 6.59a2 2 0 0 1 0 2.82 2 2 0 0 1-2.82 0"/></svg>
-                </div>
-            </div>
+<!--                <div class="select_post__swiper-button-next">-->
+<!--                    <svg style="rotate: 180deg" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="32" height="32"><path d="m12.59 27.41-10-10a2 2 0 0 1 0-2.82l10-10A2 2 0 1 1 15.4 7.4L8.83 14H28a2 2 0 1 1 0 4H8.83l6.58 6.59a2 2 0 0 1 0 2.82 2 2 0 0 1-2.82 0"/></svg>-->
+<!--                </div>-->
+
         <?php endif; ?>
     </div>
 </section>
