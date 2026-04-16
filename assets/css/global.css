@@ -961,13 +961,7 @@ h1, h2, h3, h4, h5, h6 {
 		0 18px 40px rgba(0, 0, 0, 0.12),
 		0 2px 0 rgba(255, 255, 255, 0.45) inset;
 	cursor: pointer;
-
-	background:
-		radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.35) 35%, rgba(254, 213, 229, 0.35) 60%, rgba(0, 0, 0, 0.06) 100%),
-		linear-gradient(145deg, rgba(255, 255, 255, 0.6), rgba(254, 213, 229, 0.18));
 	backdrop-filter: blur(8px);
-	background-size: auto;
-	animation: none;
 
 	-webkit-tap-highlight-color: transparent;
 	-webkit-touch-callout: none;
@@ -977,6 +971,9 @@ h1, h2, h3, h4, h5, h6 {
 	-ms-user-select: none;
 	user-select: none;
 
+	background: linear-gradient(90deg, #d2b48c59, #F1E3D259, #d2b48c59, #d2b48c59);
+	background-size: 300% 100%;
+	animation: gradientShift 6s ease infinite;
 
 	svg {
 		width: 56%;
