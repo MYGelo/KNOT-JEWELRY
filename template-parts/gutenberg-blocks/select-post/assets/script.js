@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
             disableOnInteraction: false,
         },
 
-        allowTouchMove: false,
+        allowTouchMove: true,
         disableOnInteraction: false,
 
         freeMode: false
