@@ -955,7 +955,7 @@ h1, h2, h3, h4, h5, h6 {
 	opacity: 0;
 	visibility: hidden;
 	pointer-events: none;
-	transition: opacity 220ms ease, transform 420ms cubic-bezier(.2,.8,.2,1), visibility 0s linear 220ms;
+	transition: all 300ms;
 
 	transform: translateY(14px) scale(0.85) rotate(-6deg);
 	box-shadow:
@@ -983,7 +983,6 @@ h1, h2, h3, h4, h5, h6 {
 		width: 56%;
 		height: 56%;
 		background-color: transparent;
-		transition: transform 300ms ease, color 300ms ease;
 		position: relative;
 		z-index: 1;
 	}
@@ -1017,7 +1016,6 @@ h1, h2, h3, h4, h5, h6 {
 		visibility: visible;
 		pointer-events: auto;
 		transform: translateY(0) scale(1) rotate(0deg);
-		transition: opacity 200ms ease, transform 450ms cubic-bezier(.2,.9,.2,1), visibility 0s;
 	}
 	&:hover {
 		transform: translateY(-2px) scale(1.02) rotate(1deg);
