@@ -80,6 +80,11 @@
             border: 1px solid black;
             font-size: clamp(14px,1.11112vw,16px);
             cursor: pointer;
+
+            &::placeholder {
+                color: black;
+                font: 400 clamp(14px, 1.11112vw, 16px) / 1 var(--font), sans-serif;
+            }
         }
         .all-posts__search {
             margin-left: 0;
