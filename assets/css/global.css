@@ -707,6 +707,7 @@ label.field_box {
 	opacity: 1;
 	transform: translateY(0);
 }
+
 /* =========================
    MOONSTONE LOADER (ANIME GLOW)
 ========================= */
@@ -867,6 +868,139 @@ label.field_box {
 	100% {
 		transform: translateX(60%) rotate(25deg);
 		opacity: 0;
+	}
+}
+
+.loader.active {
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+}
+
+.loader__spinner {
+	width: 48px;
+	height: 48px;
+	border-radius: 26px 18px 30px 16px / 24px 22px 34px 18px;
+	border: 4px solid rgba(0, 0, 0, 0.15);
+	border-top-color:  var(--title-color);
+	animation: catalog-spin 0.9s linear infinite;
+}
+
+@keyframes catalog-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.grecaptcha-badge {
+	display: none !important;
+}
+
+
+:root {
+	--background-color: #F3F3F1;
+	--background-color-dark: #2B2C2E;
+	--background-color-dark-hover: #222323;
+	--background-color-dark-active: #1B1D1F;
+	--disabled-color: #E5E3DF;
+
+	--background-color-social: #E5E3DF;
+	--background-color-white: #FFFFFF82;
+	--primary-color: #BADDF1;
+	--primary-color-hover: #9AD0EF;
+	--primary-color-active: #58B2E6;
+	--primary-color-disabled: #ACB1B3;
+
+	--white: #fff;
+	--black: #000000;
+	--text-color: #1B1D1F;
+	--text-color-button: #111111;
+	--text-color-hover: #355792;
+	--text-color-light-grey: #5B5B5B;
+
+	--menu-color-hover: #7691C0;
+
+	--title-color: #202123;
+	--header-color: #FED5E5;
+
+	--border-color: #C2C2C1;
+	--border-search-color: #FFFFFF33;
+
+	--focus-color: #5774A8;
+	--error-color: #E94235;
+	--grey-color: #878787;
+	--blue-color: #878787;
+	--title-color-new: #1E293B;
+
+
+
+	--text_color: #111;
+	--title_color: #111;
+	--second_title_color: #1E293B;
+
+	--section_space: 116px;
+}
+
+.container {
+	margin: 0 auto;
+	max-width: 1344px;
+	padding: 0 32px;
+}
+
+.container-fluid {
+	margin: 0 auto;
+	max-width: 1440px;
+}
+
+.section_space {
+	margin-bottom: var(--section_space);
+}
+
+body {
+	font: 400 16px "Montserrat", sans-serif;
+	color: var(--text_color);
+	line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-weight: 600;
+	/*color: var(--title_color);*/
+	line-height: 1.3;
+}
+
+@media (max-width: 1199px) {
+	:root {
+		--section_space: 64px;
+	}
+
+	body {
+		font-size: 14px;
+	}
+}
+
+@media(max-width: 767px) {
+	.container {
+		padding: 0 20px;
+	}
+}
+
+.page__breadcrumbs_wrapper {
+	width: 100%;
+	padding-inline: 80px;
+	max-width: 1440px;
+	margin: 24px auto;
+
+	@media (max-width: 1024px) {
+		padding-inline: 32px;
+	}
+
+	@media (max-width: 767px) {
+		padding-inline: 20px;
+		margin: 16px 0;
+	}
+
+	.page__breadcrumbs {
+		justify-content: flex-start;
 	}
 }
 
