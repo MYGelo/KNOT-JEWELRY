@@ -225,6 +225,37 @@ acf_add_local_field_group(array(
                 ),
             ),
         ),
+
+        array(
+            'key'   => 'tab_loader',
+            'label' => 'Loader Settings',
+            'name'  => '',
+            'type'  => 'tab',
+            'placement' => 'top',
+        ),
+            array(
+                'key' => 'loader_theme_mode',
+                'label' => 'Light Mode Loader',
+                'name' => 'loader_light_mode',
+                'type' => 'true_false',
+                'ui' => 1,
+                'ui_on_text' => 'Light',
+                'ui_off_text' => 'Dark',
+                'default_value' => 0,
+                'instructions' => 'Switch loader theme between dark and light',
+            ),
+            array(
+                'key' => 'loader_spinner_toggle',
+                'label' => 'Enable Rotating Ring',
+                'name' => 'loader_spinner_enabled',
+                'type' => 'true_false',
+                'ui' => 1,
+                'ui_on_text' => 'On',
+                'ui_off_text' => 'Off',
+                'default_value' => 1,
+                'instructions' => 'Enable or disable the rotating loader ring',
+            ),
+
     ),
     'location' => array(
         array(

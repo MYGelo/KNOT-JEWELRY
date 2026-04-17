@@ -101,10 +101,8 @@ if (!empty($block['className'])) $block_classes .= ' ' . $block['className'];
                         <span></span><span></span>
                     </div>
                 </div>
-                <!-- Лоадер -->
-                <div class="loader" id="ajax-loader">
-                    <div class="loader__spinner"></div>
-                </div>
+
+                <?php include(get_template_directory() . '/template-parts/components/loader/loader.php'); ?>
             </div>
 
             <!-- Лоадер море -->
