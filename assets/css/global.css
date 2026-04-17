@@ -719,9 +719,8 @@ label.field_box {
 	align-items: center;
 	z-index: 9999;
 	opacity: 0;
-	visibility: hidden;
 	pointer-events: none;
-	transition: 0.3s ease;
+	transition: 500ms ease;
 
 	&.dark {
 		background: radial-gradient(circle, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.95));
@@ -729,7 +728,6 @@ label.field_box {
 
 	&.active {
 		opacity: 1;
-		visibility: visible;
 		pointer-events: auto;
 	}
 
