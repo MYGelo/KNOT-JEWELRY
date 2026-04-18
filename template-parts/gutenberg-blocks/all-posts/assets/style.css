@@ -186,6 +186,32 @@
         z-index: 10;
         box-shadow: 0 0 12px 0 #0000004f;
         transition: all 300ms;
+        max-height: 100dvh;
+        overflow-y: auto;
+
+        /* Chrome / Edge / Safari */
+        &::-webkit-scrollbar {
+            width: 14px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: linear-gradient(
+                    180deg,
+                    #FFFFFF00,
+                    #111,
+                    #555,
+                    #111,
+                    #FFFFFF00
+            );
+
+            border-radius: 10px;
+            border: 5px solid transparent;
+            background-clip: content-box;
+        }
     }
 
     .filter-dropdown__content {
