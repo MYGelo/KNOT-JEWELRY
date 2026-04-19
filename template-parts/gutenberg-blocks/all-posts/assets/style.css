@@ -102,6 +102,14 @@
         flex-direction: column;
         justify-content: flex-start;
 
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
         @media (max-width: 768px) {
             &:nth-child(5n + 5) {
                 grid-column: span 2;
