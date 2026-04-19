@@ -209,6 +209,29 @@
             }
         }
 
+        .product-stock{
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            font-weight: 600;
+            color: #1e7e34;
+            background: #f0fff6;
+            border-radius: 20px;
+            width: fit-content;
+        }
+
+        .product-stock::before{
+            content: "";
+            width: 10px;
+            height: 10px;
+            background: #2ecc71;
+            border-radius: 50%;
+            box-shadow: 0 0 0 rgba(46,204,113,0.7);
+            animation: stockPulse 2s infinite;
+        }
+
+
 
         .product-props {
             list-style: none;
@@ -223,11 +246,17 @@
                 font-size: 0.95rem;
                 color: #555;
 
-
                 strong {
                     font-weight: 600;
                     margin-right: 6px;
+                    color: #6767678f;
+                }
+
+                span {
+                    padding: 2px 5px;
+                    background-color: #7407070d;
                     color: #111;
+                    border-radius: 5px;
                 }
             }
         }
@@ -281,5 +310,16 @@
             resize: none;
             height: 150px;
         }
+    }
+}
+@keyframes stockPulse{
+    0%{
+        box-shadow:0 0 0 0 rgba(46,204,113,0.7);
+    }
+    70%{
+        box-shadow:0 0 0 8px rgba(46,204,113,0);
+    }
+    100%{
+        box-shadow:0 0 0 0 rgba(46,204,113,0);
     }
 }

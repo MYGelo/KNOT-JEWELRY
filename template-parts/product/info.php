@@ -1,7 +1,6 @@
 <?php
-// Разворачиваем переданные аргументы
-extract($args);
-
+    extract($args);
+    $in_stock = get_field('in-stock');
 ?>
 
 <div class="product-info">
@@ -14,6 +13,11 @@ extract($args);
         <div class="product-description">
             <?= wp_kses_post(get_the_content()); ?>
         </div>
+    <?php endif; ?>
+
+    <!-- Наличие -->
+    <?php if (has_category('in-stock') && !empty($in_stock)): ?>
+        <p class="product-stock"><?=$in_stock?></p>
     <?php endif; ?>
 
     <!-- Цена -->
@@ -54,13 +58,5 @@ extract($args);
         ?>
     </ul>
 
-    <!-- Кнопка заказа -->
-<!--    <a href="https://api.telegram.org/bot8622055916:AAG9C41IjiLjaIqSskYbfOyi0wTrX_A90Ls/sendMessage?chat_id=@KnotJewelryOrders&text=TEST_MESSAGE🚀" class="btn-buy main-btn third">Замовити виріб</a>-->
-    <button
-            class="btn-buy main-btn third"
-            data-action="togglePopup"
-            data-target="#example_popup"
-    >
-        Замовити виріб
-    </button>
+    <button class="btn-buy main-btn third" data-action="togglePopup" data-target="#example_popup">Замовити виріб</button>
 </div>
