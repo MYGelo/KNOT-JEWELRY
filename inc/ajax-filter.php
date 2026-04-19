@@ -95,7 +95,7 @@ function filter_posts() {
                     }
 
                     if (has_category('in-stock')): ?>
-                        <p class="product-stock all-posts__category">В наличии</p>
+                        <p class="product-stock all-posts__category">В наявності</p>
                     <?php endif;
                     echo '</div>';
                     ?>
