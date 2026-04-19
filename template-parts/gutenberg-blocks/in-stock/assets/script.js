@@ -49,12 +49,12 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             if (hasLink) {
-                window.location.href = link;
-                
                 const loader = document.getElementById('ajax-loader');
                 if (loader) {
                     loader.classList.add('active');
                 }
+                
+                window.location.href = link;
             }
         })
 
