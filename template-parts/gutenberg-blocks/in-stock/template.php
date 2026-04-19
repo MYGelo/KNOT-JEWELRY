@@ -22,6 +22,7 @@ if ($query->have_posts()) : ?>
                     <div class="swiper-wrapper">
                         <?php while($query->have_posts()): $query->the_post();
                             $price = get_post_meta(get_the_ID(), 'price', true);
+                            $in_stock = get_post_meta(get_the_ID(), 'in-stock', true);
                             $desc = get_the_excerpt();
                             $link = get_permalink();
                             ?>
@@ -52,6 +53,10 @@ if ($query->have_posts()) : ?>
                                             </div>
 
                                             <h3><?php the_title(); ?></h3>
+
+                                            <?php if(!empty($in_stock)):?>
+                                                <p class="product-stock"><?=wp_kses_post($in_stock)?></p>
+                                            <?php endif;?>
 
                                             <p class="stock-text"><?= esc_html($desc) ?></p>
 

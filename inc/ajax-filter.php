@@ -51,7 +51,6 @@ function filter_posts() {
         while ($query->have_posts()) {
             $query->the_post();
             ob_start();
-//            get_template_part('template-parts/content', 'ajax-post');
 
             $price_meta = get_post_meta(get_the_ID(), 'price', true);
             ?>
@@ -66,12 +65,15 @@ function filter_posts() {
                 <div class="all-post__text-content">
                     <h2 class="all-posts__item-title scroll-animate--off"><?php the_title(); ?></h2>
 
+
                     <?php
                     $taxonomies = [
                         'material'     => 'Матеріал',
                         'stone'        => 'Камінь',
                         // 'product_type' => 'Тип виробу',
                     ];
+
+
 
                     echo '<div class="all-posts__categories scroll-animate--off">';
 
@@ -92,6 +94,9 @@ function filter_posts() {
                         }
                     }
 
+                    if (has_category('in-stock')): ?>
+                        <p class="product-stock all-posts__category">В наличии</p>
+                    <?php endif;
                     echo '</div>';
                     ?>
                 </div>
