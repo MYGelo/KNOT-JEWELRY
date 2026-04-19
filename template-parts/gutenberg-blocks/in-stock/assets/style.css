@@ -1,4 +1,5 @@
 .in-stock {
+    overflow: hidden;
     .swiper {
         overflow: visible;
     }
@@ -6,7 +7,7 @@
         /*transition-timing-function: linear !important;*/
     }
     .swiper-slide {
-        max-width: 324px;
+        max-width: clamp(324px,30.9723vw,446px);
         -webkit-tap-highlight-color: transparent;
         -webkit-touch-callout: none;
         -webkit-user-select: none;
@@ -50,8 +51,10 @@
     }
 
 
-    .stock-card:hover .stock-card-inner{
-        transform: rotateY(10deg);
+    @media (hover: hover) and (pointer: fine) {
+        .stock-card:hover .stock-card-inner {
+            transform: rotateY(10deg);
+        }
     }
 
     .in-stock-slider {
@@ -99,8 +102,6 @@
         display: block;
         position:absolute;
         inset:0;
-        /*background:rgba(0,0,0,0.25);*/
-
         background: rgb(255 255 255 / 75%);
         transition:opacity .3s ease;
         z-index: -1;
@@ -110,8 +111,7 @@
         position:absolute;
         width:100%;
         height:100%;
-        /*backface-visibility:hidden;*/
-        border-radius:20px;
+        border-radius: 25px;
         overflow:hidden;
         box-shadow:0 0 12px #00000040;
     }
@@ -132,9 +132,43 @@
     }
 
     .stock-price{
-        margin-top:auto;
         font-size:22px;
         font-weight:600;
+    }
+
+    .stock-text {
+        overflow-y: auto;
+        -webkit-mask-image: linear-gradient(to top, transparent 0%, black 20%, black 100%);
+        mask-image: linear-gradient(to top, transparent 0%, black 20%, black 100%);
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
+        height: 100%;
+
+        /*===== Scroll Bar =====*/
+        &::-webkit-scrollbar {
+            width: 14px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: linear-gradient(
+                    180deg,
+                    #FFFFFF00,
+                    #111,
+                    #555,
+                    #111,
+                    #FFFFFF00
+            );
+
+            border-radius: 10px;
+            border: 5px solid transparent;
+            background-clip: content-box;
+        }
     }
     .stock-card-back-icon {
         display: flex;
@@ -142,6 +176,7 @@
         bottom: 0;
         right: 0;
         padding: 10px;
+        animation: bouncePause 2s ease-in-out infinite;
     }
 
     .stock-close {

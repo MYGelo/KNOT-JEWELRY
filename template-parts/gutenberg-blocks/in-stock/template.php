@@ -55,7 +55,7 @@ $query = new WP_Query([
 
                                         <h3><?php the_title(); ?></h3>
 
-                                        <p><?= esc_html($desc) ?></p>
+                                        <p class="stock-text"><?= esc_html($desc) ?></p>
 
                                         <?php if($price): ?>
                                             <div class="stock-price">
