@@ -88,6 +88,10 @@ if ($posts) : ?>
                                                 <span></span>
                                             </div>
 
+                                            <div class="stock-card-back-icon">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M17 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h6a1 1 0 0 0 0-2H5a3 3 0 0 0-3 3v11a3 3 0 0 0 3 3h11a3 3 0 0 0 3-3v-6a1 1 0 0 0-2 0m-6.3 1.7L20 5.42V9a1 1 0 0 0 2 0V3a1 1 0 0 0-.3-.7A1 1 0 0 0 21 2h-6a1 1 0 0 0 0 2h3.59l-9.3 9.3a1 1 0 1 0 1.42 1.4"/></svg>
+                                            </div>
+
                                             <h3><?= esc_html(get_the_title($post_id)) ?></h3>
 
                                             <?php if($in_stock): ?>
