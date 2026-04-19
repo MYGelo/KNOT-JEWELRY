@@ -173,7 +173,7 @@
                 &.product-stock {
                     color: #1e7e34;
                     background: #f0fff6;
-                    box-shadow: 0px 0px 5px 0px #2ecc71;
+                    /*box-shadow: 0px 0px 5px 0px #2ecc71;*/
                 }
             }
         }
