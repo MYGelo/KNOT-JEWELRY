@@ -13,10 +13,13 @@ $button_text = get_field('comments_button_text','option') ?: 'Надіслати
 ?>
 
 <section class="comments">
-    <h3 class="comments-title scroll-animate">
-        <?=$title?> (<?php echo get_comments_number(); ?>)
-    </h3>
-    <p class="diary-subtitle"><?=$subtitle?></p>
+    <div class="comments__title-wrapper">
+        <h3 class="comments-title scroll-animate">
+            <?=$title?>(
+            <span id="comments-count"><?php echo get_comments_number(); ?></span>)
+        </h3>
+        <p class="diary-subtitle scroll-animate"><?=$subtitle?></p>
+    </div>
 
     <div id="comments-list">
         <?php
