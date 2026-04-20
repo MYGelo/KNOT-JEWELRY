@@ -45,6 +45,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 list.insertAdjacentHTML("afterbegin", html)
 
+                const newComment = list.firstElementChild
+
+                requestAnimationFrame(() => {
+                    newComment.classList.add("animated")
+                })
+
                 document.querySelector("#comment-text").value = ""
                 document.querySelector("#comment-name").value = ""
 
