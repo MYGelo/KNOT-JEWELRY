@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const text = document.querySelector("#comment-text").value
         const hp = document.querySelector("#comment-hp").value
         const time = document.querySelector("#comment-time").value
+        const countEl = document.querySelector("#comments-count")
 
         if(!text) return
 
@@ -50,6 +51,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 requestAnimationFrame(() => {
                     newComment.classList.add("animated")
                 })
+
+                if(countEl){
+                    countEl.textContent = parseInt(countEl.textContent) + 1
+                }
 
                 document.querySelector("#comment-text").value = ""
                 document.querySelector("#comment-name").value = ""
