@@ -141,16 +141,22 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            padding: clamp(8px,0.84vw,16px);
+            padding: clamp(8px, 0.84vw, 16px);
+            justify-content: space-between;
+            height: 100%;
         }
 
         .all-posts__price {
             font-size: clamp(18px,1.667vw,32px);
-            margin: auto 0 0 auto;
+            margin: 0 0 0 auto;
         }
         .all-posts__item-title {
             font-size: clamp(14px, 1.667vw, 22px);
             text-transform: uppercase;
+
+            overflow-wrap: break-word;
+            word-break: break-word;
+            hyphens: auto;
         }
 
         .all-posts__item-desc {
