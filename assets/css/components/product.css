@@ -1,3 +1,49 @@
+.comments {
+    grid-column: span 2;
+
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    .comment {
+        margin-bottom: 10px;
+        border-radius: 0 16px  16px 0 ;
+        box-shadow: 0 0 10px rgb(0 0 0 / 10%);
+        padding: clamp(10px, 1.389vw, 20px);
+        background: #faf8f5a3;
+        border-left: 2px solid #c8a96a;
+    }
+
+    .diary-subtitle {
+        opacity: 0.5;
+        margin-left: auto;
+    }
+
+    .comment-body {
+        font-size: 14px;
+        line-height: 1.7;
+        color: rgba(0,0,0,0.75);
+        margin-bottom: 12px;
+    }
+
+    .comment-footer {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        opacity: .6;
+        border-top: 1px dashed rgba(0,0,0,0.08);
+        padding-top: 8px;
+    }
+
+    .comment-author {
+        font-weight: 500;
+    }
+
+    .comment-date {
+        font-style: italic;
+    }
+}
+
 .product {
     margin-top: clamp(70px,6.95vw,100px);
     display: grid;
@@ -8,9 +54,7 @@
         grid-template-columns: 1fr;
     }
 
-    /* =========================
-       GALLERY
-    ========================= */
+    /* ===== GALLERY ===== */
 
     .product-gallery {
         display: grid;
@@ -41,9 +85,7 @@
         }
     }
 
-    /* =========================
-       THUMBS
-    ========================= */
+    /* ===== THUMBS ===== */
 
     .gallery-thumbs {
         width: 100%;
@@ -60,9 +102,7 @@
         }
     }
 
-    /* =========================
-       SWIPER SLIDES
-    ========================= */
+    /* ===== SWIPER SLIDES ===== */
 
     .swiper-slide {
         position: relative;
@@ -77,9 +117,7 @@
         }
     }
 
-    /* =========================
-       NAVIGATION (SVG BUTTONS)
-    ========================= */
+    /* ===== NAVIGATION (SVG BUTTONS) ===== */
 
     .swiper {
         .swiper-pagination {
@@ -137,9 +175,7 @@
         }
     }
 
-    /* =========================
-       PAGINATION
-    ========================= */
+    /* ===== PAGINATION ===== */
 
     .swiper-pagination-progressbar {
         background-color: rgba(116, 7, 7, 0.05);
@@ -149,9 +185,7 @@
         }
     }
 
-    /* =========================
-       PRODUCT INFO
-    ========================= */
+    /* ===== PRODUCT INFO ===== */
 
     .product-info {
         display: flex;
@@ -197,10 +231,10 @@
             gap: 10px;
             width: fit-content;
 
-            background: #f9f9f9;
+            /*background: #f9f9f9;*/
             padding: clamp(10px,1.389vw,20px);
             border-radius: 16px;
-            box-shadow:0 0 10px rgb(0 0 0 / 45%);
+            box-shadow:0 0 10px rgb(0 0 0 / 15%);
             max-height: 400px;
             overflow-y: auto;
 

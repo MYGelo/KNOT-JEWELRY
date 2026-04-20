@@ -13,11 +13,15 @@ if (have_posts()) :
             <div class="container">
                 <section class="product scroll-animate">
 
-                        <?php get_template_part('template-parts/product/gallery', null, $product); ?>
-                        <?php get_template_part('template-parts/product/info', null, $product); ?>
+                    <?php get_template_part('template-parts/product/gallery', null, $product); ?>
+                    <?php get_template_part('template-parts/product/info', null, $product); ?>
 
                 </section>
+
+                <?php get_template_part('template-parts/product/comment', null, $product); ?>
             </div>
+
+            <?php include(get_template_directory() . '/template-parts/components/loader/loader.php'); ?>
         </main>
 
     <?php

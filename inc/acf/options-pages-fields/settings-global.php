@@ -256,6 +256,71 @@ acf_add_local_field_group(array(
                 'instructions' => 'Enable or disable the rotating loader ring',
             ),
 
+        array(
+            'key'   => 'tab_comments',
+            'label' => 'Single Post Comments Settings',
+            'name'  => '',
+            'type'  => 'tab',
+            'placement' => 'top',
+        ),
+        array(
+            'key'     => 'field_comments_title',
+            'label'   => 'Comments Main Title',
+            'name'    => 'comments_main_title',
+            'type'    => 'text',
+            'default_value' => 'Щоденник майстра'
+        ),
+        array(
+            'key'     => 'field_comments_subtitle',
+            'label'   => 'Comments Main Subtitle',
+            'name'    => 'comments_subtitle_title',
+            'type'    => 'text',
+            'default_value' => 'Думки, враження та маленькі історії про прикраси'
+        ),
+        array(
+            'key'     => 'field_comments_form_title',
+            'label'   => 'Form Title',
+            'name'    => 'comments_form_title',
+            'type'    => 'text',
+            'default_value' => 'Залишити запис у щоденнику'
+        ),
+        array(
+            'key'     => 'field_comments_label_name',
+            'label'   => 'Form Label Name',
+            'name'    => 'comments_label_name',
+            'type'    => 'text',
+            'default_value' => 'Ім’я',
+        ),
+        array(
+            'key'     => 'field_comments_label_name_placeholder',
+            'label'   => 'Form Label Name Placeholder',
+            'name'    => 'comments_label_name_placeholder',
+            'type'    => 'text',
+            'default_value' => 'Анна Клевлина',
+        ),
+
+        array(
+            'key'     => 'field_comments_label_text',
+            'label'   => 'Form Label Text',
+            'name'    => 'comments_label_text',
+            'type'    => 'text',
+            'default_value' => 'Коментар',
+        ),
+        array(
+            'key'     => 'field_comments_label_text_placeholder',
+            'label'   => 'Form Label Text Placeholder',
+            'name'    => 'comments_label_text_placeholder',
+            'type'    => 'text',
+            'default_value' => 'Ваші враження, думки або просто “вау” — мені справді важливо це знати',
+        ),
+        array(
+            'key'     => 'field_comments_button_text',
+            'label'   => 'Form Button Text',
+            'name'    => 'comments_button_text',
+            'type'    => 'text',
+            'default_value' => 'Надіслати коментар',
+        ),
+
     ),
     'location' => array(
         array(
