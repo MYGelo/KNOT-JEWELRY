@@ -11,10 +11,10 @@ document.addEventListener('DOMContentLoaded', function () {
             slidesPerView: 'auto',
             spaceBetween: 24,
             autoplay: {
-                delay: 2000,
+                delay: 4000,
             },
             freeMode: false,
-            speed: 3000,
+            speed: 2000,
         })
     }
 
