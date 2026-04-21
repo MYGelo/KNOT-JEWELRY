@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 delay: 4000,
             },
             freeMode: false,
-            speed: 2000,
+            speed: 500,
         })
     }
 

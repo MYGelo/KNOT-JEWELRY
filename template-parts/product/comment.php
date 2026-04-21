@@ -33,7 +33,7 @@ $button_text = get_field('comments_button_text','option') ?: 'Надіслати
         ?>
     </div>
 
-    <div class="comment-form ">
+    <div class="comment-form scroll-animate">
         <h3><?=$form_title?></h3>
 
         <input type="text" id="comment-hp" name="website" style="display:none">
