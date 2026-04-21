@@ -23,7 +23,6 @@
         onload="this.rel=`stylesheet`"
 >
 
-
 <link
 	rel="preload"
 	href="<?= get_field('header_logo', 'option')['url'] ?? '' ?>"
@@ -54,6 +53,7 @@ if (!empty($imagesToPreload)):
 			rel="preload"
 			href="<?= $item ?>"
 			as="image"
+            fetchpriority="high"
 		>
 	<?php endforeach;
 endif; ?>
@@ -65,23 +65,10 @@ endif; ?>
 	href="<?= get_template_directory_uri() ?>/assets/js/main.js?ver=<?= $ver ?>"
 	as="script"
 >
-<!-- Remove if no jQuery -->
-<link
-	rel="preload"
-	href="/wp-includes/js/jquery/jquery.min.js?ver=3.7.1"
-	as="script"
->
-<link
-	rel="preload"
-	href="/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1"
-	as="script"
->
-<!-- end jQuery -->
-
 <!-- Fonts -->
 <link
 	rel="preload"
-	href="<?= get_template_directory_uri() ?>/assets/font/PPNeueMontreal-Book.woff2"
+	href="<?= get_template_directory_uri() ?>/assets/font/TenorSans-Regular.woff2"
 	as="font"
 	type="font/woff2"
 	crossorigin
