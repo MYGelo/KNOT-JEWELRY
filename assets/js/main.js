@@ -1,26 +1,8 @@
 (function() {
 	document.addEventListener('DOMContentLoaded', function(event) {
-		// document.addEventListener('wpcf7mailsent', function(event) {
-		// 	var pageUrl = '/?page_id=318';
-		// 	window.location.href = pageUrl;
-		// }, false);
 
 		document.addEventListener('click', function(event) {
 			const target = event.target
-
-			if(target.closest('[data-action="videoControl"]')) {
-				const button = target.closest('[data-action="videoControl"]')
-				const videoBox = button.closest('[data-video-box]')
-				const video = videoBox ? videoBox.querySelector('video') : null
-				if(!video) return
-
-				if(video.paused) {
-					video.play()
-				} else {
-					video.pause()
-				}
-				button.parentElement.classList.toggle('playing')
-			}
 
 			if(target.closest('[data-action="toggleMobileMenu"]')) {
 				event.preventDefault()
