@@ -5,10 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     if(!btn || !list) return
-    const loader = document.getElementById("ajax-loader")
 
     let loading = false
-    loader.classList.remove("active")
 
     btn.addEventListener("click", () => {
         if(loading) return
@@ -20,10 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const countEl = document.querySelector("#comments-count")
 
         if(!text) return
-
         loading = true
-        loader.classList.add("active")
-
         const formData = new FormData()
 
         formData.append("action","add_comment")
@@ -41,7 +36,6 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(res => res.text())
             .then(html => {
 
-                loader.classList.remove("active")
                 loading = false
 
                 list.insertAdjacentHTML("afterbegin", html)
@@ -61,10 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             })
             .catch(() => {
-
-                loader.classList.remove("active")
                 loading = false
-
             })
 
     })
