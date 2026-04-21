@@ -11,14 +11,20 @@
 	<div class="popup_content">
 		<div class="popup_container">
 			<div class="head">
-				<h3>Формуємо замовлення</h3>
+				<h3>Формуємо замовлення :</h3>
+
 				<span data-action="closePopup">&times;</span>
 			</div>
 			<div class="body">
+
                 <?php if ($cf7_id): ?>
                     <?= do_shortcode('[contact-form-7 id="' . $cf7_id . '"]'); ?>
                 <?php endif; ?>
+
             </div>
+<!--			<div class="end">-->
+<!--				Popup Footer-->
+<!--			</div>-->
 		</div>
 	</div>
 </div>
