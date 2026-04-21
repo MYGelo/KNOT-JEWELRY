@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Live поиск с задержкой
     searchInput.addEventListener('input', () => {
         clearTimeout(searchInput.delay);
-        searchInput.delay = setTimeout(() => loadPosts(true), 400); // reset = true
+        searchInput.delay = setTimeout(() => loadPosts(true), 1000); // reset = true
     });
 
     // Фильтры
