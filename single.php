@@ -20,8 +20,6 @@ if (have_posts()) :
 
                 <?php get_template_part('template-parts/product/comment', null, $product); ?>
             </div>
-
-            <?php include(get_template_directory() . '/template-parts/components/loader/loader.php'); ?>
         </main>
 
     <?php
