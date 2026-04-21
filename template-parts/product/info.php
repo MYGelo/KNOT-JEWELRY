@@ -21,7 +21,7 @@
     <?php endif; ?>
 
     <!-- Цена -->
-    <div class="product-price product-price--js">
+    <div class="product-price scroll-animate product-price--js">
         <?php if (!empty($price)): ?>
             <h2 class="current"><?= esc_html($price); ?> ₴</h2>
         <?php endif; ?>
