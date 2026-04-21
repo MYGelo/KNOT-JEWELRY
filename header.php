@@ -2,6 +2,7 @@
 $button_text = get_field( 'button_text', 'option' );
 $button_link = get_field( 'button_link', 'option' );
 $footer_social = get_field('footer_social_repeater', 'option');
+$logo = get_field( 'header_logo', 'option' );
 ?>
 
     <!doctype html>
@@ -60,11 +61,20 @@ $footer_social = get_field('footer_social_repeater', 'option');
                             href="/"
                             class="site-logo"
                     >
-                        <img
-                                src="<?= get_field( 'header_logo', 'option' )['url'] ?? '' ?>"
-                                alt="<?= get_field( 'header_logo', 'option' )['alt'] ?? '' ?>"
-                                fetchpriority="high"
-                        >
+                         <?php if (!empty($logo['url'])): ?>
+                             <picture>
+                                 <!-- Mobile --> <source srcset="<?= $logo['sizes']['medium_large']; ?>" media="(max-width: 551px)">
+                                 <!-- Desktop --><source srcset="<?= $logo['url']; ?>" media="(min-width: 552px)">
+                                 <img
+                                     class=""
+                                     src="<?= esc_url($logo['sizes']['large'] ?: $logo['sizes']['medium_large']); ?>"
+                                     alt="<?= esc_attr($logo['alt'] ?: $logo['title']); ?>"
+                                     width="<?= esc_attr($logo['width'] ?? ''); ?>"
+                                     height="<?= esc_attr($logo['height'] ?? ''); ?>"
+                                     fetchpriority="high"
+                                 >
+                             </picture>
+                         <?php endif; ?>
                     </a>
                 </div>
 
