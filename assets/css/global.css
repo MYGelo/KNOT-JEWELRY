@@ -342,18 +342,6 @@ section {
 
 	background-color: var(--title-color);
 
-	&:before {
-		content: '';
-		position: absolute;
-		inset: 0;
-		background-image: url('/wp-content/themes/nieruchomosci/assets/images/blue.png');
-		background-repeat: no-repeat;
-		background-size: cover;
-		background-position: center;
-		opacity: 1;
-		transition: opacity 0.3s ease;
-		z-index: -1;
-	}
 
 	&:hover::before {
 		opacity: 0;

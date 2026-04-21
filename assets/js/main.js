@@ -1,9 +1,5 @@
 (function() {
 	document.addEventListener('DOMContentLoaded', function(event) {
-		// document.addEventListener('wpcf7mailsent', function(event) {
-		// 	var pageUrl = '/?page_id=318';
-		// 	window.location.href = pageUrl;
-		// }, false);
 
 		document.addEventListener('click', function(event) {
 			const target = event.target
