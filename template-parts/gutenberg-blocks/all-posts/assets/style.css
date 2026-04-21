@@ -300,6 +300,16 @@
         animation: gradientShift 6s ease infinite, glowSmall 6s ease-in-out infinite, spin 10s linear infinite;
     }
 
+    /*.filter-dropdown__item input[type="checkbox"]:checked + .filter-arrow::before,*/
+    /*.filter-dropdown__item input[type="checkbox"]:checked::before {*/
+    /*    content: "";*/
+    /*    position: absolute;*/
+    /*    inset: -40%;*/
+    /*    background: linear-gradient(120deg, transparent 40%, rgba(255, 255, 255, 0.5), transparent 60%);*/
+    /*    transform: rotate(0deg);*/
+    /*    animation: shine 2.2s ease-in-out infinite;*/
+    /*}*/
+
     .filter-dropdown__item input[type="checkbox"] + .filter-arrow::after {
         content: "";
         position: absolute;
@@ -329,6 +339,29 @@
         flex-wrap: wrap;
         gap: 8px;
         justify-content: space-between;
+
+        position: sticky;
+        bottom: 0;
+
+
+        &:before {
+            content: '';
+            top: -20px;
+            left: 0;
+            width: 100%;
+            height: calc(100% + 40px);
+            position: absolute;
+            z-index: -1;
+            background-color: #f2f2f2eb;
+
+            -webkit-mask-image: linear-gradient(to top, transparent 0%, black 20%, black 100%, transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 100%, transparent 100%);
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-size: 100% 100%;
+            mask-size: 100% 100%;
+
+        }
     }
 
     .filter-dropdown__close {
