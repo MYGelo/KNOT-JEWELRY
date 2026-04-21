@@ -13,7 +13,7 @@
 
         if ($query->have_posts()) :
             while ($query->have_posts()) : $query->the_post(); ?>
-                <article class="post-item ">
+                <article class="post-item">
                     <?php if (has_post_thumbnail()) : ?>
                         <div class="post-thumb">
                             <?php the_post_thumbnail('medium_large'); ?>
