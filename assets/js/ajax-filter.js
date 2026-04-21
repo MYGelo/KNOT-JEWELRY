@@ -1,66 +1,45 @@
+
+
 document.addEventListener('DOMContentLoaded', function () {
-    const body = document.body;
+    const body = document.querySelector('body');
     const searchInput = document.getElementById('ajax-search');
     const postsWrap = document.getElementById('posts-wrap');
     const loader = document.getElementById('ajax-loader');
-    const loadTrigger = document.createElement('div');
-
+    const loadTrigger = document.createElement('div'); // невидимый триггер для наблюдателя
     postsWrap.after(loadTrigger);
-
     const searchBtn = document.getElementById('ajax-search-btn');
     const resetBtn = document.getElementById('ajax-reset-btn');
     const loadMoreBtn = document.getElementById('ajax-load-more-btn');
     const closeBtn = document.querySelector('.filter-dropdown__close');
     const filterDropdownBg = document.querySelector('.filter-dropdown__bg');
+
     const filterBtn = document.querySelector('.all-posts__filter');
     const wrapper = document.querySelector('.all-posts__posts-wrapper');
 
     let page = 1;
     let loading = false;
     let noMorePosts = false;
-    let controller = null;
-
-    // ⚡ CACHE FILTERS (ускорение DOM)
-    const materialEls = document.querySelectorAll('.filter-material');
-    const stoneEls = document.querySelectorAll('.filter-stone');
-    const typeEls = document.querySelectorAll('.filter-product_type');
 
     const getFilters = () => {
-        const materials = [];
-        const stones = [];
-        const product_type = [];
-
-        materialEls.forEach(el => el.checked && materials.push(el.value));
-        stoneEls.forEach(el => el.checked && stones.push(el.value));
-        typeEls.forEach(el => el.checked && product_type.push(el.value));
+        const materials = [...document.querySelectorAll('.filter-material:checked')].map(el => el.value);
+        const stones = [...document.querySelectorAll('.filter-stone:checked')].map(el => el.value);
+        const product_type = [...document.querySelectorAll('.filter-product_type:checked')].map(el => el.value);
 
         return { materials, stones, product_type };
     };
 
-    function debounce(fn, delay) {
-        let t;
-        return (...args) => {
-            clearTimeout(t);
-            t = setTimeout(() => fn(...args), delay);
-        };
-    }
-
     const loadPosts = (reset = false) => {
         if (loading || (!reset && noMorePosts)) return;
 
-        if (controller) controller.abort();
-        controller = new AbortController();
 
         loading = true;
         loader.classList.add('active');
-
-        const nextPage = reset ? 1 : page + 1;
 
         if (reset) {
             page = 1;
             noMorePosts = false;
         } else {
-            page = nextPage;
+            page++;
         }
 
         const filters = getFilters();
@@ -73,27 +52,32 @@ document.addEventListener('DOMContentLoaded', function () {
         formData.append('product_type', JSON.stringify(filters.product_type));
         formData.append('page', page);
 
-        fetch(ajax_object.ajax_url, {
-            method: 'POST',
-            body: formData,
-            signal: controller.signal
-        })
+        fetch(ajax_object.ajax_url, { method: 'POST', body: formData })
             .then(res => res.json())
             .then(data => {
                 loader.classList.remove('active');
                 loading = false;
 
+                // ❗ Если постов нет
                 if (!data.posts || !data.posts.length) {
-                    if (reset) postsWrap.innerHTML = '<p>Нічого не знайдено</p>';
+
+                    if (reset) {
+                        postsWrap.innerHTML = '<p>Нічого не знайдено</p>';
+                    }
+
                     noMorePosts = true;
                     if (loadMoreBtn) loadMoreBtn.style.display = 'none';
                     return;
                 }
 
-                if (reset) postsWrap.innerHTML = '';
+                // ❗ Удаляем старые ТОЛЬКО когда новые уже получены
+                if (reset) {
+                    postsWrap.innerHTML = '';
+                }
 
                 postsWrap.insertAdjacentHTML('beforeend', data.posts.join(''));
 
+                // проверка конца страниц
                 if (data.posts.length < data.posts_per_page) {
                     noMorePosts = true;
                     if (loadMoreBtn) loadMoreBtn.style.display = 'none';
@@ -101,17 +85,31 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (loadMoreBtn) loadMoreBtn.style.display = 'block';
                 }
             })
-            .catch(() => {
-                loader.classList.remove('active');
-                loading = false;
-            });
+        .catch(() => {
+            loader.classList.remove('active');
+            loading = false;
+        });
     };
 
-    // ⚡ LIVE SEARCH (быстрее + debounce)
-    searchInput.addEventListener('input',
-        debounce(() => loadPosts(true), 400)
-    );
+    // Live поиск с задержкой
+    searchInput.addEventListener('input', () => {
+        clearTimeout(searchInput.delay);
+        searchInput.delay = setTimeout(() => loadPosts(true), 1000); // reset = true
+    });
 
+    // Фильтры
+    // document.addEventListener('change', e => {
+    //     if (
+    //         e.target.classList.contains('filter-material') ||
+    //         e.target.classList.contains('filter-stone') ||
+    //         e.target.classList.contains('filter-product_type')
+    //     ) {
+    //         loadPosts(true);
+    //     }
+    // });
+
+
+    // Кнопка "Пошук"
     if (searchBtn) {
         searchBtn.addEventListener('click', () => {
             loadPosts(true);
@@ -120,26 +118,28 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Кнопка "Обнулити"
     if (resetBtn) {
         resetBtn.addEventListener('click', () => {
             searchInput.value = '';
-            document.querySelectorAll('.filter-material, .filter-stone, .filter-product_type')
-                .forEach(el => el.checked = false);
-
+            document.querySelectorAll('.filter-material, .filter-stone, .filter-product_type').forEach(el => el.checked = false);
             loadPosts(true);
             toggleResetBtn();
         });
     }
 
+    // Кнопка "Load More"
     if (loadMoreBtn) {
-        loadMoreBtn.addEventListener('click', () => loadPosts(false));
+        loadMoreBtn.addEventListener('click', () => {
+            loadPosts(false); // следующая страница
+        });
     }
 
     if (filterBtn) {
         filterBtn.addEventListener('click', () => {
             wrapper.classList.toggle('filter-open');
             body.classList.toggle('overflow');
-        });
+        })
     }
 
     if (closeBtn) {
@@ -156,24 +156,29 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // RESET BTN
     function toggleResetBtn() {
-        const anyChecked =
-            [...document.querySelectorAll('.filter-material:checked, .filter-stone:checked, .filter-product_type:checked')].length > 0;
-
+        const anyChecked = Array.from(document.querySelectorAll('.filter-material:checked, .filter-stone:checked, .filter-product_type:checked')).length > 0;
         resetBtn.style.opacity = anyChecked ? '1' : '0';
         resetBtn.style.pointerEvents = anyChecked ? 'auto' : 'none';
     }
 
-    document.querySelectorAll('.filter-material, .filter-stone, .filter-product_type')
-        .forEach(cb => cb.addEventListener('change', toggleResetBtn));
+    document.querySelectorAll('.filter-material, .filter-stone, .filter-product_type').forEach(cb => {
+        cb.addEventListener('change', toggleResetBtn);
+    });
 
+// и сразу вызываем, чтобы корректно инициализировать кнопку
     toggleResetBtn();
 
-    // ⚡ IntersectionObserver (без спама)
+
+    // IntersectionObserver для инфинити скролла
     const observer = new IntersectionObserver(entries => {
-        if (!entries[0].isIntersecting) return;
-        if (!loading && !noMorePosts) loadPosts(false);
-    }, { threshold: 0.5 });
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !loading && !noMorePosts) {
+                loadPosts(false);
+            }
+        });
+    });
 
     observer.observe(loadTrigger);
 

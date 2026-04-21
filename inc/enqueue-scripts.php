@@ -67,17 +67,11 @@ function theme_scripts()
     wp_enqueue_script( 'scroll-animate', get_template_directory_uri() . '/assets/js/scroll-animate.js', [], filemtime( get_template_directory() . '/assets/js/scroll-animate.js' ), true );
     wp_enqueue_script( 'product', get_template_directory_uri() . '/assets/js/product.js', [], filemtime( get_template_directory() . '/assets/js/product.js' ), true );
 
-    wp_enqueue_script('ajax-filter', get_template_directory_uri() . '/assets/js/ajax-filter.js', [], null, true);
-    wp_localize_script('ajax-filter', 'ajax_object', ['ajax_url' => admin_url('admin-ajax.php'),]);
-
     if ( is_single() ) {
         wp_enqueue_script( 'telegram-bot', get_template_directory_uri() . '/assets/js/telegram-bot.js', [], filemtime( get_template_directory() . '/assets/js/telegram-bot.js' ), true );
         wp_enqueue_script('comments-js', get_template_directory_uri().'/assets/js/comments.js', [], null, true);
         wp_localize_script('comments-js','comment_ajax',['url'=>admin_url('admin-ajax.php'), 'post_id'=>get_the_ID()]);
     }
-
-
-    add_action('wp_enqueue_scripts', 'theme_ajax_scripts');
 }
 
 add_action('wp_enqueue_scripts', 'theme_scripts');
