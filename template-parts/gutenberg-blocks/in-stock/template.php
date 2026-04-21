@@ -2,58 +2,86 @@
 $title = get_field('in-stock_main_title');
 $tap_text = get_field('in-stock_tap_text');
 
-$posts = get_posts([
-    'post_type' => 'post',
-    'category_name' => 'in-stock',
-    'posts_per_page' => -1,
-    'no_found_rows' => true,
-    'update_post_meta_cache' => false,
-    'update_post_term_cache' => false,
-    'suppress_filters' => true
-]);
+/* КЕШ ЗАПРОСА */
+$posts = get_transient('in_stock_posts');
+
+if ($posts === false) {
+
+    $posts = get_posts([
+        'post_type' => 'post',
+        'category_name' => 'in-stock',
+        'posts_per_page' => -1,
+        'no_found_rows' => true,
+        'update_post_meta_cache' => true,
+        'update_post_term_cache' => false,
+        'ignore_sticky_posts' => true,
+        'suppress_filters' => true
+    ]);
+
+    set_transient('in_stock_posts', $posts, HOUR_IN_SECONDS);
+}
 
 if ($posts) : ?>
 
     <section class="in-stock">
         <div class="container">
             <div class="stock__wrapper">
+
                 <?php if($title): ?>
-                    <h2><?= wp_kses_post($title); ?></h2>
+                    <h2><?= esc_html($title); ?></h2>
                 <?php endif; ?>
 
                 <div class="swiper in-stock-slider">
                     <div class="swiper-wrapper">
+
                         <?php foreach ($posts as $post):
-                            setup_postdata($post);
+
                             $post_id = $post->ID;
-                            $price = get_post_meta($post_id,'price',true);
-                            $in_stock = get_post_meta($post_id,'in-stock',true);
+
+                            /* META ОДНИМ ЗАПРОСОМ */
+                            $meta = get_post_meta($post_id);
+
+                            $price = $meta['price'][0] ?? '';
+                            $in_stock = $meta['in-stock'][0] ?? '';
+
                             $desc = get_the_excerpt($post_id);
                             $link = get_permalink($post_id);
-                            /* image */
+
+                            /* IMAGE */
                             $thumb_id = get_post_thumbnail_id($post_id);
+
+                            $img_large = '';
+                            $img_mobile = '';
+                            $width = '';
+                            $height = '';
+                            $alt = '';
+                            $title_img = '';
 
                             if($thumb_id){
 
                                 $img_large = wp_get_attachment_image_url($thumb_id,'large');
                                 $img_mobile = wp_get_attachment_image_url($thumb_id,'medium_large');
 
-                                $meta = wp_get_attachment_metadata($thumb_id);
+                                $meta_img = wp_get_attachment_metadata($thumb_id);
 
-                                $width = $meta['width'] ?? '';
-                                $height = $meta['height'] ?? '';
+                                $width = $meta_img['width'] ?? '';
+                                $height = $meta_img['height'] ?? '';
 
                                 $alt = get_post_meta($thumb_id,'_wp_attachment_image_alt',true);
                                 $title_img = get_the_title($thumb_id);
 
                             }
+
                             ?>
 
                             <div class="swiper-slide">
                                 <div class="stock-card" data-link="<?= esc_url($link) ?>">
                                     <div class="stock-card-inner">
+
                                         <div class="stock-card-front">
+
                                             <?php if(!empty($img_large)): ?>
+
                                                 <picture>
                                                     <source srcset="<?= esc_url($img_mobile); ?>" media="(max-width:551px)">
                                                     <source srcset="<?= esc_url($img_large); ?>" media="(min-width:552px)">
@@ -65,12 +93,15 @@ if ($posts) : ?>
                                                             height="<?= esc_attr($height); ?>"
                                                             loading="lazy"
                                                             decoding="async"
+                                                            fetchpriority="low"
                                                     >
+
                                                 </picture>
+
                                             <?php endif; ?>
 
                                             <?php if($tap_text): ?>
-                                                <p class="stock-card-hint-text"><?= wp_kses_post($tap_text); ?></p>
+                                                <p class="stock-card-hint-text"><?= esc_html($tap_text); ?></p>
                                             <?php endif; ?>
 
                                             <div class="stock-card-hint">
@@ -80,9 +111,11 @@ if ($posts) : ?>
                                                           d="M4 4v6h6m10 10v-6h-6m6-8A8 8 0 0 0 6 8M4 18a8 8 0 0 0 14-2"/>
                                                 </svg>
                                             </div>
+
                                         </div>
 
                                         <div class="stock-card-back">
+
                                             <div class="stock-close stock-close--js">
                                                 <span></span>
                                                 <span></span>
@@ -95,7 +128,7 @@ if ($posts) : ?>
                                             <h3><?= esc_html(get_the_title($post_id)) ?></h3>
 
                                             <?php if($in_stock): ?>
-                                                <p class="product-stock"><?= wp_kses_post($in_stock) ?></p>
+                                                <p class="product-stock"><?= esc_html($in_stock) ?></p>
                                             <?php endif; ?>
 
                                             <p class="stock-text"><?= esc_html($desc) ?></p>
@@ -103,17 +136,18 @@ if ($posts) : ?>
                                             <?php if($price): ?>
                                                 <div class="stock-price"><?= esc_html($price) ?> грн</div>
                                             <?php endif; ?>
+
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
                         <?php endforeach; ?>
+
                     </div>
                 </div>
             </div>
         </div>
     </section>
-
-    <?php wp_reset_postdata(); ?>
 
 <?php endif; ?>
