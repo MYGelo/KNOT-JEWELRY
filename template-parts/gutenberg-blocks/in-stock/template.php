@@ -1,4 +1,9 @@
 <?php
+$block_anchor = $block['anchor'] ?? '';
+$block_classes = 'in-stock';
+
+if (!empty($block['className'])) $block_classes .= ' ' . $block['className'];
+
 $title = get_field('in-stock_main_title');
 $tap_text = get_field('in-stock_tap_text');
 
@@ -23,7 +28,7 @@ if ($posts === false) {
 
 if ($posts) : ?>
 
-    <section class="in-stock">
+    <section class="<?= esc_attr($block_classes) ?>" id="<?= esc_attr($block_anchor) ?>">
         <div class="container">
             <div class="stock__wrapper">
 
