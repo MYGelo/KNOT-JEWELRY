@@ -57,8 +57,6 @@ acf_add_local_field_group(array(
             'name'          => 'footer_social_repeater',
             'type'          => 'repeater',
             'button_label'  => 'Add Social Link',
-            'min'           => 1,
-            'max'           => 0,
             'layout'        => 'row',
             'instructions'  => 'Add and configure social media links',
             'sub_fields'    => array(
