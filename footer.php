@@ -1,6 +1,6 @@
 <?php
 $footer_logo = get_field('footer_logo', 'option') ?? null;
-$footer_social = get_field('footer_social_repeater', 'option');
+$footer_social = get_field('social_repeater', 'option');
 
 // footer_bottom_group
 $footer_bottom = get_field('footer_bottom_group', 'option');
