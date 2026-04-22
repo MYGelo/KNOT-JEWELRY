@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const filterBtn = document.querySelector('.all-posts__filter');
     const wrapper = document.querySelector('.all-posts__posts-wrapper');
+    const allPostWrap = document.querySelector('.all-posts__posts-wrap');
     const closeBtn = document.querySelector('.filter-dropdown__close');
     const bg = document.querySelector('.filter-dropdown__bg');
 
@@ -31,6 +32,9 @@ document.addEventListener('DOMContentLoaded', () => {
             product_type: [...typeEls].filter(i => i.checked).map(i => i.value),
         };
     }
+    function wait(ms) {
+        return new Promise(res => setTimeout(res, ms));
+    }
 
     function openFilter() {
         wrapper.classList.add('filter-open');
@@ -42,12 +46,16 @@ document.addEventListener('DOMContentLoaded', () => {
         body.classList.remove('overflow');
     }
 
-    function loadPosts(targetPage = 1) {
+    async function loadPosts(targetPage = 1) {
 
         if (loading) return;
         loading = true;
-
         loader?.classList.add('active');
+        allPostWrap.classList.add('is-loading');
+
+        if (!isInitialLoad) {
+            scrollToSection();
+        }
 
         const filters = getFilters();
 
@@ -59,31 +67,36 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('product_type', JSON.stringify(filters.product_type));
         formData.append('page', targetPage);
 
-        fetch(ajax_object.ajax_url, {
-            method: 'POST',
-            body: formData
-        })
-            .then(res => res.json())
-            .then(data => {
+        try {
 
-                postsWrap.innerHTML = data.posts;
-                paginationWrap.innerHTML = data.pagination;
+            const fetchPromise = fetch(ajax_object.ajax_url, {
+                method: 'POST',
+                body: formData
+            }).then(res => res.json());
 
-                page = targetPage;
+            // ⏱ минимум 1000ms лоадер
+            const [data] = await Promise.all([
+                fetchPromise,
+                wait(1000)
+            ]);
 
-                attachPagination();
-                closeFilter();
+            postsWrap.innerHTML = data.posts;
+            paginationWrap.innerHTML = data.pagination;
 
-                if (!isInitialLoad) {
-                    scrollToSection();
-                }
-                isInitialLoad = false;
+            page = targetPage;
 
-            })
-            .finally(() => {
-                loading = false;
-                loader?.classList.remove('active');
-            });
+            attachPagination();
+            closeFilter();
+
+            isInitialLoad = false;
+
+        } catch (err) {
+            console.error(err);
+        }
+
+        loading = false;
+        loader?.classList.remove('active');
+        allPostWrap.classList.remove('is-loading');
     }
 
     function attachPagination() {

@@ -7,6 +7,13 @@ $block_classes = 'all-posts';
 
 if (!empty($block['className'])) $block_classes .= ' ' . $block['className'];
 
+$initial_query = new WP_Query([
+    'post_type'      => 'post',
+    'posts_per_page' => 12,
+    'paged'          => 1,
+    'post_status'    => 'publish'
+]);
+
 ?>
 
 <section class="<?= esc_attr($block_classes) ?>" id="<?= esc_attr($block_anchor) ?>">
@@ -51,7 +58,26 @@ if (!empty($block['className'])) $block_classes .= ' ' . $block['className'];
 
             <div class="all-posts__posts-wrapper">
                 <!-- ПОСТЫ -->
-                <div id="posts-wrap" class="all-posts__posts-wrap"></div>
+                <div id="posts-wrap" class="all-posts__posts-wrap">
+                    <?php if ($initial_query->have_posts()): ?>
+                        <?php while ($initial_query->have_posts()): $initial_query->the_post(); ?>
+                            <div class="all-posts__post-item">
+                                <?php if (has_post_thumbnail()): ?>
+                                    <a href="<?= get_permalink(); ?>" class="all-posts__post-thumb">
+                                        <?php the_post_thumbnail('medium_large'); ?>
+                                    </a>
+                                <?php endif; ?>
+
+                                <div class="all-post__text-content">
+                                    <h2 class="all-posts__item-title"><?php the_title(); ?></h2>
+                                </div>
+                            </div>
+                        <?php endwhile; ?>
+                    <?php endif; ?>
+
+                </div>
+
+                <?php wp_reset_postdata(); ?>
 
                 <div id="ajax-pagination"></div>
 

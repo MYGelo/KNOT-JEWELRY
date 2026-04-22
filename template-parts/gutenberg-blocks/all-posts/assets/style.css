@@ -8,7 +8,6 @@
 
     .all-posts__posts-wrapper {
         display: grid;
-        /*grid-template-columns: 280px 5fr;*/
         grid-template-columns: 1fr;
         gap: 24px clamp(12px, 1.25vw,24px);
 
@@ -53,6 +52,13 @@
         grid-template-columns: repeat(2 , 1fr);
         gap: 24px clamp(12px, 1.25vw,24px);
         height: fit-content;
+
+        transition: filter .2s ease;
+
+        &.is-loading {
+            filter: blur(10px);
+            pointer-events: none;
+        }
 
         @media (min-width: 992px) {
             grid-template-columns: repeat(4 , 1fr);
