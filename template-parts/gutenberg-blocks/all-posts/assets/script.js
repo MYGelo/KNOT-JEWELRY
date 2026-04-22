@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let page = 1;
     let loading = false;
+    let isInitialLoad = true;
 
     const materialEls = document.querySelectorAll('.filter-material');
     const stoneEls = document.querySelectorAll('.filter-stone');
@@ -73,7 +74,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 attachPagination();
                 closeFilter();
 
-                scrollToSection();
+                if (!isInitialLoad) {
+                    scrollToSection();
+                }
+                isInitialLoad = false;
 
             })
             .finally(() => {
