@@ -25,6 +25,13 @@ if ( function_exists( 'acf_register_block_type' ) ) {
 			$script = __DIR__ . '/assets/script.js';
 			if ( file_exists( $script ) ) {
 				wp_enqueue_script( 'block-all-posts-script', "{$uri_base}/assets/script.js", array(), filemtime( $script ), true );
+                wp_localize_script(
+                    'block-all-posts-script',
+                    'ajax_object',
+                    [
+                        'ajax_url' => admin_url('admin-ajax.php')
+                    ]
+                );
 			}
 
 		},
