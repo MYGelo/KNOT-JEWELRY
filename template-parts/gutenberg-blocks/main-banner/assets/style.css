@@ -17,11 +17,10 @@
 
     &.min-height {
         min-height: clamp(427px,49.098vw,70dvh);
-        /*aspect-ratio: 16 / 9;*/
         max-height: 70dvh;
         @media (max-width: 767px) {
-            /*min-height: 693px;*/
-            min-height: 70dvh;
+            min-height: 500px;
+            /*min-height: 70dvh;*/
             aspect-ratio: unset;
         }
 
