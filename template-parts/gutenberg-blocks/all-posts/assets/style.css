@@ -418,4 +418,41 @@
     .load-more {
         margin: 25px auto 0;
     }
+
+    /*===== pagination =====*/
+    .blog__pagination {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        margin-top: 24px;
+
+        @media (max-width: 991px) {
+            margin-top: 32px;
+        }
+
+        .page-num {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            color: var(--text-color,#636363);
+            cursor: pointer;
+            opacity: 1;
+            transition: opacity 300ms;
+            &:hover {
+                opacity: 0.7;
+            }
+
+            &.active {
+                background-color: var(--button-secondary-default,#363636);
+                color: var(--background-color,#FDFDF5);
+                pointer-events: none;
+            }
+
+
+        }
+    }
 }

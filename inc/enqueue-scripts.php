@@ -60,10 +60,6 @@ function theme_scripts()
 	auto_enqueue_styles();
 	wp_enqueue_style('swiper-styles', get_stylesheet_directory_uri() . '/assets/css/swiper.css', array(), null);
 
-
-	// uncomment next line to remove jQuery if woocommerce isn't use
-	//wp_deregister_script('jquery');
-
 	//scripts
 	wp_enqueue_script('main-js', get_template_directory_uri() . '/assets/js/main.js', [], filemtime(get_template_directory() . '/assets/js/main.js'), true);
 	wp_enqueue_script('swiper-script', get_template_directory_uri() . '/assets/js/swiper.min.js', [], filemtime(get_template_directory() . '/assets/js/swiper.min.js'), true);

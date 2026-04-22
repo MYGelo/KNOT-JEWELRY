@@ -52,6 +52,9 @@ if (!empty($block['className'])) $block_classes .= ' ' . $block['className'];
             <div class="all-posts__posts-wrapper">
                 <!-- ПОСТЫ -->
                 <div id="posts-wrap" class="all-posts__posts-wrap"></div>
+
+                <div id="ajax-pagination"></div>
+
                 <!-- ФИЛЬТРЫ -->
                 <div class="filter-dropdown__bg"></div>
                 <div class="all-posts__filters">
@@ -104,9 +107,6 @@ if (!empty($block['className'])) $block_classes .= ' ' . $block['className'];
 
                 <?php include(get_template_directory() . '/template-parts/components/loader/loader.php'); ?>
             </div>
-
-            <!-- Лоадер море -->
-            <button class="load-more main-btn primary_button" id="ajax-load-more-btn">Load More</button>
         </div>
     </div>
 </section>
