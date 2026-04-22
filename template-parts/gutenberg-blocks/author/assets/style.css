@@ -1,9 +1,12 @@
 .author {
     .author__wrapper {
         display: grid;
-        grid-template-columns: clamp(256px,28.334vw,408px) auto;
+        grid-template-columns: clamp(256px,28.334vw,408px) minmax(auto, 762px);
         justify-content: space-between;
         gap: clamp(16px,3.75vw,54px);
+
+        width: fit-content;
+        margin: auto;
 
         padding: clamp(16px,1.667vw,24px) 16px;
         box-shadow: 0 0 12px 0 #0000004f;
@@ -76,6 +79,7 @@
         justify-content: space-between;
         flex-direction: row;
         flex-wrap: wrap;
+        margin-top: auto;
     }
     .author__socials {
         display: flex;
