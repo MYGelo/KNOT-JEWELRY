@@ -1,7 +1,7 @@
 <?php
 $button_text = get_field( 'button_text', 'option' );
 $button_link = get_field( 'button_link', 'option' );
-$footer_social = get_field('footer_social_repeater', 'option');
+$social = get_field('social_repeater1', 'option');
 $logo = get_field( 'header_logo', 'option' );
 ?>
 
@@ -116,9 +116,10 @@ $logo = get_field( 'header_logo', 'option' );
                 'container'      => false,
                 'menu_class'     => 'header_menu',
             ] ); ?>
-            <?php if ($footer_social): ?>
+
+            <?php if ($social): ?>
                 <li class="header__social">
-                    <?php foreach ($footer_social as $social): ?>
+                    <?php foreach ($social as $social): ?>
                         <a class="header__social-link media-bounce"
                            href="<?= esc_url($social['url']); ?>"
                            target="_blank"

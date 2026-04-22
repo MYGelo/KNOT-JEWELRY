@@ -52,9 +52,9 @@ acf_add_local_field_group(array(
         ),
 
         array(
-            'key'           => 'footer_social_repeater',
+            'key'           => 'social_repeater',
             'label'         => 'Social Links List',
-            'name'          => 'footer_social_repeater',
+            'name'          => 'social_repeater',
             'type'          => 'repeater',
             'button_label'  => 'Add Social Link',
             'layout'        => 'row',
@@ -62,14 +62,14 @@ acf_add_local_field_group(array(
             'sub_fields'    => array(
 
                 array(
-                    'key'   => 'footer_social_url',
+                    'key'   => 'social_url',
                     'label' => 'Social URL',
                     'name'  => 'url',
                     'type'  => 'url',
                 ),
 
                 array(
-                    'key'           => 'footer_social_icon',
+                    'key'           => 'social_icon',
                     'label'         => 'Social Icon',
                     'name'          => 'icon',
                     'type'          => 'image',
