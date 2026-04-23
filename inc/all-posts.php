@@ -11,7 +11,7 @@ function filter_posts() {
     $product_type = json_decode(stripslashes($_POST['product_type'] ?? '[]'), true);
 
     $page = intval($_POST['page'] ?? 1);
-    $posts_per_page = 12;
+    $posts_per_page = 24;
 
     $tax_query = ['relation' => 'AND'];
 
