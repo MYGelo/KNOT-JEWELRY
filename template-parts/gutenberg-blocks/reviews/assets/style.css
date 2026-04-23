@@ -6,7 +6,8 @@
     }
 
     .swiper-slide {
-        max-width: clamp(324px, 30.9723vw, 446px);
+        /*max-width: clamp(324px, 30.9723vw, 446px);*/
+        max-width: 300px;
         -webkit-tap-highlight-color: transparent;
         user-select: none;
     }
@@ -20,8 +21,8 @@
         border-radius: 25px;
         overflow: hidden;
         box-shadow: 0 0 12px #00000040;
-        height: clamp(432px, 41.4vw, 595px);
-        /*aspect-ratio: 3 / 4;*/
+        /*height: clamp(432px, 41.4vw, 595px);*/
+        aspect-ratio: 1.2 / 2;
     }
 
     .stock-card img {
