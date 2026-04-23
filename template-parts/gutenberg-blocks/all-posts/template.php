@@ -9,7 +9,7 @@ if (!empty($block['className'])) $block_classes .= ' ' . $block['className'];
 
 $initial_query = new WP_Query([
     'post_type'      => 'post',
-    'posts_per_page' => 12,
+    'posts_per_page' => 5, // in all-posts.php
     'paged'          => 1,
     'post_status'    => 'publish'
 ]);
