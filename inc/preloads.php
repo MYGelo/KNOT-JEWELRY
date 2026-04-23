@@ -1,11 +1,20 @@
 <!-- Styles -->
-<?php $ver = filemtime(get_template_directory() . '/assets/css/main.css'); ?>
+<?php $ver = filemtime(get_template_directory() . '/assets/css/global.css'); ?>
 <link
 	rel="preload"
-	href="<?= get_template_directory_uri() ?>/assets/css/main.css?ver=<?= $ver ?>"
+	href="<?= get_template_directory_uri() ?>/assets/css/global.css?ver=<?= $ver ?>"
 	as="style"
 	onload="this.rel=`stylesheet`"
 >
+
+<?php $ver = filemtime(get_template_directory() . '/assets/css/components/header.css'); ?>
+<link
+	rel="preload"
+	href="<?= get_template_directory_uri() ?>/assets/css/components/header.css?ver=<?= $ver ?>"
+	as="style"
+	onload="this.rel=`stylesheet`"
+>
+
 <?php $ver = filemtime(get_template_directory() . '/assets/css/swiper.css'); ?>
 <link
         rel="preload"
