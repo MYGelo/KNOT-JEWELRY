@@ -1,8 +1,9 @@
 <?php
 acf_add_local_field_group(array(
-    'key'      => 'group_reviews',
-    'title'    => 'All Posts',
-    'fields'   => array(
+    'key'   => 'group_reviews',
+    'title' => 'All Posts',
+    'fields' => array(
+
         // MAIN TITLE
         array(
             'key'   => 'field_reviews_main_title',
@@ -14,31 +15,60 @@ acf_add_local_field_group(array(
             ),
         ),
 
-        // DESCRIPTION
+        // TAP TEXT
         array(
             'key'   => 'field_reviews_tap_text',
             'label' => 'Tap Text',
             'name'  => 'reviews_tap_text',
             'type'  => 'text',
-            'default'=> '123',
+            'default_value' => '123',
             'wrapper' => array(
                 'width' => '100',
             ),
         ),
 
+        // REPEATER
         array(
-            'key' => 'field_reviews_gallery',
-            'label' => 'Gallery',
-            'name' => 'reviews_gallery',
-            'type' => 'gallery',
-            'return_format' => 'array',
-            'preview_size' => 'medium',
-            'insert' => 'append',
-            'library' => 'all',
+            'key' => 'field_reviews_items',
+            'label' => 'Items',
+            'name' => 'reviews_items',
+            'type' => 'repeater',
+            'layout' => 'row',
+            'button_label' => 'Add Item',
+            'min' => 1,
+
+            'sub_fields' => array(
+
+                // IMAGE
+                array(
+                    'key' => 'field_reviews_item_image',
+                    'label' => 'Image',
+                    'name' => 'image',
+                    'type' => 'image',
+                    'return_format' => 'array',
+                    'preview_size' => 'medium',
+                    'library' => 'all',
+                    'wrapper' => array(
+                        'width' => '70',
+                    ),
+                ),
+
+                // LINK
+                array(
+                    'key' => 'field_reviews_item_link',
+                    'label' => 'Item Link',
+                    'name' => 'link',
+                    'type' => 'url',
+                    'wrapper' => array(
+                        'width' => '30',
+                    ),
+                ),
+
+            ),
         ),
+
     ),
 
-    // BIND TO BLOCK
     'location' => array(
         array(
             array(
