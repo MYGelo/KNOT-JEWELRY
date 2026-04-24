@@ -1,54 +1,38 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const slider = document.querySelector('.reviews-slider');
+document.addEventListener('DOMContentLoaded', () => {
+
+    let swiperInstance = null
+    const slider = document.querySelector('.reviews-slider')
 
     if (slider && typeof Swiper !== 'undefined') {
-
-        const swiper = new Swiper(slider, {
+        swiperInstance = new Swiper(slider, {
             slidesPerView: 'auto',
-            spaceBetween: 16,
-
-            loop: true,
-            centeredSlides: true,
-
-            grabCursor: true,
+            spaceBetween: 24,
+            speed: 500,
             allowTouchMove: true,
-
-            freeMode: {
-                enabled: true,
-                momentum: true,
-                momentumRatio: 1.2,
-                momentumVelocityRatio: 1.2,
-            },
-
             autoplay: {
-                delay: 0,
-                disableOnInteraction: false,
-            },
-
-            speed: 4000,
-        });
-
-        /* ---------- торможение ---------- */
-
-        slider.addEventListener('pointerdown', () => {
-            swiper.autoplay.stop();
-        });
-
-        /* ---------- разгон ---------- */
-
-        slider.addEventListener('pointerup', () => {
-
-            swiper.params.speed = 900;     // мягкая остановка
-            swiper.slideToClosest();
-
-            setTimeout(() => {
-
-                swiper.params.speed = 4000; // разгон
-                swiper.autoplay.start();
-
-            }, 300);
-
-        });
-
+                delay: 2000,
+                disableOnInteraction: false
+            }
+        })
     }
-});
+
+    if (!swiperInstance) return
+
+    const pause = () => swiperInstance.autoplay.stop()
+    const play  = () => swiperInstance.autoplay.start()
+
+    // MOUSE
+    slider.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return
+        pause()
+    })
+
+    slider.addEventListener('mouseup', play)
+    slider.addEventListener('mouseleave', play)
+
+    // TOUCH
+    slider.addEventListener('touchstart', pause, { passive: true })
+    slider.addEventListener('touchend', play)
+    slider.addEventListener('touchcancel', play)
+
+})
