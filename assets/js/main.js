@@ -50,6 +50,28 @@
 				target.closest('.popup_inner').classList.remove('open')
 				document.body.classList.remove('overflow')
 			}
+
+			if (target.closest('.header_menu a[href*="#"]')) {
+				event.preventDefault()
+
+				const header = document.querySelector('.header')
+				const navBox = header ? header.querySelector('.nav_box--mobile') : null
+				const button = header ? header.querySelector('[data-action="toggleMobileMenu"].open') : null
+
+				// закрываем меню
+				if (navBox) navBox.classList.remove('open')
+				if (button) button.classList.remove('open')
+				document.body.classList.remove('overflow')
+
+				// плавный скролл к якорю
+				const href = target.closest('a').getAttribute('href')
+				const id = href.split('#')[1]
+				const el = document.getElementById(id)
+
+				if (el) {
+					el.scrollIntoView({ behavior: 'smooth' })
+				}
+			}
 		})
 
 		document.addEventListener('keydown', function(event) {
@@ -69,6 +91,7 @@
 
 
 		// global scripts
+
 		// arrows for header menu
 		document.querySelectorAll('.header .menu-item-has-children').forEach(item => {
 			const arrow = document.createElement('span')
