@@ -52,24 +52,30 @@
 			}
 
 			if (target.closest('.header_menu a[href*="#"]')) {
-				event.preventDefault()
+				const url = new URL(link.href);
+				const isSamePage =
+					url.pathname === window.location.pathname;
 
-				const header = document.querySelector('.header')
-				const navBox = header ? header.querySelector('.nav_box--mobile') : null
-				const button = header ? header.querySelector('[data-action="toggleMobileMenu"].open') : null
+				// ВСЕГДА закрываем меню
+				const header = document.querySelector('.header');
+				const navBox = header?.querySelector('.nav_box--mobile');
+				const button = header?.querySelector('[data-action="toggleMobileMenu"].open');
 
-				// закрываем меню
-				if (navBox) navBox.classList.remove('open')
-				if (button) button.classList.remove('open')
-				document.body.classList.remove('overflow')
+				if (navBox) navBox.classList.remove('open');
+				if (button) button.classList.remove('open');
+				document.body.classList.remove('overflow');
 
-				// плавный скролл к якорю
-				const href = target.closest('a').getAttribute('href')
-				const id = href.split('#')[1]
-				const el = document.getElementById(id)
+				// если это не текущая страница — просто даём перейти
+				if (!isSamePage) return;
+
+				// если это текущая страница — блокируем дефолт и скроллим
+				event.preventDefault();
+
+				const id = url.hash.replace('#', '');
+				const el = document.getElementById(id);
 
 				if (el) {
-					el.scrollIntoView({ behavior: 'smooth' })
+					el.scrollIntoView({ behavior: 'smooth' });
 				}
 			}
 		})
