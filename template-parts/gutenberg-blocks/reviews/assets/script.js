@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     slider.addEventListener('mouseleave', play)
 
     // TOUCH
-    slider.addEventListener('touchstart', pause, { passive: true })
+    // slider.addEventListener('touchstart', pause, { passive: true })
     slider.addEventListener('touchend', play)
     slider.addEventListener('touchcancel', play)
 
