@@ -53,10 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
         loader?.classList.add('active');
         allPostWrap.classList.add('is-loading');
 
-        if (!isInitialLoad) {
-            scrollToSection();
-        }
-
         const filters = getFilters();
 
         const formData = new FormData();
@@ -126,6 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!target || target === page) return;
 
+        scrollToSection();
         loadPosts(target);
 
     });
