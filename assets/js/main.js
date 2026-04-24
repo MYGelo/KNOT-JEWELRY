@@ -52,8 +52,6 @@
 			}
 
 			if (target.closest('.header_menu a[href*="#"]')) {
-				event.preventDefault()
-
 				const header = document.querySelector('.header')
 				const navBox = header ? header.querySelector('.nav_box--mobile') : null
 				const button = header ? header.querySelector('[data-action="toggleMobileMenu"].open') : null
@@ -62,15 +60,6 @@
 				if (navBox) navBox.classList.remove('open')
 				if (button) button.classList.remove('open')
 				document.body.classList.remove('overflow')
-
-				// плавный скролл к якорю
-				const href = target.closest('a').getAttribute('href')
-				const id = href.split('#')[1]
-				const el = document.getElementById(id)
-
-				if (el) {
-					el.scrollIntoView({ behavior: 'smooth' })
-				}
 			}
 		})
 
