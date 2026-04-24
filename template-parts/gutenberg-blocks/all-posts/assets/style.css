@@ -283,12 +283,16 @@
         }
     }
 
+    /* =========================
+   CHECKBOX LIGHT OPTIMIZED
+   ========================= */
+
     /* Скрываем нативный чекбокс */
     .filter-dropdown__item input[type="checkbox"] {
         display: none;
     }
 
-    /* Создаём кастомный квадрат */
+    /* Label */
     .filter-dropdown__item label {
         position: relative;
         cursor: pointer;
@@ -296,56 +300,43 @@
         align-items: center;
         gap: 5px;
         user-select: none;
+        will-change: auto;
     }
 
-    /* квадрат чекбокса */
-    .filter-dropdown__item label::before {
+    /* базовый круг */
+    .filter-dropdown__item label:before {
         content: "";
         display: block;
         width: 20px;
         height: 20px;
-        border: 2px solid #ccc;
         border-radius: 50%;
-        background-color: #fff;
-        transition: all 0.2s;
+
+        background: linear-gradient(145deg, #f5f5f5, #cfcfcf);
+        border: 1px solid rgba(180, 180, 180, 0.8);
+        transition: transform 0.2s ease, background 0.2s ease;
     }
 
-    .filter-dropdown__item input[type="checkbox"]:checked + .filter-arrow::after,
-    .filter-dropdown__item input[type="checkbox"]:checked::after {
-        animation: gradientShift 6s ease infinite, glowSmall 6s ease-in-out infinite, spin 10s linear infinite;
-    }
-
-    /*.filter-dropdown__item input[type="checkbox"]:checked + .filter-arrow::before,*/
-    /*.filter-dropdown__item input[type="checkbox"]:checked::before {*/
-    /*    content: "";*/
-    /*    position: absolute;*/
-    /*    inset: -40%;*/
-    /*    background: linear-gradient(120deg, transparent 40%, rgba(255, 255, 255, 0.5), transparent 60%);*/
-    /*    transform: rotate(0deg);*/
-    /*    animation: shine 2.2s ease-in-out infinite;*/
-    /*}*/
-
-    .filter-dropdown__item input[type="checkbox"] + .filter-arrow::after {
-        content: "";
+    /* активный слой (заменяет 3 анимации на статичный + micro transition) */
+    .filter-dropdown__item input[type="checkbox"] + .filter-arrow {
         position: absolute;
         left: 0;
         top: 0;
-        width: 24px;
-        height: 24px;
-        /*background: linear-gradient(135deg, #0D9E79, #14B093, #0b8264, #0e9d84);*/
-        background: linear-gradient(135deg, #50AAFFE5, #FFFFFFF2, #50AAFFE5, #143C78FF);
-        box-shadow: 0 0 25px rgba(120, 200, 255, 0.35), inset 0 0 18px rgba(255, 255, 255, 0.25);
-        background-size: 300% 100%;
-        animation: gradientShift 6s ease infinite;
-        border: 0px solid #ccc;
-        transition: all 300ms;
-        opacity: 0;
+        transform: translateY(-50%);
+        width: 22px;
+        height: 22px;
+        background: linear-gradient(135deg, rgba(0, 128, 250, 0.9), #0089ff, rgba(0, 234, 255, 0.95),  #143C78FF);
+        background-size: 200% 100%;
+        animation: gradientShift 6s ease infinite , spin 10s linear infinite;
+        border: 1px solid rgba(180, 180, 180, 0.8);
         border-radius: 50%;
+        opacity: 0;
+        transition: opacity 180ms ease, transform 180ms ease;
     }
 
-    /* когда чекбокс отмечен */
-    .filter-dropdown__item input[type="checkbox"]:checked + .filter-arrow::after {
+    /* checked state (без animation) */
+    .filter-dropdown__item input[type="checkbox"]:checked + .filter-arrow {
         opacity: 1;
+        box-shadow: 0 0 10px rgba(0, 180, 255, 0.25);
     }
 
     .filter-dropdown__buttons {
