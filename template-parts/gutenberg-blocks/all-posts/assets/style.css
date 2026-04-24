@@ -158,7 +158,7 @@
         }
         .all-posts__item-title {
             font-size: clamp(14px, 1.667vw, 22px);
-            min-height: calc(clamp(14px, 1.667vw, 22px) * 3);
+            /*min-height: calc(clamp(14px, 1.667vw, 22px) * 3);*/
             text-transform: uppercase;
 
             overflow-wrap: break-word;
