@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
             },
 
             touchEnd(swiper) {
-                swiper.slideNext()
                 swiper.autoplay.start()
             }
         }
@@ -34,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     slider.addEventListener('mouseup', () => {
-        swiper.slideNext()
         swiper.autoplay.start()
     })
 
