@@ -9,7 +9,7 @@ if (!empty($block['className'])) $block_classes .= ' ' . $block['className'];
 
 $initial_query = new WP_Query([
     'post_type'      => 'post',
-    'posts_per_page' => 5, // in all-posts.php
+    'posts_per_page' => 24, // in all-posts.php
     'paged'          => 1,
     'post_status'    => 'publish'
 ]);
@@ -60,17 +60,42 @@ $initial_query = new WP_Query([
                 <!-- ПОСТЫ -->
                 <div id="posts-wrap" class="all-posts__posts-wrap">
                     <?php if ($initial_query->have_posts()): ?>
-                        <?php while ($initial_query->have_posts()): $initial_query->the_post(); ?>
+                        <?php while ($initial_query->have_posts()): $initial_query->the_post();
+                            $price_meta = get_post_meta(get_the_ID(), 'price', true);?>
                             <div class="all-posts__post-item">
-                                <?php if (has_post_thumbnail()): ?>
-                                    <a href="<?= get_permalink(); ?>" class="all-posts__post-thumb">
+                                <a href="<?= get_permalink(); ?>" class="all-posts__post-thumb image-wrapper">
+                                    <?php if (has_post_thumbnail()): ?>
                                         <?php the_post_thumbnail('medium_large'); ?>
-                                    </a>
-                                <?php endif; ?>
+                                    <?php endif; ?>
+                                </a>
 
                                 <div class="all-post__text-content">
                                     <h2 class="all-posts__item-title"><?php the_title(); ?></h2>
+
+                                    <div class="all-posts__categories">
+
+                                        <?php
+                                        foreach (['material', 'stone'] as $tax) {
+                                            $terms = get_the_terms(get_the_ID(), $tax);
+
+                                            if ($terms && !is_wp_error($terms)) {
+                                                foreach ($terms as $term) {
+                                                    echo '<span class="all-posts__category">'
+                                                        . esc_html($term->name) .
+                                                        '</span>';
+                                                }
+                                            }
+                                        }
+                                        ?>
+
+                                    </div>
                                 </div>
+
+                                <?php if ($price_meta): ?>
+                                    <p class="all-posts__price">
+                                        <?= esc_html($price_meta); ?> <span>грн</span>
+                                    </p>
+                                <?php endif; ?>
                             </div>
                         <?php endwhile; ?>
                     <?php endif; ?>
@@ -79,7 +104,12 @@ $initial_query = new WP_Query([
 
                 <?php wp_reset_postdata(); ?>
 
-                <div id="ajax-pagination"></div>
+                <div id="ajax-pagination">
+                    <?php
+                    $total_pages = $initial_query->max_num_pages;
+                    $paged = 1;
+                    include get_template_directory() . '/template-parts/components/pagination.php';?>
+                </div>
 
                 <!-- ФИЛЬТРЫ -->
                 <div class="filter-dropdown__bg"></div>

@@ -3,7 +3,7 @@ $light_mode = get_field('loader_light_mode', 'option');
 $spinner    = get_field('loader_spinner_enabled', 'option');
 ?>
 
-<div class="loader active <?= $light_mode ? 'light' : 'dark'; ?>" id="ajax-loader">
+<div class="loader <?= $light_mode ? 'light' : 'dark'; ?>" id="ajax-loader">
     <div class="emerald-wrap">
 
         <div class="emerald-glow"></div>

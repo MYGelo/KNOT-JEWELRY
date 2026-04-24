@@ -130,6 +130,8 @@
         .all-posts__post-thumb {
             position: relative;
             aspect-ratio: 1;
+            box-shadow: 0 0 12px 0 #0000004f;
+            border-radius: 20px 20px 20px 0;
 
             & img {
                 position: absolute;
@@ -138,8 +140,7 @@
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
-                box-shadow: 0 0 12px 0 #0000004f;
-                border-radius: 20px 20px 20px 0;
+
             }
         }
 
@@ -149,15 +150,15 @@
             gap: 8px;
             padding: clamp(8px, 0.84vw, 16px);
             justify-content: space-between;
-            height: 100%;
         }
 
         .all-posts__price {
             font-size: clamp(18px,1.667vw,32px);
-            margin: 0 0 0 auto;
+            margin: auto 0 0 auto;
         }
         .all-posts__item-title {
             font-size: clamp(14px, 1.667vw, 22px);
+            min-height: calc(clamp(14px, 1.667vw, 22px) * 3);
             text-transform: uppercase;
 
             overflow-wrap: break-word;
