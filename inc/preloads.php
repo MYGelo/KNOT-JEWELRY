@@ -65,6 +65,14 @@ endif; ?>
 	href="<?= get_template_directory_uri() ?>/assets/js/main.js?ver=<?= $ver ?>"
 	as="script"
 >
+
+<?php $swiper_ver = filemtime(get_template_directory() . '/assets/js/swiper.min.js'); ?>
+<link
+        rel="preload"
+        href="<?= get_template_directory_uri() ?>/assets/js/swiper.min.js?ver=<?= $swiper_ver ?>"
+        as="script"
+>
+
 <!-- Fonts -->
 <link
 	rel="preload"

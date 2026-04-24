@@ -1,21 +1,28 @@
 <?php
-add_action('wp_ajax_filter_posts', 'filter_posts');
-add_action('wp_ajax_nopriv_filter_posts', 'filter_posts');
+add_action('rest_api_init', function () {
 
-function filter_posts() {
+    register_rest_route('site/v1', '/filter-posts', [
+        'methods'  => 'POST',
+        'callback' => 'site_filter_posts',
+        'permission_callback' => '__return_true'
+    ]);
 
-    $search = sanitize_text_field($_POST['search'] ?? '');
+});
 
-    $materials = json_decode(stripslashes($_POST['materials'] ?? '[]'), true);
-    $stones    = json_decode(stripslashes($_POST['stones'] ?? '[]'), true);
-    $product_type = json_decode(stripslashes($_POST['product_type'] ?? '[]'), true);
+function site_filter_posts($request) {
 
-    $page = intval($_POST['page'] ?? 1);
+    $search = sanitize_text_field($request['search'] ?? '');
+
+    $materials = $request['materials'] ?? [];
+    $stones = $request['stones'] ?? [];
+    $product_type = $request['product_type'] ?? [];
+
+    $page = intval($request['page'] ?? 1);
     $posts_per_page = 24;
 
     $tax_query = ['relation' => 'AND'];
 
-    if (!empty($materials)) {
+    if ($materials) {
         $tax_query[] = [
             'taxonomy' => 'material',
             'field' => 'slug',
@@ -23,7 +30,7 @@ function filter_posts() {
         ];
     }
 
-    if (!empty($stones)) {
+    if ($stones) {
         $tax_query[] = [
             'taxonomy' => 'stone',
             'field' => 'slug',
@@ -31,7 +38,7 @@ function filter_posts() {
         ];
     }
 
-    if (!empty($product_type)) {
+    if ($product_type) {
         $tax_query[] = [
             'taxonomy' => 'product_type',
             'field' => 'slug',
@@ -40,13 +47,16 @@ function filter_posts() {
     }
 
     $args = [
-        'post_type'      => 'post',
+        'post_type' => 'post',
         'posts_per_page' => $posts_per_page,
-        'paged'          => $page,
-        'post_status'    => 'publish'
+        'paged' => $page,
+        'post_status' => 'publish',
+
+        'update_post_meta_cache' => true,
+        'update_post_term_cache' => true
     ];
 
-    if (!empty($search)) {
+    if ($search) {
         $args['s'] = $search;
     }
 
@@ -60,50 +70,14 @@ function filter_posts() {
 
     if ($query->have_posts()) {
         while ($query->have_posts()) {
+
             $query->the_post();
 
-            $price_meta = get_post_meta(get_the_ID(), 'price', true);
-            ?>
+            get_template_part(
+                'template-parts/components/post',
+                'card'
+            );
 
-            <div class="all-posts__post-item">
-
-                <a href="<?= esc_url(get_permalink()); ?>" class="all-posts__post-thumb image-wrapper">
-                    <?php if (has_post_thumbnail()): ?>
-                        <?php the_post_thumbnail('medium_large'); ?>
-                    <?php endif; ?>
-                </a>
-
-                <div class="all-post__text-content">
-                    <h2 class="all-posts__item-title"><?php the_title(); ?></h2>
-
-                    <div class="all-posts__categories">
-
-                        <?php
-                        foreach (['material', 'stone'] as $tax) {
-                            $terms = get_the_terms(get_the_ID(), $tax);
-
-                            if ($terms && !is_wp_error($terms)) {
-                                foreach ($terms as $term) {
-                                    echo '<span class="all-posts__category">'
-                                        . esc_html($term->name) .
-                                        '</span>';
-                                }
-                            }
-                        }
-                        ?>
-
-                    </div>
-                </div>
-
-                <?php if ($price_meta): ?>
-                    <p class="all-posts__price">
-                        <?= esc_html($price_meta); ?> <span>грн</span>
-                    </p>
-                <?php endif; ?>
-
-            </div>
-
-            <?php
         }
     } else {
         echo '<p>Нічого не знайдено</p>';
@@ -111,22 +85,22 @@ function filter_posts() {
 
     $posts_html = ob_get_clean();
 
-    // ===== PAGINATION =====
     ob_start();
 
     $total_pages = $query->max_num_pages;
     $paged = $page;
 
-    include get_template_directory() . '/template-parts/components/pagination.php';
+    include get_template_directory()
+        . '/template-parts/components/pagination.php';
 
     $pagination_html = ob_get_clean();
 
     wp_reset_postdata();
 
-    wp_send_json([
+    return [
         'posts' => $posts_html,
         'pagination' => $pagination_html,
         'total_pages' => $total_pages,
         'current_page' => $paged
-    ]);
+    ];
 }

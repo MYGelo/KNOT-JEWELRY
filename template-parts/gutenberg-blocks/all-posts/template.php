@@ -8,12 +8,14 @@ $block_classes = 'all-posts';
 if (!empty($block['className'])) $block_classes .= ' ' . $block['className'];
 
 $initial_query = new WP_Query([
-    'post_type'      => 'post',
-    'posts_per_page' => 24, // in all-posts.php
-    'paged'          => 1,
-    'post_status'    => 'publish'
-]);
+    'post_type' => 'post',
+    'posts_per_page' => 24,
+    'paged' => 1,
+    'post_status' => 'publish',
 
+    'update_post_meta_cache' => true,
+    'update_post_term_cache' => true
+]);
 ?>
 
 <section class="<?= esc_attr($block_classes) ?>" id="<?= esc_attr($block_anchor) ?>">
@@ -59,47 +61,17 @@ $initial_query = new WP_Query([
             <div class="all-posts__posts-wrapper">
                 <!-- ПОСТЫ -->
                 <div id="posts-wrap" class="all-posts__posts-wrap">
-                    <?php if ($initial_query->have_posts()): ?>
-                        <?php while ($initial_query->have_posts()): $initial_query->the_post();
-                            $price_meta = get_post_meta(get_the_ID(), 'price', true);?>
-                            <div class="all-posts__post-item">
-                                <a href="<?= get_permalink(); ?>" class="all-posts__post-thumb image-wrapper">
-                                    <?php if (has_post_thumbnail()): ?>
-                                        <?php the_post_thumbnail('medium_large'); ?>
-                                    <?php endif; ?>
-                                </a>
+                    <?php
+                    while ($initial_query->have_posts()) {
 
-                                <div class="all-post__text-content">
-                                    <h2 class="all-posts__item-title"><?php the_title(); ?></h2>
+                        $initial_query->the_post();
 
-                                    <div class="all-posts__categories">
+                        get_template_part(
+                            'template-parts/components/post',
+                            'card'
+                        );
 
-                                        <?php
-                                        foreach (['material', 'stone'] as $tax) {
-                                            $terms = get_the_terms(get_the_ID(), $tax);
-
-                                            if ($terms && !is_wp_error($terms)) {
-                                                foreach ($terms as $term) {
-                                                    echo '<span class="all-posts__category">'
-                                                        . esc_html($term->name) .
-                                                        '</span>';
-                                                }
-                                            }
-                                        }
-                                        ?>
-
-                                    </div>
-                                </div>
-
-                                <?php if ($price_meta): ?>
-                                    <p class="all-posts__price">
-                                        <?= esc_html($price_meta); ?> <span>грн</span>
-                                    </p>
-                                <?php endif; ?>
-                            </div>
-                        <?php endwhile; ?>
-                    <?php endif; ?>
-
+                    }?>
                 </div>
 
                 <?php wp_reset_postdata(); ?>
