@@ -9,7 +9,7 @@ $price_meta = get_post_meta(get_the_ID(), 'price', true);
 
         <?= get_the_post_thumbnail(
             get_the_ID(),
-            'medium_large',
+            'medium',
             ['loading' => 'lazy']
         ); ?>
 
