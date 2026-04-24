@@ -2,7 +2,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const slider = document.querySelector('.reviews-slider');
 
     if (slider && typeof Swiper !== 'undefined') {
-        new Swiper(slider, {
+
+        const swiper = new Swiper(slider, {
             slidesPerView: 'auto',
             spaceBetween: 16,
 
@@ -15,8 +16,8 @@ document.addEventListener('DOMContentLoaded', function () {
             freeMode: {
                 enabled: true,
                 momentum: true,
-                momentumRatio: 1,
-                momentumVelocityRatio: 1,
+                momentumRatio: 1.2,
+                momentumVelocityRatio: 1.2,
             },
 
             autoplay: {
@@ -24,7 +25,30 @@ document.addEventListener('DOMContentLoaded', function () {
                 disableOnInteraction: false,
             },
 
-            speed: 3000,
+            speed: 4000,
         });
+
+        /* ---------- торможение ---------- */
+
+        slider.addEventListener('pointerdown', () => {
+            swiper.autoplay.stop();
+        });
+
+        /* ---------- разгон ---------- */
+
+        slider.addEventListener('pointerup', () => {
+
+            swiper.params.speed = 900;     // мягкая остановка
+            swiper.slideToClosest();
+
+            setTimeout(() => {
+
+                swiper.params.speed = 4000; // разгон
+                swiper.autoplay.start();
+
+            }, 300);
+
+        });
+
     }
 });
