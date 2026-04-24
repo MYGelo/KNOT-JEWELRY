@@ -18,7 +18,7 @@
         padding: 24px 0;
     }
 
-    .stock-card {
+    .reviews-card {
         position: relative;
         border-radius: 25px;
         overflow: hidden;
@@ -72,7 +72,7 @@
     }
 
     /* hint text */
-    .stock-card-hint-text {
+    .reviews-card-hint-text {
         position: absolute;
         bottom: 8px;
         left: 50%;

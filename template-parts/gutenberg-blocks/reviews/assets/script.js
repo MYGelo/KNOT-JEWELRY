@@ -1,54 +1,45 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const slider = document.querySelector('.reviews-slider');
+document.addEventListener('DOMContentLoaded', () => {
 
-    if (slider && typeof Swiper !== 'undefined') {
+    const slider = document.querySelector('.reviews-slider')
+    if (!slider || typeof Swiper === 'undefined') return
 
-        const swiper = new Swiper(slider, {
-            slidesPerView: 'auto',
-            spaceBetween: 16,
+    const swiper = new Swiper(slider, {
+        slidesPerView: 'auto',
+        spaceBetween: 24,
+        speed: 500,
+        allowTouchMove: true,
+        loop: true,
 
-            loop: true,
-            centeredSlides: true,
+        autoplay: {
+            delay: 2000,
+            disableOnInteraction: false
+        },
 
-            grabCursor: true,
-            allowTouchMove: true,
-
-            freeMode: {
-                enabled: true,
-                momentum: true,
-                momentumRatio: 1.2,
-                momentumVelocityRatio: 1.2,
+        on: {
+            touchStart(swiper) {
+                swiper.autoplay.stop()
             },
 
-            autoplay: {
-                delay: 0,
-                disableOnInteraction: false,
-            },
+            touchEnd(swiper) {
+                swiper.slideNext()
+                swiper.autoplay.start()
+            }
+        }
+    })
 
-            speed: 4000,
-        });
+    // мышка (desktop)
+    slider.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return
+        swiper.autoplay.stop()
+    })
 
-        /* ---------- торможение ---------- */
+    slider.addEventListener('mouseup', () => {
+        swiper.slideNext()
+        swiper.autoplay.start()
+    })
 
-        slider.addEventListener('pointerdown', () => {
-            swiper.autoplay.stop();
-        });
+    slider.addEventListener('mouseleave', () => {
+        swiper.autoplay.start()
+    })
 
-        /* ---------- разгон ---------- */
-
-        slider.addEventListener('pointerup', () => {
-
-            swiper.params.speed = 900;     // мягкая остановка
-            swiper.slideToClosest();
-
-            setTimeout(() => {
-
-                swiper.params.speed = 4000; // разгон
-                swiper.autoplay.start();
-
-            }, 300);
-
-        });
-
-    }
-});
+})

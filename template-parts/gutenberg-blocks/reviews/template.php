@@ -41,10 +41,10 @@ if (!$items) return;
                         ?>
 
                         <div class="swiper-slide">
-                            <div class="stock-card">
+                            <div class="reviews-card">
 
                                 <?php if ($link): ?>
-                                    <a href="<?= esc_url($link); ?>" class="stock-card-link"> </a>
+                                    <a href="<?= esc_url($link); ?>" class="reviews-card-link"> </a>
                                 <?php endif; ?>
 
                                 <?php if ($image):?>
@@ -71,8 +71,8 @@ if (!$items) return;
                                 <?php endif?>
 
                                 <?php if ($tap_text): ?>
-                                    <a href="<?= esc_url($link); ?>" class="stock-card-link">
-                                        <p class="stock-card-hint-text">
+                                    <a href="<?= esc_url($link); ?>" class="reviews-card-link">
+                                        <p class="reviews-card-hint-text">
                                             <?= esc_html($tap_text); ?>
                                         </p>
                                     </a>
