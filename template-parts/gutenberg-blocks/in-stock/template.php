@@ -83,7 +83,7 @@ if ($posts) : ?>
                                 <div class="stock-card" data-link="<?= esc_url($link) ?>">
                                     <div class="stock-card-inner">
 
-                                        <div class="stock-card-front">
+                                        <div class="stock-card-front image-wrapper">
 
                                             <?php if(!empty($img_large)): ?>
 

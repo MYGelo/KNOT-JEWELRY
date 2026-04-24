@@ -67,11 +67,11 @@ function filter_posts() {
 
             <div class="all-posts__post-item">
 
-                <?php if (has_post_thumbnail()): ?>
-                    <a href="<?= esc_url(get_permalink()); ?>" class="all-posts__post-thumb">
+                <a href="<?= esc_url(get_permalink()); ?>" class="all-posts__post-thumb image-wrapper">
+                    <?php if (has_post_thumbnail()): ?>
                         <?php the_post_thumbnail('medium_large'); ?>
-                    </a>
-                <?php endif; ?>
+                    <?php endif; ?>
+                </a>
 
                 <div class="all-post__text-content">
                     <h2 class="all-posts__item-title"><?php the_title(); ?></h2>

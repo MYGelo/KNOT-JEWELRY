@@ -85,7 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             page = targetPage;
 
-            attachPagination();
             closeFilter();
 
             isInitialLoad = false;
@@ -97,25 +96,6 @@ document.addEventListener('DOMContentLoaded', () => {
         loading = false;
         loader?.classList.remove('active');
         allPostWrap.classList.remove('is-loading');
-    }
-
-    function attachPagination() {
-
-        document.querySelectorAll('.page-num').forEach(btn => {
-
-            btn.addEventListener('click', () => {
-
-                if (btn.classList.contains('dots')) return;
-
-                const target = parseInt(btn.dataset.page);
-                if (!target || target === page) return;
-
-                loadPosts(target);
-
-            });
-
-        });
-
     }
 
     function scrollToSection() {
@@ -135,6 +115,20 @@ document.addEventListener('DOMContentLoaded', () => {
             t = setTimeout(() => fn(...args), delay);
         };
     }
+
+    paginationWrap?.addEventListener('click', (e) => {
+
+        const btn = e.target.closest('.page-num');
+
+        if (!btn || btn.classList.contains('dots')) return;
+
+        const target = parseInt(btn.dataset.page);
+
+        if (!target || target === page) return;
+
+        loadPosts(target);
+
+    });
 
     searchInput?.addEventListener('input',
         debounce(() => loadPosts(1), 400)
@@ -164,6 +158,6 @@ document.addEventListener('DOMContentLoaded', () => {
     bg?.addEventListener('click', closeFilter);
 
     // INIT
-    loadPosts(1);
+    // loadPosts(1);
 
 });
