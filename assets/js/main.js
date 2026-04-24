@@ -52,31 +52,14 @@
 			}
 
 			if (target.closest('.header_menu a[href*="#"]')) {
-				const url = new URL(link.href);
-				const isSamePage =
-					url.pathname === window.location.pathname;
+				const header = document.querySelector('.header')
+				const navBox = header ? header.querySelector('.nav_box--mobile') : null
+				const button = header ? header.querySelector('[data-action="toggleMobileMenu"].open') : null
 
-				// ВСЕГДА закрываем меню
-				const header = document.querySelector('.header');
-				const navBox = header?.querySelector('.nav_box--mobile');
-				const button = header?.querySelector('[data-action="toggleMobileMenu"].open');
-
-				if (navBox) navBox.classList.remove('open');
-				if (button) button.classList.remove('open');
-				document.body.classList.remove('overflow');
-
-				// если это не текущая страница — просто даём перейти
-				if (!isSamePage) return;
-
-				// если это текущая страница — блокируем дефолт и скроллим
-				event.preventDefault();
-
-				const id = url.hash.replace('#', '');
-				const el = document.getElementById(id);
-
-				if (el) {
-					el.scrollIntoView({ behavior: 'smooth' });
-				}
+				// закрываем меню
+				if (navBox) navBox.classList.remove('open')
+				if (button) button.classList.remove('open')
+				document.body.classList.remove('overflow')
 			}
 		})
 
