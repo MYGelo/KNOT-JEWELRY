@@ -4,7 +4,9 @@
     .swiper {
         overflow: visible;
     }
-
+    .swiper-wrapper{
+        transition-timing-function: linear !important;
+    }
     .swiper-slide {
         /*max-width: clamp(324px, 30.9723vw, 446px);*/
         max-width: 300px;
