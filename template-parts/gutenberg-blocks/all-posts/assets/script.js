@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
             product_type: [...typeEls].filter(i => i.checked).map(i => i.value),
         };
     }
+
     function wait(ms) {
         return new Promise(res => setTimeout(res, ms));
     }
@@ -46,31 +47,42 @@ document.addEventListener('DOMContentLoaded', () => {
         body.classList.remove('overflow');
     }
 
-    async function loadPosts(targetPage = 1) {
+    function scrollToSection() {
+        const rect = section.getBoundingClientRect();
+
+        window.scrollTo({
+            top: window.scrollY + rect.top - 80,
+            behavior: 'smooth'
+        });
+    }
+
+    async function loadPosts(targetPage = 1, { scroll = false } = {}) {
 
         if (loading) return;
         loading = true;
+
         loader?.classList.add('active');
         allPostWrap.classList.add('is-loading');
 
         const filters = getFilters();
 
-        const formData = new FormData();
-        formData.append('action', 'filter_posts');
-        formData.append('search', searchInput?.value || '');
-        formData.append('materials', JSON.stringify(filters.materials));
-        formData.append('stones', JSON.stringify(filters.stones));
-        formData.append('product_type', JSON.stringify(filters.product_type));
-        formData.append('page', targetPage);
-
         try {
 
-            const fetchPromise = fetch(ajax_object.ajax_url, {
+            const fetchPromise = fetch('/wp-json/site/v1/filter-posts', {
                 method: 'POST',
-                body: formData
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    search: searchInput?.value || '',
+                    materials: filters.materials,
+                    stones: filters.stones,
+                    product_type: filters.product_type,
+                    page: targetPage
+                })
             }).then(res => res.json());
 
-            // ⏱ минимум 1000ms лоадер
+            // сохраняем твой UX delay
             const [data] = await Promise.all([
                 fetchPromise,
                 wait(1000)
@@ -82,28 +94,23 @@ document.addEventListener('DOMContentLoaded', () => {
             page = targetPage;
 
             closeFilter();
-
             isInitialLoad = false;
+
+            // 🔥 СКРОЛЛ НЕ ТРОГАЕМ — просто управляем флагом
+            if (scroll) {
+                scrollToSection();
+            }
 
         } catch (err) {
             console.error(err);
         }
 
         loading = false;
+
         loader?.classList.remove('active');
         allPostWrap.classList.remove('is-loading');
     }
 
-    function scrollToSection() {
-        const rect = section.getBoundingClientRect();
-
-        window.scrollTo({
-            top: window.scrollY + rect.top - 80,
-            behavior: 'smooth'
-        });
-    }
-
-    // 🔎 SEARCH
     function debounce(fn, delay) {
         let t;
         return (...args) => {
@@ -112,6 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
+    // PAGINATION
     paginationWrap?.addEventListener('click', (e) => {
 
         const btn = e.target.closest('.page-num');
@@ -122,20 +130,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!target || target === page) return;
 
-        scrollToSection();
-        loadPosts(target);
+        loadPosts(target, { scroll: true });
 
     });
 
-    searchInput?.addEventListener('input',
-        debounce(() => loadPosts(1), 400)
+    // SEARCH (debounce как у тебя)
+    searchInput?.addEventListener(
+        'input',
+        debounce(() => loadPosts(1, { scroll: false }), 400)
     );
 
-    searchBtn?.addEventListener('click', () => loadPosts(1));
-
-    // 🔘 FILTERS
-    // [...materialEls, ...stoneEls, ...typeEls]
-    //     .forEach(el => el.addEventListener('change', () => loadPosts(1)));
+    searchBtn?.addEventListener('click', () => loadPosts(1, { scroll: false }));
 
     // RESET
     resetBtn?.addEventListener('click', () => {
@@ -146,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '.filter-material, .filter-stone, .filter-product_type'
         ).forEach(i => i.checked = false);
 
-        loadPosts(1);
+        loadPosts(1, { scroll: false });
     });
 
     // FILTER UI
@@ -155,6 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
     bg?.addEventListener('click', closeFilter);
 
     // INIT
-    // loadPosts(1);
+    loadPosts(1);
 
 });

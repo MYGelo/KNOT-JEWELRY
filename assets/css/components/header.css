@@ -228,7 +228,7 @@
 			opacity: 0;
 			visibility: hidden;
 			pointer-events: none;
-			transform: translateY(20px);
+			transform: translateY(-120px);
 			transition: .4s;
 
 			padding-top: 123px;
