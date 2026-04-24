@@ -22,7 +22,6 @@ $company_city_zip = $company_info['city_zip'] ?? '';
         <div class="footer__wrapper">
 
             <div class="footer__logo-social">
-
                 <?php if (!empty($footer_logo['url'])):?>
                     <a class="footer__logo" href="/" target="_self">
                         <img src="<?=$footer_logo['url']?>" alt="<?=$footer_logo['title']?>">
@@ -37,58 +36,58 @@ $company_city_zip = $company_info['city_zip'] ?? '';
                     'menu_class'     => 'footer__menu',
                     'items_wrap'     => '%3$s'
                 ]); ?>
-
-                <?php if (!empty($company_info)): ?>
-                    <li class="footer__company-info">
-                        <?php if(!empty($company_name)): ?>
-                            <p class="footer__company-name"><?= wp_kses_post($company_name); ?></p>
-                        <?php endif; ?>
-
-                        <?php if(!empty($company_email)): ?>
-                            <a class="company footer__company-email"
-                               href="mailto:<?= esc_attr($company_email); ?>"
-                            ><?= wp_kses_post($company_email); ?></a>
-                        <?php endif; ?>
-
-                        <?php if(!empty($company_address && $company_city_zip)): ?>
-                            <p class="company footer__company-address">
-                                <?= esc_html($company_address); ?><br>
-                                <?= esc_html($company_city_zip); ?>
-                            </p>
-                        <?php endif; ?>
-                    </li>
-                <?php endif; ?>
-            </ul>
-
-            <?php if ($footer_social): ?>
-                <li class="footer__social">
-                    <?php foreach ($footer_social as $social): ?>
-                        <a class="footer__social-link media-bounce"
-                           href="<?= esc_url($social['url']); ?>"
-                           target="_blank"
-                           rel="noopener"
-                        >
-
-                             <?php if (!empty($social['icon']['url'])): ?>
-                                 <picture>
-                                     <!-- Mobile --> <source srcset="<?= $social['icon']['sizes']['medium_large']; ?>" media="(max-width: 551px)">
-                                     <!-- Desktop --><source srcset="<?= $social['icon']['url']; ?>" media="(min-width: 552px)">
-                                     <img
-                                         class=""
-                                         src="<?= esc_url($social['icon']['sizes']['large'] ?: $social['icon']['sizes']['medium_large']); ?>"
-                                         alt="<?= esc_attr($social['icon']['alt'] ?: $social['icon']['title']); ?>"
-                                         width="<?= esc_attr($social['icon']['width'] ?? ''); ?>"
-                                         height="<?= esc_attr($social['icon']['height'] ?? ''); ?>"
-                                         loading="lazy"
-                                         decoding="async"
-                                     >
-                                 </picture>
-                             <?php endif; ?>
-                        </a>
-                    <?php endforeach; ?>
-                </li>
-            <?php endif; ?>
+            </ul
         </div>
+
+        <?php if (!empty($company_info)): ?>
+            <div class="footer__company-info">
+                <?php if(!empty($company_name)): ?>
+                    <p class="footer__company-name"><?= wp_kses_post($company_name); ?></p>
+                <?php endif; ?>
+
+                <?php if(!empty($company_email)): ?>
+                    <a class="company footer__company-email"
+                       href="mailto:<?= esc_attr($company_email); ?>"
+                    ><?= wp_kses_post($company_email); ?></a>
+                <?php endif; ?>
+
+                <?php if(!empty($company_address || $company_city_zip)): ?>
+                    <p class="company footer__company-address">
+                        <?= esc_html($company_address); ?><br>
+                        <?= esc_html($company_city_zip); ?>
+                    </p>
+                <?php endif; ?>
+
+                <?php if ($footer_social): ?>
+                    <div class="footer__social">
+                        <?php foreach ($footer_social as $social): ?>
+                            <a class="footer__social-link media-bounce"
+                               href="<?= esc_url($social['url']); ?>"
+                               target="_blank"
+                               rel="noopener"
+                            >
+
+                                <?php if (!empty($social['icon']['url'])): ?>
+                                    <picture>
+                                        <!-- Mobile --> <source srcset="<?= $social['icon']['sizes']['medium_large']; ?>" media="(max-width: 551px)">
+                                        <!-- Desktop --><source srcset="<?= $social['icon']['url']; ?>" media="(min-width: 552px)">
+                                        <img
+                                                class=""
+                                                src="<?= esc_url($social['icon']['sizes']['large'] ?: $social['icon']['sizes']['medium_large']); ?>"
+                                                alt="<?= esc_attr($social['icon']['alt'] ?: $social['icon']['title']); ?>"
+                                                width="<?= esc_attr($social['icon']['width'] ?? ''); ?>"
+                                                height="<?= esc_attr($social['icon']['height'] ?? ''); ?>"
+                                                loading="lazy"
+                                                decoding="async"
+                                        >
+                                    </picture>
+                                <?php endif; ?>
+                            </a>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
     </div>
 
     <div class="footer__bottom-group"
