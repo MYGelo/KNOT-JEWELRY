@@ -144,6 +144,14 @@
             }
         }
 
+        .all-posts__price-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 0 clamp(8px, 0.84vw, 16px);
+            justify-content: space-between;
+            margin-top: auto;
+        }
         .all-post__text-content {
             display: flex;
             flex-direction: column;
@@ -154,7 +162,7 @@
 
         .all-posts__price {
             font-size: clamp(18px,1.667vw,32px);
-            margin: auto 0 0 auto;
+            margin: 0 0 0 auto;
         }
         .all-posts__item-title {
             font-size: clamp(14px, 1.667vw, 22px);

@@ -1,5 +1,26 @@
 <?php
 
+/*
+|--------------------------------------------------------------------------
+| CACHE VERSION
+|--------------------------------------------------------------------------
+*/
+
+function get_filter_cache_version() {
+    return get_option('filter_cache_version', 1);
+}
+
+function bump_filter_cache() {
+    update_option('filter_cache_version', time());
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| REST ROUTE
+|--------------------------------------------------------------------------
+*/
+
 add_action('rest_api_init', function () {
 
     register_rest_route('site/v1', '/filter-posts', [
@@ -13,7 +34,7 @@ add_action('rest_api_init', function () {
 
 /*
 |--------------------------------------------------------------------------
-| CACHE TERMS
+| TERMS CACHE
 |--------------------------------------------------------------------------
 */
 
@@ -62,7 +83,7 @@ function site_filter_posts($request) {
     |--------------------------------------------------------------------------
     */
 
-    $cache_key = 'filter_posts_' . md5(json_encode([
+    $cache_key = 'filter_posts_' . get_filter_cache_version() . '_' . md5(json_encode([
             $search,
             $materials,
             $stones,
@@ -71,10 +92,19 @@ function site_filter_posts($request) {
         ]));
 
 
-    $cached = get_transient($cache_key);
+    /*
+    |--------------------------------------------------------------------------
+    | CACHE READ
+    |--------------------------------------------------------------------------
+    */
 
-    if ($cached !== false) {
-        return $cached;
+    if (!defined('DISABLE_FILTER_CACHE') || DISABLE_FILTER_CACHE === false) {
+
+        $cached = get_transient($cache_key);
+
+        if ($cached !== false) {
+            return $cached;
+        }
     }
 
 
@@ -122,9 +152,7 @@ function site_filter_posts($request) {
         'posts_per_page' => $posts_per_page,
         'paged' => $page,
         'post_status' => 'publish',
-
         'ignore_sticky_posts' => true,
-
         'update_post_meta_cache' => true,
         'update_post_term_cache' => true
     ];
@@ -143,7 +171,7 @@ function site_filter_posts($request) {
 
     /*
     |--------------------------------------------------------------------------
-    | POSTS HTML
+| POSTS HTML
     |--------------------------------------------------------------------------
     */
 
@@ -161,9 +189,7 @@ function site_filter_posts($request) {
         }
 
     } else {
-
         echo '<p>Нічого не знайдено</p>';
-
     }
 
     $posts_html = ob_get_clean();
@@ -171,7 +197,7 @@ function site_filter_posts($request) {
 
     /*
     |--------------------------------------------------------------------------
-    | PAGINATION
+| PAGINATION
     |--------------------------------------------------------------------------
     */
 
@@ -184,13 +210,12 @@ function site_filter_posts($request) {
 
     $pagination_html = ob_get_clean();
 
-
     wp_reset_postdata();
 
 
     /*
     |--------------------------------------------------------------------------
-    | RESPONSE
+| RESPONSE
     |--------------------------------------------------------------------------
     */
 
@@ -202,7 +227,15 @@ function site_filter_posts($request) {
     ];
 
 
-    set_transient($cache_key, $response, HOUR_IN_SECONDS);
+    /*
+    |--------------------------------------------------------------------------
+| CACHE WRITE
+    |--------------------------------------------------------------------------
+    */
+
+    if (!defined('DISABLE_FILTER_CACHE') || DISABLE_FILTER_CACHE === false) {
+        set_transient($cache_key, $response, HOUR_IN_SECONDS);
+    }
 
     return $response;
 }
@@ -210,37 +243,14 @@ function site_filter_posts($request) {
 
 /*
 |--------------------------------------------------------------------------
-| CLEAR FILTER CACHE
+| CACHE INVALIDATION
 |--------------------------------------------------------------------------
 */
 
-add_action('save_post', function() {
-
-    global $wpdb;
-
-    $wpdb->query(
-        "DELETE FROM $wpdb->options
-         WHERE option_name LIKE '_transient_filter_posts_%'
-         OR option_name LIKE '_transient_timeout_filter_posts_%'"
-    );
-
-});
+add_action('save_post_post', 'bump_filter_cache');
+add_action('created_term', 'bump_filter_cache');
+add_action('edited_term', 'bump_filter_cache');
+add_action('delete_term', 'bump_filter_cache');
 
 
-/*
-|--------------------------------------------------------------------------
-| CLEAR TERMS CACHE
-|--------------------------------------------------------------------------
-*/
-
-function clear_terms_cache() {
-
-    delete_transient('terms_material');
-    delete_transient('terms_stone');
-    delete_transient('terms_product_type');
-
-}
-
-add_action('created_term', 'clear_terms_cache');
-add_action('edited_term', 'clear_terms_cache');
-add_action('delete_term', 'clear_terms_cache');
+// add in config.php ! define('DISABLE_FILTER_CACHE', true);

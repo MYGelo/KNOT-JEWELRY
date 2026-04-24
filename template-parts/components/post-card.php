@@ -21,6 +21,15 @@ $price_meta = get_post_meta(get_the_ID(), 'price', true);
             <?php the_title(); ?>
         </h2>
 
+
+
+
+
+    </div>
+
+
+    <div class="all-posts__price-wrapper">
+
         <div class="all-posts__categories">
 
             <?php
@@ -43,15 +52,14 @@ $price_meta = get_post_meta(get_the_ID(), 'price', true);
 
         </div>
 
+        <?php if ($price_meta): ?>
+
+            <p class="all-posts__price">
+                <?= esc_html($price_meta); ?>
+                <span>грн</span>
+            </p>
+
+        <?php endif; ?>
     </div>
-
-    <?php if ($price_meta): ?>
-
-        <p class="all-posts__price">
-            <?= esc_html($price_meta); ?>
-            <span>грн</span>
-        </p>
-
-    <?php endif; ?>
 
 </div>
