@@ -1,38 +1,45 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    let swiperInstance = null
     const slider = document.querySelector('.reviews-slider')
+    if (!slider || typeof Swiper === 'undefined') return
 
-    if (slider && typeof Swiper !== 'undefined') {
-        swiperInstance = new Swiper(slider, {
-            slidesPerView: 'auto',
-            spaceBetween: 24,
-            speed: 500,
-            allowTouchMove: true,
-            autoplay: {
-                delay: 2000,
-                disableOnInteraction: false
+    const swiper = new Swiper(slider, {
+        slidesPerView: 'auto',
+        spaceBetween: 24,
+        speed: 500,
+        allowTouchMove: true,
+        loop: true,
+
+        autoplay: {
+            delay: 2000,
+            disableOnInteraction: false
+        },
+
+        on: {
+            touchStart(swiper) {
+                swiper.autoplay.stop()
+            },
+
+            touchEnd(swiper) {
+                swiper.slideNext()
+                swiper.autoplay.start()
             }
-        })
-    }
-
-    if (!swiperInstance) return
-
-    const pause = () => swiperInstance.autoplay.stop()
-    const play  = () => swiperInstance.autoplay.start()
-
-    // MOUSE
-    slider.addEventListener('mousedown', (e) => {
-        if (e.button !== 0) return
-        pause()
+        }
     })
 
-    slider.addEventListener('mouseup', play)
-    slider.addEventListener('mouseleave', play)
+    // мышка (desktop)
+    slider.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return
+        swiper.autoplay.stop()
+    })
 
-    // TOUCH
-    // slider.addEventListener('touchstart', pause, { passive: true })
-    slider.addEventListener('touchend', play)
-    slider.addEventListener('touchcancel', play)
+    slider.addEventListener('mouseup', () => {
+        swiper.slideNext()
+        swiper.autoplay.start()
+    })
+
+    slider.addEventListener('mouseleave', () => {
+        swiper.autoplay.start()
+    })
 
 })
