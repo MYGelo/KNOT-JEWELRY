@@ -82,7 +82,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
             }).then(res => res.json());
 
-            // сохраняем твой UX delay
+            if (scroll) {
+                scrollToSection();
+            }
+
             const [data] = await Promise.all([
                 fetchPromise,
                 wait(1000)
@@ -95,11 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             closeFilter();
             isInitialLoad = false;
-
-            // 🔥 СКРОЛЛ НЕ ТРОГАЕМ — просто управляем флагом
-            if (scroll) {
-                scrollToSection();
-            }
 
         } catch (err) {
             console.error(err);
