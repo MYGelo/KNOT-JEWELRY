@@ -19,7 +19,6 @@ class GalleryPopup {
     }
 
 
-    /* EVENTS */
     bindEvents() {
 
         this.gallery.addEventListener('click',(e)=>this.onOpen(e))
@@ -29,11 +28,9 @@ class GalleryPopup {
         this.popup.addEventListener('wheel',(e)=>this.onZoomWheel(e), { passive:true })
 
         this.addDoubleTapZoom()
-        // this.addSwipeClose()
     }
 
 
-    /* OPEN */
     onOpen(e) {
 
         const zoom = e.target.closest('.gallery-zoom')
@@ -64,7 +61,6 @@ class GalleryPopup {
 
 
     onClose(e) {
-
         if(
             e.target.classList.contains('overlay') ||
             e.target.classList.contains('gallery-close')
@@ -75,14 +71,12 @@ class GalleryPopup {
 
 
     onKey(e) {
-
         if(e.key === 'Escape'){
             this.closePopup()
         }
     }
 
 
-    /* SWIPER */
     initSwiper() {
 
         if(this.swiper) return
@@ -115,19 +109,20 @@ class GalleryPopup {
             slidesPerView:1,
             speed:400,
             loop:true,
+            spaceBetween: 50,
 
             preloadImages:false,
             lazy:true,
 
-            effect: 'fade',
-            fadeEffect: {
-                crossFade: true
-            },
+            // effect:'fade',
+            // fadeEffect:{
+            //     crossFade:true
+            // },
 
             zoom:{
                 maxRatio:5,
                 minRatio:1,
-                toggle:false,
+                toggle:false
             },
 
             navigation:{
@@ -138,12 +133,11 @@ class GalleryPopup {
             on:{
                 slideChange: () => this.resetZoom()
             }
-
         })
     }
 
 
-    /* WHEEL ZOOM */
+    /* WHEEL ZOOM FIXED */
     onZoomWheel(e) {
 
         const slide = this.popup.querySelector('.swiper-slide-active')
@@ -152,25 +146,20 @@ class GalleryPopup {
         const container = slide.querySelector('.swiper-zoom-container')
         if(!container) return
 
-        const rect = container.getBoundingClientRect()
-
-        // позиция курсора внутри изображения (0–1)
-        const x = (e.clientX - rect.left) / rect.width
-        const y = (e.clientY - rect.top) / rect.height
-
-        // фиксируем точку фокуса
-        container.style.transformOrigin = `${x * 100}% ${y * 100}%`
-
         let scale = parseFloat(container.dataset.scale || 1)
 
         scale += e.deltaY < 0 ? 0.2 : -0.2
-        scale = Math.min(Math.max(scale, 1), 5)
+        scale = Math.min(Math.max(scale,1),5)
 
         container.dataset.scale = scale
+
+        // FIX: correct template string
         container.style.transform = `scale(${scale})`
+        container.style.transformOrigin = '50% 50%'
 
         this.hideZoomHint()
     }
+
 
     /* DOUBLE TAP */
     addDoubleTapZoom() {
@@ -194,53 +183,12 @@ class GalleryPopup {
 
                 zoom.dataset.scale = scale
                 zoom.style.transform = scale === 1 ? '' : `scale(${scale})`
+                // zoom.style.transformOrigin = '50% 50%'
 
                 this.hideZoomHint()
             }
 
             lastTap = now
-        })
-    }
-
-
-    /* SWIPE CLOSE */
-    addSwipeClose() {
-
-        let startY = 0
-        let currentY = 0
-        let dragging = false
-
-        this.popup.addEventListener('touchstart',(e)=>{
-
-            startY = e.touches[0].clientY
-            dragging = true
-        })
-
-        this.popup.addEventListener('touchmove',(e)=>{
-
-            if(!dragging) return
-
-            currentY = e.touches[0].clientY
-            const diff = currentY - startY
-
-            if(diff > 0){
-                this.popup.querySelector('.popup_container').style.transform =
-                    `translateY(${diff}px)`
-            }
-        })
-
-        this.popup.addEventListener('touchend',()=>{
-
-            const diff = currentY - startY
-            const container = this.popup.querySelector('.popup_container')
-
-            if(diff > 120){
-                this.closePopup()
-            } else {
-                container.style.transform = ''
-            }
-
-            dragging = false
         })
     }
 
@@ -287,6 +235,7 @@ class GalleryPopup {
         if(!zoom) return
 
         zoom.style.transform = ''
+        zoom.style.transformOrigin = '50% 50%'
         zoom.dataset.scale = 1
 
         this.hasZoomed = false
@@ -295,9 +244,7 @@ class GalleryPopup {
             this.hint.classList.remove('hide')
         }
     }
-
 }
-
 
 
 document.addEventListener('DOMContentLoaded', () => {
