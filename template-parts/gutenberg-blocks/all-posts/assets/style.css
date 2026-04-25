@@ -324,7 +324,18 @@
         transform: translateY(-50%);
         width: 22px;
         height: 22px;
-        background: linear-gradient(135deg, rgba(0, 128, 250, 0.9), #0089ff, rgba(0, 234, 255, 0.95),  #143C78FF);
+        /*background: linear-gradient(135deg, rgba(0, 128, 250, 0.9), #0089ff, rgba(0, 234, 255, 0.95),  #143C78FF);*/
+        background: linear-gradient(
+                135deg,
+                #1b0b24,
+                #3a1452,
+                #6d2fa3,
+                #9a5cff,
+                #4a2a66,
+                #120816
+        );
+
+
         background-size: 200% 100%;
         animation: gradientShift 6s ease infinite , spin 10s linear infinite;
         border: 1px solid rgba(180, 180, 180, 0.8);
