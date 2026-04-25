@@ -28,6 +28,8 @@ if (!empty($block['className'])) {
 ?>
 
 <section class="<?= esc_attr($block_classes) ?> <?= esc_attr($min_height_class); ?> <?= esc_attr($shadow_class); ?>" id="<?= esc_attr($block_anchor) ?>">
+    <?php get_template_part('template-parts/components/breadcrumbs'); ?>
+
     <div class="container">
         <div class="main-banner__text-con">
             <div class="main-banner__wrapper <?= esc_attr(" align-h-$align_h align-v-$align_v") ?>" style="<?= esc_attr($wrapper_style); ?>">

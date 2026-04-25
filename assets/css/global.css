@@ -803,3 +803,53 @@ form {
 	opacity: 0 !important;
 	pointer-events: none;
 }
+
+/*===== breadcrumbs ===== */
+.breadcrumbs {
+	margin-top: clamp(54px, 6.95vw, 84px);
+	padding: 16px 0;
+	z-index: 5;
+
+	ul {
+		display: flex;
+		gap: 8px;
+	}
+
+	li {
+		display: inline-flex;
+		gap: 8px;
+		font-size: 14px;
+		color: var(--black-color, #000);
+
+
+		a {
+			white-space: nowrap;
+			transition: 300ms;
+		}
+
+		a, span {
+			display: -webkit-box;
+			-webkit-line-clamp: 1;
+			-webkit-box-orient: vertical;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			mix-blend-mode: difference;
+			color: white;
+		}
+
+		&.breadcrumbs-home a {
+			opacity: 0.7;
+		}
+
+		&:not(:last-child):after {
+			content: '/';
+			display: inline-block;
+			mix-blend-mode: difference;
+			color: white;
+		}
+	}
+
+	a:hover {
+		opacity: 0.7;
+	}
+}

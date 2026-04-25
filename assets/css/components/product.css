@@ -1,5 +1,5 @@
 .product {
-    margin-top: clamp(70px,6.95vw,100px);
+    /*margin-top: clamp(70px,6.95vw,100px);*/
     display: grid;
     grid-template-columns: 1fr 2fr;
     gap: clamp(20px,3.48vw,50px);
