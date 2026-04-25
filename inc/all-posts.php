@@ -29,7 +29,14 @@ add_action('rest_api_init', function () {
         'permission_callback' => '__return_true'
     ]);
 
+    register_rest_route('site/v1', '/filter-available', [
+        'methods'  => 'POST',
+        'callback' => 'site_filter_available',
+        'permission_callback' => '__return_true'
+    ]);
+
 });
+
 
 
 /*
@@ -168,7 +175,6 @@ function site_filter_posts($request) {
 
     $query = new WP_Query($args);
 
-
     /*
     |--------------------------------------------------------------------------
 | POSTS HTML
@@ -223,7 +229,7 @@ function site_filter_posts($request) {
         'posts' => $posts_html,
         'pagination' => $pagination_html,
         'total_pages' => $total_pages,
-        'current_page' => $paged
+        'current_page' => $paged,
     ];
 
 
@@ -240,7 +246,88 @@ function site_filter_posts($request) {
     return $response;
 }
 
+function site_filter_available($request) {
 
+    $search = sanitize_text_field($request['search'] ?? '');
+
+    $materials = $request['materials'] ?? [];
+    $stones = $request['stones'] ?? [];
+    $product_type = $request['product_type'] ?? [];
+
+    $tax_query = ['relation' => 'AND'];
+
+    if ($materials) {
+        $tax_query[] = [
+            'taxonomy'=>'material',
+            'field'=>'slug',
+            'terms'=>$materials
+        ];
+    }
+
+    if ($stones) {
+        $tax_query[] = [
+            'taxonomy'=>'stone',
+            'field'=>'slug',
+            'terms'=>$stones
+        ];
+    }
+
+    if ($product_type) {
+        $tax_query[] = [
+            'taxonomy'=>'product_type',
+            'field'=>'slug',
+            'terms'=>$product_type
+        ];
+    }
+
+    $args = [
+        'post_type'=>'post',
+        'posts_per_page'=>-1,
+        'post_status'=>'publish',
+        'fields'=>'ids'
+    ];
+
+    if ($search) {
+        $args['s'] = $search;
+    }
+
+    if (count($tax_query) > 1) {
+        $args['tax_query'] = $tax_query;
+    }
+
+    $query = new WP_Query($args);
+
+    $available = [
+        'materials'=>[],
+        'stones'=>[],
+        'product_type'=>[]
+    ];
+
+    foreach ($query->posts as $post_id) {
+
+        $available['materials'] = array_merge(
+            $available['materials'],
+            wp_get_post_terms($post_id,'material',['fields'=>'slugs'])
+        );
+
+        $available['stones'] = array_merge(
+            $available['stones'],
+            wp_get_post_terms($post_id,'stone',['fields'=>'slugs'])
+        );
+
+        $available['product_type'] = array_merge(
+            $available['product_type'],
+            wp_get_post_terms($post_id,'product_type',['fields'=>'slugs'])
+        );
+
+    }
+
+    foreach ($available as $k=>$v) {
+        $available[$k] = array_values(array_unique($v));
+    }
+
+    return $available;
+}
 /*
 |--------------------------------------------------------------------------
 | CACHE INVALIDATION

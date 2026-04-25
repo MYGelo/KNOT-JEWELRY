@@ -472,4 +472,12 @@
 
         }
     }
+
+    .filter-dropdown label {
+        transition: all 300ms;
+        &.unavailable{
+            opacity:.35;
+            pointer-events:none;
+        }
+    }
 }
