@@ -59,9 +59,7 @@
 	.body {
 		overflow: auto;
 	}
-	.hp-field {
-		display: none !important;
-	}
+
 	.hp-field {
 		position: absolute !important;
 		left: -9999px !important;
