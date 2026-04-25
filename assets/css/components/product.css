@@ -385,14 +385,14 @@
     }
 
     .swiper-slide img {
-        object-fit: contain;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 100%;
-        height: 100%;
-        cursor: zoom-in;
+        /*object-fit: contain;*/
+        /*position: absolute;*/
+        /*top: 50%;*/
+        /*left: 50%;*/
+        /*transform: translate(-50%, -50%);*/
+        /*width: 100%;*/
+        /*height: 100%;*/
+
     }
 
     .zoom-hint{
@@ -435,5 +435,26 @@
 
     .swiper-button-next, .swiper-button-prev {
         color: rgba(0, 0, 0, .55);
+    }
+
+    .swiper-zoom-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 100%;
+        height: 100%;
+
+        transform-origin: center center;
+        will-change: transform;
+    }
+
+    .swiper-zoom-container img {
+        max-width: 100%;
+        max-height: 100%;
+        user-select: none;
+        -webkit-user-drag: none;
+        width: 100%;
+        height: 100%;
     }
 }

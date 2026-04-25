@@ -154,8 +154,8 @@ class GalleryPopup {
         container.dataset.scale = scale
 
         // FIX: correct template string
-        container.style.transform = `scale(${scale})`
-        container.style.transformOrigin = '50% 50%'
+        container.style.transform = `translate3d(0,0,0) scale(${scale})`
+        container.style.transformOrigin = 'center center'
 
         this.hideZoomHint()
     }
@@ -234,9 +234,7 @@ class GalleryPopup {
         const zoom = slide.querySelector('.swiper-zoom-container')
         if(!zoom) return
 
-        zoom.style.transform = ''
-        zoom.style.transformOrigin = '50% 50%'
-        zoom.dataset.scale = 1
+        zoom.style.transform = 'translate3d(0,0,0) scale(1)'
 
         this.hasZoomed = false
 
