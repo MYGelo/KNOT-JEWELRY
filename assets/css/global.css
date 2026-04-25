@@ -839,7 +839,7 @@ form {
 		}
 
 		&.breadcrumbs-home a {
-			opacity: 0.7;
+			opacity: 0.85;
 		}
 
 		&:not(:last-child):after {
