@@ -56,15 +56,15 @@
 		}
 	}
 
-	.body {
-		overflow: auto;
-	}
-
 	.hp-field {
 		position: absolute !important;
 		left: -9999px !important;
 		height: 0 !important;
 		opacity: 0 !important;
 		pointer-events: none;
+	}
+
+	.body {
+		overflow: auto;
 	}
 }
