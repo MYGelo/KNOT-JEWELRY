@@ -19,6 +19,9 @@ if (have_posts()) :
                 </section>
 
                 <?php get_template_part('template-parts/product/comment', null, $product); ?>
+
+                <?php get_template_part('template-parts/product/product-popup', null, $product); ?>
+
             </div>
         </main>
 
