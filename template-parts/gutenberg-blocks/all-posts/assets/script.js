@@ -229,6 +229,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     }
 
+    function setCheckboxLoading(active) {
+
+        const all = [...materialEls, ...stoneEls, ...typeEls];
+
+        all.forEach(el => {
+            const label = el.closest('label');
+            if (!label) return;
+
+            if (active) {
+                // только НЕ выбранные
+                if (!el.checked) {
+                    label.classList.add('checkbox-loading');
+                } else {
+                    label.classList.remove('checkbox-loading');
+                }
+            } else {
+                label.classList.remove('checkbox-loading');
+            }
+        });
+
+    }
+
     /* -------------------------------- */
     /* PAGINATION                       */
     /* -------------------------------- */
@@ -265,7 +287,15 @@ document.addEventListener('DOMContentLoaded', () => {
     [...materialEls, ...stoneEls, ...typeEls].forEach(el => {
 
         el.addEventListener('change', () => {
-            updateAvailableFilters();
+
+            setCheckboxLoading(true);
+
+            Promise.all([
+                updateAvailableFilters(),
+            ]).finally(() => {
+                setCheckboxLoading(false);
+            });
+
         });
 
     });
