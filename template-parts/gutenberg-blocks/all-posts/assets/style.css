@@ -474,10 +474,31 @@
     }
 
     .filter-dropdown label {
+        position: relative;
         transition: all 300ms;
+
         &.unavailable{
             opacity:.35;
             pointer-events:none;
+        }
+
+        &.checkbox-loading {
+            pointer-events: none;
+            position: relative;
+            transition: all 300ms;
+
+            &:after {
+                transition: all 300ms;
+                content: "";
+                position: absolute;
+                left: 1px;
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                border: 2px solid transparent;
+                border-top-color: #00000033;
+                animation: spin .7s linear infinite;
+            }
         }
     }
 }
