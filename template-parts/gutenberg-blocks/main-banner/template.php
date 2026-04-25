@@ -45,7 +45,7 @@ if (!empty($block['className'])) {
                            href="<?=esc_url($link['url']);?>"
                            target="<?=esc_attr($link['target']) ?: '_self';?>"
                         ><?= wp_kses_post($link['title']);?>
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <svg style="rotate: 90deg" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <g clip-path="url(#clip0_2185_6107)">
                                     <path d="M2.76502 13.8167L14.0787 2.50302M14.0787 2.50302L14.393 13.5025M14.0787 2.50302L3.07929 2.18875" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
                                 </g>
