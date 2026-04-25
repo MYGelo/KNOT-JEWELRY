@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem(LAST_SEND_KEY, Date.now());
 
         // 6. math check
-        if (data['math-check'] && data['math-check'].trim() !== '5') {
+        if (data['math-check'] && data['math-check'].trim() !== '') {
             console.log('Math fail');
             return;
         }
