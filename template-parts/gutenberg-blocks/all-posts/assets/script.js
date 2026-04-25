@@ -25,6 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const stoneEls = document.querySelectorAll('.filter-stone');
     const typeEls = document.querySelectorAll('.filter-product_type');
 
+    /* -------------------------------- */
+    /* FILTER STATE                     */
+    /* -------------------------------- */
+
     function getFilters() {
         return {
             materials: [...materialEls].filter(i => i.checked).map(i => i.value),
@@ -33,9 +37,25 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
+    /* -------------------------------- */
+    /* UTILS                            */
+    /* -------------------------------- */
+
     function wait(ms) {
         return new Promise(res => setTimeout(res, ms));
     }
+
+    function debounce(fn, delay) {
+        let t;
+        return (...args) => {
+            clearTimeout(t);
+            t = setTimeout(() => fn(...args), delay);
+        };
+    }
+
+    /* -------------------------------- */
+    /* FILTER UI                        */
+    /* -------------------------------- */
 
     function openFilter() {
         wrapper.classList.add('filter-open');
@@ -48,17 +68,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function scrollToSection() {
+
         const rect = section.getBoundingClientRect();
 
         window.scrollTo({
             top: window.scrollY + rect.top - 80,
             behavior: 'smooth'
         });
+
     }
+
+    /* -------------------------------- */
+    /* LOAD POSTS                       */
+    /* -------------------------------- */
 
     async function loadPosts(targetPage = 1, { scroll = false } = {}) {
 
         if (loading) return;
+
         loading = true;
 
         loader?.classList.add('active');
@@ -70,9 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const fetchPromise = fetch('/wp-json/site/v1/filter-posts', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     search: searchInput?.value || '',
                     materials: filters.materials,
@@ -82,9 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
             }).then(res => res.json());
 
-            if (scroll) {
-                scrollToSection();
-            }
+            if (scroll) scrollToSection();
 
             const [data] = await Promise.all([
                 fetchPromise,
@@ -97,7 +120,10 @@ document.addEventListener('DOMContentLoaded', () => {
             page = targetPage;
 
             closeFilter();
+
             isInitialLoad = false;
+
+            await updateAvailableFilters();
 
         } catch (err) {
             console.error(err);
@@ -109,15 +135,104 @@ document.addEventListener('DOMContentLoaded', () => {
         allPostWrap.classList.remove('is-loading');
     }
 
-    function debounce(fn, delay) {
-        let t;
-        return (...args) => {
-            clearTimeout(t);
-            t = setTimeout(() => fn(...args), delay);
-        };
+    /* -------------------------------- */
+    /* UPDATE AVAILABLE FILTERS         */
+    /* -------------------------------- */
+
+    async function updateAvailableFilters() {
+
+        const filters = getFilters();
+
+        try {
+
+            const res = await fetch('/wp-json/site/v1/filter-available', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    search: searchInput?.value || '',
+                    materials: filters.materials,
+                    stones: filters.stones,
+                    product_type: filters.product_type
+                })
+            });
+
+            const data = await res.json();
+
+            updateFilters(data);
+
+        } catch (err) {
+            console.error(err);
+        }
+
     }
 
-    // PAGINATION
+    /* -------------------------------- */
+    /* APPLY FILTER STATE               */
+    /* -------------------------------- */
+
+    function updateFilters(data) {
+
+        const materials = new Set(data.materials);
+        const stones = new Set(data.stones);
+        const types = new Set(data.product_type);
+
+        materialEls.forEach(el => {
+
+            const label = el.closest('label');
+
+            if (el.checked) {
+                label.classList.remove('unavailable');
+                return;
+            }
+
+            if (!materials.has(el.value)) {
+                label.classList.add('unavailable');
+            } else {
+                label.classList.remove('unavailable');
+            }
+
+        });
+
+        stoneEls.forEach(el => {
+
+            const label = el.closest('label');
+
+            if (el.checked) {
+                label.classList.remove('unavailable');
+                return;
+            }
+
+            if (!stones.has(el.value)) {
+                label.classList.add('unavailable');
+            } else {
+                label.classList.remove('unavailable');
+            }
+
+        });
+
+        typeEls.forEach(el => {
+
+            const label = el.closest('label');
+
+            if (el.checked) {
+                label.classList.remove('unavailable');
+                return;
+            }
+
+            if (!types.has(el.value)) {
+                label.classList.add('unavailable');
+            } else {
+                label.classList.remove('unavailable');
+            }
+
+        });
+
+    }
+
+    /* -------------------------------- */
+    /* PAGINATION                       */
+    /* -------------------------------- */
+
     paginationWrap?.addEventListener('click', (e) => {
 
         const btn = e.target.closest('.page-num');
@@ -132,15 +247,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     });
 
-    // SEARCH (debounce как у тебя)
+    /* -------------------------------- */
+    /* SEARCH                           */
+    /* -------------------------------- */
+
     searchInput?.addEventListener(
         'input',
         debounce(() => loadPosts(1, { scroll: false }), 400)
     );
 
-    searchBtn?.addEventListener('click', () => loadPosts(1, { scroll: false }));
+    searchBtn?.addEventListener('click', () => loadPosts(1));
 
-    // RESET
+    /* -------------------------------- */
+    /* FILTER CHANGE                    */
+    /* -------------------------------- */
+
+    [...materialEls, ...stoneEls, ...typeEls].forEach(el => {
+
+        el.addEventListener('change', () => {
+            updateAvailableFilters();
+        });
+
+    });
+
+    /* -------------------------------- */
+    /* RESET                            */
+    /* -------------------------------- */
+
     resetBtn?.addEventListener('click', () => {
 
         searchInput.value = '';
@@ -149,15 +282,22 @@ document.addEventListener('DOMContentLoaded', () => {
             '.filter-material, .filter-stone, .filter-product_type'
         ).forEach(i => i.checked = false);
 
-        loadPosts(1, { scroll: false });
+        loadPosts(1);
+
     });
 
-    // FILTER UI
+    /* -------------------------------- */
+    /* FILTER UI                        */
+    /* -------------------------------- */
+
     filterBtn?.addEventListener('click', openFilter);
     closeBtn?.addEventListener('click', closeFilter);
     bg?.addEventListener('click', closeFilter);
 
-    // INIT
+    /* -------------------------------- */
+    /* INIT                             */
+    /* -------------------------------- */
+
     loadPosts(1);
 
 });
