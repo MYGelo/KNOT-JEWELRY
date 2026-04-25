@@ -478,7 +478,7 @@
         transition: all 300ms;
 
         &.unavailable{
-            opacity: .4;
+            opacity: .35;
             /*pointer-events:none;*/
         }
 

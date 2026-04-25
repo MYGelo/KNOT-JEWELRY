@@ -176,23 +176,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const stones = new Set(data.stones);
         const types = new Set(data.product_type);
 
-        materialEls.forEach(el => {
+        const active = getFilters();
 
-            const label = el.closest('label');
+        const activeCount =
+            (active.stones.length > 0 ? 1 : 0) +
+            (active.materials.length > 0 ? 1 : 0) +
+            (active.product_type.length > 0 ? 1 : 0);
 
-            if (el.checked) {
-                label.classList.remove('unavailable');
-                return;
-            }
+        const onlyStones = active.stones.length > 0 && activeCount === 1;
+        const onlyMaterials = active.materials.length > 0 && activeCount === 1;
+        const onlyTypes = active.product_type.length > 0 && activeCount === 1;
 
-            if (!materials.has(el.value)) {
-                label.classList.add('unavailable');
-            } else {
-                label.classList.remove('unavailable');
-            }
-
-        });
-
+        // -----------------------------------
+        // STONES
+        // -----------------------------------
         stoneEls.forEach(el => {
 
             const label = el.closest('label');
@@ -202,14 +199,41 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            if (!stones.has(el.value)) {
-                label.classList.add('unavailable');
-            } else {
+            // stones свободные только в stones-only режиме
+            if (onlyStones) {
                 label.classList.remove('unavailable');
+                return;
             }
+
+            label.classList.toggle('unavailable', !stones.has(el.value));
 
         });
 
+        // -----------------------------------
+        // MATERIALS
+        // -----------------------------------
+        materialEls.forEach(el => {
+
+            const label = el.closest('label');
+
+            if (el.checked) {
+                label.classList.remove('unavailable');
+                return;
+            }
+
+            // materials свободные только в materials-only режиме
+            if (onlyMaterials) {
+                label.classList.remove('unavailable');
+                return;
+            }
+
+            label.classList.toggle('unavailable', !materials.has(el.value));
+
+        });
+
+        // -----------------------------------
+        // PRODUCT TYPE
+        // -----------------------------------
         typeEls.forEach(el => {
 
             const label = el.closest('label');
@@ -219,14 +243,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            if (!types.has(el.value)) {
-                label.classList.add('unavailable');
-            } else {
+            // types свободные только в types-only режиме
+            if (onlyTypes) {
                 label.classList.remove('unavailable');
+                return;
             }
 
-        });
+            label.classList.toggle('unavailable', !types.has(el.value));
 
+        });
     }
 
     function setCheckboxLoading(active) {
