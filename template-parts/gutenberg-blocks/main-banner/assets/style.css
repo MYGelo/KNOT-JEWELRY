@@ -7,6 +7,7 @@
         position: absolute;
         top: 0;
         left: 0;
+        text-shadow: 1px 1px 0 black;
 
         .breadcrumbs-home {
             opacity: 0.85;
@@ -111,6 +112,7 @@
         color: var(--white);
         text-align: center;
         width: 100%;
+        text-shadow: 1px 1px 0 black;
     }
 
     h1 {
