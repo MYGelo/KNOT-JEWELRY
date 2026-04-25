@@ -176,6 +176,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const stones = new Set(data.stones);
         const types = new Set(data.product_type);
 
+        const active = getFilters();
+
+        const singleGroupMode =
+            (active.stones.length > 0 ? 1 : 0) +
+            (active.materials.length > 0 ? 1 : 0) +
+            (active.product_type.length > 0 ? 1 : 0) === 1;
+
         materialEls.forEach(el => {
 
             const label = el.closest('label');
@@ -185,11 +192,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            if (!materials.has(el.value)) {
-                label.classList.add('unavailable');
-            } else {
+            if (singleGroupMode) {
                 label.classList.remove('unavailable');
+                return;
             }
+
+            label.classList.toggle('unavailable', !materials.has(el.value));
 
         });
 
@@ -202,11 +210,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            if (!stones.has(el.value)) {
-                label.classList.add('unavailable');
-            } else {
+            if (singleGroupMode) {
                 label.classList.remove('unavailable');
+                return;
             }
+
+            label.classList.toggle('unavailable', !stones.has(el.value));
 
         });
 
@@ -219,14 +228,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            if (!types.has(el.value)) {
-                label.classList.add('unavailable');
-            } else {
+            if (singleGroupMode) {
                 label.classList.remove('unavailable');
+                return;
             }
 
-        });
+            label.classList.toggle('unavailable', !types.has(el.value));
 
+        });
     }
 
     function setCheckboxLoading(active) {
