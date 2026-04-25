@@ -765,6 +765,10 @@ form {
 	.wpcf7-response-output {
 		display: none;
 	}
+
+	.wpcf7-form-control .wpcf7-list-item	{
+		margin: 0;
+	}
 }
 
 
