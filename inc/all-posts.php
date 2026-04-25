@@ -256,35 +256,38 @@ function site_filter_available($request) {
 
     $tax_query = ['relation' => 'AND'];
 
-    if ($materials) {
+    if ($stones) {
         $tax_query[] = [
-            'taxonomy'=>'material',
-            'field'=>'slug',
-            'terms'=>$materials
+            'taxonomy' => 'stone',
+            'field' => 'slug',
+            'terms' => $stones,
+            'operator' => 'IN'
         ];
     }
 
-    if ($stones) {
+    if ($materials) {
         $tax_query[] = [
-            'taxonomy'=>'stone',
-            'field'=>'slug',
-            'terms'=>$stones
+            'taxonomy' => 'material',
+            'field' => 'slug',
+            'terms' => $materials,
+            'operator' => 'IN'
         ];
     }
 
     if ($product_type) {
         $tax_query[] = [
-            'taxonomy'=>'product_type',
-            'field'=>'slug',
-            'terms'=>$product_type
+            'taxonomy' => 'product_type',
+            'field' => 'slug',
+            'terms' => $product_type,
+            'operator' => 'IN'
         ];
     }
 
     $args = [
-        'post_type'=>'post',
-        'posts_per_page'=>-1,
-        'post_status'=>'publish',
-        'fields'=>'ids'
+        'post_type' => 'post',
+        'posts_per_page' => -1,
+        'post_status' => 'publish',
+        'fields' => 'ids'
     ];
 
     if ($search) {
@@ -298,31 +301,30 @@ function site_filter_available($request) {
     $query = new WP_Query($args);
 
     $available = [
-        'materials'=>[],
-        'stones'=>[],
-        'product_type'=>[]
+        'materials' => [],
+        'stones' => [],
+        'product_type' => []
     ];
 
     foreach ($query->posts as $post_id) {
 
         $available['materials'] = array_merge(
             $available['materials'],
-            wp_get_post_terms($post_id,'material',['fields'=>'slugs'])
+            wp_get_post_terms($post_id, 'material', ['fields' => 'slugs'])
         );
 
         $available['stones'] = array_merge(
             $available['stones'],
-            wp_get_post_terms($post_id,'stone',['fields'=>'slugs'])
+            wp_get_post_terms($post_id, 'stone', ['fields' => 'slugs'])
         );
 
         $available['product_type'] = array_merge(
             $available['product_type'],
-            wp_get_post_terms($post_id,'product_type',['fields'=>'slugs'])
+            wp_get_post_terms($post_id, 'product_type', ['fields' => 'slugs'])
         );
-
     }
 
-    foreach ($available as $k=>$v) {
+    foreach ($available as $k => $v) {
         $available[$k] = array_values(array_unique($v));
     }
 

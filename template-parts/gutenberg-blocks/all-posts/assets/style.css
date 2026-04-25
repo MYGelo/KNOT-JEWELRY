@@ -478,8 +478,8 @@
         transition: all 300ms;
 
         &.unavailable{
-            opacity:.35;
-            pointer-events:none;
+            opacity: .65;
+            /*pointer-events:none;*/
         }
 
         &.checkbox-loading {
