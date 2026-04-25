@@ -56,6 +56,7 @@
         background-color: #7407070d;
         color: #6767678f;
         border-radius: 5px;
+        width: fit-content;
         /*font-size: clamp(10px, 0.73vw, 14px);*/
     }
     .author__bio,
