@@ -347,7 +347,7 @@
     /* checked state (без animation) */
     .filter-dropdown__item input[type="checkbox"]:checked + .filter-arrow {
         opacity: 1;
-        box-shadow: 0 0 10px rgba(0, 180, 255, 0.25);
+        box-shadow: 0 0 5px rgba(148, 88, 195, 0.53);
     }
 
     .filter-dropdown__buttons {
