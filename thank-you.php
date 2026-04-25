@@ -16,6 +16,8 @@ $bg_mob = $thank_you['background_image_mob'] ?? '';
 ?>
 
 <main >
+    <?php get_template_part('template-parts/components/breadcrumbs'); ?>
+
     <section class="thank-you">
         <style>
             .thank-you {

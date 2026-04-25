@@ -9,8 +9,12 @@ if (have_posts()) :
 
         ?>
 
+
         <main class="product-page">
+            <?php get_template_part('template-parts/components/breadcrumbs'); ?>
+
             <div class="container">
+
                 <section class="product scroll-animate">
 
                     <?php get_template_part('template-parts/product/gallery', null, $product); ?>

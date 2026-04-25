@@ -3,6 +3,16 @@
     display: flex;
     overflow: hidden;
 
+    .breadcrumbs {
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        .breadcrumbs-home {
+            opacity: 0.7;
+        }
+    }
+
     &.has-shadow:before {
         content: '';
         position: absolute;
@@ -40,7 +50,7 @@
     }
 
     .main-banner__wrapper {
-        padding-top: clamp(96px,6.945vw,100px);
+        padding-top: 120px;
         padding-bottom: clamp(20px,6.945vw,100px);
 
         display: flex;
