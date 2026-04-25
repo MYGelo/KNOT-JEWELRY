@@ -90,10 +90,10 @@ $initial_query = new WP_Query([
                         <div class="filter-dropdown__content">
 
                             <div class="filter-dropdown__item">
-                                <strong>Тип виробу</strong>
-                                <?php foreach (get_terms(['taxonomy' => 'product_type', 'hide_empty' => false]) as $term): ?>
+                                <strong>Матеріал</strong>
+                                <?php foreach (get_terms(['taxonomy' => 'material', 'hide_empty' => false]) as $term): ?>
                                     <label>
-                                        <input type="checkbox" class="filter-product_type" value="<?= esc_attr($term->slug); ?>">
+                                        <input type="checkbox" class="filter-material" value="<?= esc_attr($term->slug); ?>">
                                         <div class="filter-arrow"></div>
                                         <?= esc_html($term->name); ?>
                                     </label>
@@ -101,10 +101,10 @@ $initial_query = new WP_Query([
                             </div>
 
                             <div class="filter-dropdown__item">
-                                <strong>Матеріал</strong>
-                                <?php foreach (get_terms(['taxonomy' => 'material', 'hide_empty' => false]) as $term): ?>
+                                <strong>Тип виробу</strong>
+                                <?php foreach (get_terms(['taxonomy' => 'product_type', 'hide_empty' => false]) as $term): ?>
                                     <label>
-                                        <input type="checkbox" class="filter-material" value="<?= esc_attr($term->slug); ?>">
+                                        <input type="checkbox" class="filter-product_type" value="<?= esc_attr($term->slug); ?>">
                                         <div class="filter-arrow"></div>
                                         <?= esc_html($term->name); ?>
                                     </label>
