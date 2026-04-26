@@ -1,7 +1,7 @@
 <?php
 $button_text = get_field( 'button_text', 'option' );
 $button_link = get_field( 'button_link', 'option' );
-$social = get_field('social_repeater1', 'option');
+$social = get_field('social_repeater', 'option');
 $logo = get_field( 'header_logo', 'option' );
 ?>
 

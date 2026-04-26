@@ -11,13 +11,27 @@
 	--btn-color: #161616;
 
 	/*--accent-color: #CFDBC3;*/
-	--white: #FFFFFF;
+	--white: #ffffff;
 	--label: #D4D7DD;
 
 	--card-bg: #F4F7FD;
 
 	--section-space: clamp(40px,6.95vw,100px);
 	--bg-blur: 30px;
+}
+
+.ev-none {
+	pointer-events: none;
+}
+
+.admin-bar .header {
+	top: 32px;
+}
+
+@media (max-width: 782px) {
+	.admin-bar .header {
+		top: 0;
+	}
 }
 
 * {
