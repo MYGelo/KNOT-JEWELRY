@@ -35,7 +35,7 @@ $bg_mob = $thank_you['background_image_mob'] ?? '';
                     margin: 0 auto;
 
                     .thank-you__link {
-                        text-decoration: underline;
+                        text-decoration: unset;
 
                         @media (max-width: 991px) {
                             width: 100%;
