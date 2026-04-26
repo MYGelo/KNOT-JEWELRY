@@ -1,5 +1,7 @@
 (function() {
 	document.addEventListener('DOMContentLoaded', function(event) {
+		const main = document.querySelector('main')
+		const body = document.body
 
 		document.addEventListener('click', function(event) {
 			const target = event.target
@@ -10,14 +12,16 @@
 				const button = target.closest('[data-action="toggleMobileMenu"]')
 				const header = button.closest('.header')
 				const navBox = header ? header.querySelector('.nav_box--mobile') : null
-				const body = document.body
 
 				button.classList.toggle('open')
 				if(navBox) navBox.classList.toggle('open')
 
 				body.classList.remove('overflow')
+				main.classList.remove('ev-none')
+
 				if(button.classList.contains('open')) {
 					body.classList.add('overflow')
+					main.classList.add('ev-none')
 				}
 
 				document.querySelectorAll('.menu-item-has-children.opened').forEach(el => el.classList.remove('opened'))
@@ -42,13 +46,15 @@
 				const popup = target.closest('[data-action="togglePopup"]').getAttribute('data-target')
 				if(popup) document.querySelector(popup).classList.toggle('open')
 				if (popup) {
-					document.body.classList.add('overflow')
+					body.add('overflow')
+					main.classList.add('ev-none')
 				}
 			}
 
 			if(target.closest('[data-action="closePopup"]')) {
 				target.closest('.popup_inner').classList.remove('open')
-				document.body.classList.remove('overflow')
+				body.classList.remove('overflow')
+				main.classList.remove('ev-none')
 			}
 
 			if (target.closest('.header_menu a[href*="#"]')) {
@@ -59,7 +65,23 @@
 				// закрываем меню
 				if (navBox) navBox.classList.remove('open')
 				if (button) button.classList.remove('open')
-				document.body.classList.remove('overflow')
+				body.classList.remove('overflow')
+				main.classList.remove('ev-none')
+			}
+
+			// закрытие мобильного меню при клике вне его
+			if (!target.closest('.nav_box--mobile') && !target.closest('[data-action="toggleMobileMenu"]')) {
+
+				const navBox = document.querySelector('.nav_box--mobile.open')
+				const button = document.querySelector('[data-action="toggleMobileMenu"].open')
+
+				if (navBox) navBox.classList.remove('open')
+				if (button) button.classList.remove('open')
+
+				if (navBox || button) {
+					body.classList.remove('overflow')
+					main.classList.remove('ev-none')
+				}
 			}
 		})
 
@@ -74,7 +96,8 @@
 					cartPopup.classList.remove('open')
 				}
 
-				document.body.classList.remove('overflow')
+				body.classList.remove('overflow')
+				main.classList.remove('ev-none')
 			}
 		})
 
@@ -102,7 +125,6 @@
 				link.setAttribute('rel', 'noopener noreferrer')
 			}
 		})
-
 
 		// ===== BTN TO TOP =====
 		const btn = document.querySelector('.scroll-top-btn');
@@ -139,6 +161,5 @@
 		});
 
 		animatedElements.forEach(el => observer.observe(el));
-
 	})
 })()
