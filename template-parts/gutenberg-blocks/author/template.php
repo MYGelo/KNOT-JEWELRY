@@ -21,7 +21,7 @@ $data = array(
 >
     <div class="container">
         <div class="author__wrapper">
-            <div class="author__photo">
+            <div class="author__photo image-wrapper">
                 <?php if (!empty($data['photo']['url'])):?>
                     <picture>
                         <!-- Mobile --> <source srcset="<?= $data['photo']['sizes']['medium_large']; ?>" media="(max-width: 551px)">
