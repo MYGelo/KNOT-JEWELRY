@@ -257,6 +257,8 @@
 				gap: 16px;
 				max-height: 100%;
 				overflow: auto;
+				margin-bottom: 20px;
+				position: relative;
 			}
 			
 			.sub-menu {
@@ -316,7 +318,7 @@
 		justify-content: center;
 		gap: 10px;
 		padding: 20px 0 10px;
-		margin-top: 20px;
+		margin-top: auto;
 
 		&:before {
 			content: '';
