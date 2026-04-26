@@ -25,6 +25,7 @@
         box-shadow: 0 0 12px 0 #0000004f;
         border-radius: clamp(10px,1.389vw,20px) clamp(10px,1.389vw,20px) 20px 0;
         overflow: hidden;
+        height: fit-content;
 
         @media (max-width: 767px) {
             aspect-ratio: 1.11;
