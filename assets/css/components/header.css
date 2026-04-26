@@ -250,6 +250,7 @@
 				opacity: 1;
 				visibility: visible;
 				pointer-events: auto;
+				box-shadow: 0 5px 20px 0 white;
 			}
 			
 			.header_menu {
