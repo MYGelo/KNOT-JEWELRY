@@ -279,6 +279,25 @@
             }
         }
 
+        .product-note {
+            margin-top: 12px;
+            padding: 12px 14px;
+            box-shadow: 0 0 10px rgb(0 0 0 / 15%);
+            border-radius: 16px;
+            font-size: 13px;
+            line-height: 1.4;
+            color: #444;
+            background-color: rgba(0, 0, 0, 0.05);
+
+
+            span {
+                font-size: 13px;
+            }
+
+            p {
+                font-size: 12px;
+            }
+        }
     }
 
 
