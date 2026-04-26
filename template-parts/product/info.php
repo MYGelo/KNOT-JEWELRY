@@ -1,6 +1,7 @@
 <?php
     extract($args);
     $in_stock = get_field('in-stock');
+    $product_note = get_field('single_p_settings_product-note','option');
 ?>
 
 <div class="product-info">
@@ -57,6 +58,10 @@
         }
         ?>
     </ul>
+
+    <?php if(!empty($product_note)):?>
+        <p class="product-note scroll-animate"><?=wp_kses_post($product_note);?></p>
+    <?php endif; ?>
 
     <button class="scroll-animate btn-buy main-btn third" data-action="togglePopup" data-target="#example_popup">Замовити виріб</button>
 </div>

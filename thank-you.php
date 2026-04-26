@@ -5,14 +5,13 @@ get_header();
 $thank_you = get_field('thank_you_page', 'option');
 
 $main_title = $thank_you['main_title'] ?? '';
-$title = $thank_you['title'] ?? 'Dziękujemy za Twoje zgłoszenie!';
-$description = $thank_you['description'] ?? 'Otrzymaliśmy Twoje dane i wkrótce się z Tobą skontaktujemy.
-Tymczasem możesz zobaczyć nasze aktualne oferty lub dowiedzieć się więcej o nieruchomościach.';
+$title = $thank_you['title'];
+$description = $thank_you['description'] ?? ' ';
+$after_description = $thank_you['after_description'];
 $link_url = $thank_you['link_url'] ?? home_url('/');
-$link_text = $thank_you['link_text'] ?? 'Zobacz oferty';
+$link_text = $thank_you['link_text'] ?? 'Home';
 $bg = $thank_you['background_image'] ?? [];
 $bg_mob = $thank_you['background_image_mob'] ?? '';
-
 ?>
 
 <main >
@@ -34,11 +33,11 @@ $bg_mob = $thank_you['background_image_mob'] ?? '';
                     padding: clamp(24px,2.78vw,40px);
                     border-radius: 16px;
                     margin: 0 auto;
-                    /*box-shadow: 5px 6px 20px #00000082;*/
-                    /*text-shadow: 0px 0px 10px #00000082;*/
 
-                    @media (max-width: 991px) {
-                        & a {
+                    .thank-you__link {
+                        text-decoration: underline;
+
+                        @media (max-width: 991px) {
                             width: 100%;
                             text-align: center;
                             display: flex;
@@ -68,6 +67,9 @@ $bg_mob = $thank_you['background_image_mob'] ?? '';
                     margin-bottom: 32px;
                 }
 
+                a {
+                    text-decoration: underline;
+                }
                 .thank-you__bg img {
                     position: absolute;
                     top: 0;
@@ -80,6 +82,7 @@ $bg_mob = $thank_you['background_image_mob'] ?? '';
                 }
             }
         </style>
+
         <div class="container">
 
             <div class="thank-you__wrapper">
@@ -92,11 +95,11 @@ $bg_mob = $thank_you['background_image_mob'] ?? '';
                 <?php endif; ?>
 
                 <?php if ($description): ?>
-                    <p><?php echo esc_html($description); ?></p>
+                    <p><?php echo wp_kses_post($description); ?></p>
                 <?php endif; ?>
 
                 <?php if ($link_text): ?>
-                    <a href="<?= !empty($link_url) ? esc_url($link_url) : '/';?>" class="main-btn third">
+                    <a href="<?= !empty($link_url) ? esc_url($link_url) : '/';?>" class="thank-you__link main-btn third">
                         <?= esc_html($link_text); ?>
                     </a>
                 <?php endif; ?>

@@ -184,8 +184,7 @@ acf_add_local_field_group(array(
                     'key'     => 'field_thank_you_description',
                     'label'   => 'Description',
                     'name'    => 'description',
-                    'type'    => 'textarea',
-                    'wrapper' => array('width' => '100%'),
+                    'type'    => 'wysiwyg',
                 ),
                 array(
                     'key'     => 'field_thank_you_link_text',
@@ -319,6 +318,20 @@ acf_add_local_field_group(array(
             'default_value' => 'Надіслати коментар',
         ),
 
+        array(
+            'key'   => 'tab_single_p_settings',
+            'label' => 'Single Post Settings',
+            'name'  => '',
+            'type'  => 'tab',
+            'placement' => 'top',
+        ),
+        array(
+            'key'     => 'field_tab_single_p_settings_product-note',
+            'label'   => 'Product Note',
+            'name'    => 'single_p_settings_product-note',
+            'type'    => 'text',
+            'default_value' => 'Усі замовлення обробляються вручну. Після заповнення форми я зв’яжуся з вами для підтвердження та уточнення деталей.Щоб пришвидшити обробку, залиште Instagram, Telegram username.'
+        ),
     ),
     'location' => array(
         array(
