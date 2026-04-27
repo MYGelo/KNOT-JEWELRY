@@ -3,6 +3,20 @@
 		const main = document.querySelector('main')
 		const body = document.body
 
+		function resetPopupSteps(popup){
+			const step1 = popup.querySelector('.step-1')
+			const step2 = popup.querySelector('.step-2')
+			const indicators = popup.querySelectorAll('.step-indicator')
+
+			if(step2) step2.classList.remove('active')
+			if(step1) step1.classList.add('active')
+
+			if(indicators.length){
+				indicators[1]?.classList.remove('active')
+				indicators[0]?.classList.add('active')
+			}
+		}
+
 		document.addEventListener('click', function(event) {
 			const target = event.target
 
@@ -44,17 +58,27 @@
 				event.preventDefault()
 
 				const popup = target.closest('[data-action="togglePopup"]').getAttribute('data-target')
-				if(popup) document.querySelector(popup).classList.toggle('open')
-				if (popup) {
-					body.add('overflow')
+				console.log('test');
+				if(popup) {
+					document.querySelector(popup).classList.toggle('open')
+					body.classList.add('overflow')
 					main.classList.add('ev-none')
 				}
 			}
 
 			if(target.closest('[data-action="closePopup"]')) {
-				target.closest('.popup_inner').classList.remove('open')
+
+				const popup = target.closest('.popup_inner')
+				if(!popup) return
+
+				popup.classList.remove('open')
+
 				body.classList.remove('overflow')
 				main.classList.remove('ev-none')
+
+				setTimeout(() => {
+					resetPopupSteps(popup)
+				}, 200)
 			}
 
 			if (target.closest('.header_menu a[href*="#"]')) {
@@ -82,6 +106,40 @@
 					body.classList.remove('overflow')
 					main.classList.remove('ev-none')
 				}
+			}
+
+			// ===== MULTI STEP POPUP =====
+
+			// NEXT STEP
+			if(target.closest('[data-action="nextStep"]')) {
+
+				const popup = target.closest('.popup_inner')
+				if(!popup) return
+
+				const step1 = popup.querySelector('.step-1')
+				const step2 = popup.querySelector('.step-2')
+				const indicators = popup.querySelectorAll('.step-indicator')
+
+				if(step1) step1.classList.remove('active')
+				if(step2) step2.classList.add('active')
+
+				if(indicators.length){
+					indicators[0]?.classList.remove('active')
+					indicators[1]?.classList.add('active')
+				}
+
+				const firstInput = step2?.querySelector('input, textarea')
+				if(firstInput) firstInput.focus()
+			}
+
+
+			// PREV STEP
+			if(target.closest('[data-action="prevStep"]')) {
+
+				const popup = target.closest('.popup_inner')
+				if(!popup) return
+
+				resetPopupSteps(popup)
 			}
 		})
 

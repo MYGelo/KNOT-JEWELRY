@@ -44,6 +44,30 @@
 		background-color: #fff;
 		border-radius: 16px;
 		/*width: 100%;*/
+
+		/*===== Scroll Bar =====*/
+		&::-webkit-scrollbar {
+			width: 14px;
+		}
+
+		&::-webkit-scrollbar-track {
+			background: transparent;
+		}
+
+		&::-webkit-scrollbar-thumb {
+			background: linear-gradient(
+					180deg,
+					#FFFFFF00,
+					#111,
+					#555,
+					#111,
+					#FFFFFF00
+			);
+
+			border-radius: 10px;
+			border: 5px solid transparent;
+			background-clip: content-box;
+		}
 	}
 
 	.head {
@@ -66,5 +90,55 @@
 
 	.body {
 		overflow: auto;
+	}
+
+	.steps-progress {
+		display: flex;
+		gap: 10px;
+		margin: 10px 0 20px;
+	}
+
+	.step-indicator {
+		padding: 4px 10px;
+		border-radius: 20px;
+		background: #eee;
+		font-size: 13px;
+	}
+
+	.step-indicator.active {
+		background: #000;
+		color: #fff;
+	}
+
+	.form-step {
+		display: none;
+		flex-direction: column;
+		gap: 15px;
+		opacity: 0;
+
+		transition: opacity 300ms;
+
+		&.active {
+			display: flex;
+			opacity: 1;
+		}
+
+		.form-step__text-content {
+			display: flex;
+			flex-direction: column;
+			gap: 15px;
+
+			hyphens: auto;
+			overflow-wrap: break-word;
+			word-break: break-word;
+		}
+	}
+
+	.btn-back {
+		background: none;
+		border: none;
+		cursor: pointer;
+		font-size: 14px;
+		margin-right: auto;
 	}
 }
