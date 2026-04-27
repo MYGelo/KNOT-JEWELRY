@@ -60,7 +60,7 @@
     </ul>
 
     <?php if(!empty($product_note)):?>
-        <p class="product-note scroll-animate"><?=wp_kses_post($product_note);?></p>
+        <div class="product-note scroll-animate"><?=wp_kses_post($product_note);?></div>
     <?php endif; ?>
 
     <button class="scroll-animate btn-buy main-btn third" data-action="togglePopup" data-target="#example_popup">Замовити виріб</button>
