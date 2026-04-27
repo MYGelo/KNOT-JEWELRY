@@ -9,5 +9,8 @@ function get_product_meta($post_id): array {
 //        'stone'     => get_post_meta($post_id, 'stone', true),
         'gallery'   => (array) get_post_meta($post_id, 'gallery', true),
         'thumb_id'  => get_post_thumbnail_id($post_id),
+
+        'note_mode' => get_field('product_note_settings', $post_id),
+        'product_note_custom' => get_field('product_note_custom', $post_id),
     ];
 }
