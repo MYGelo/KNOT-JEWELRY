@@ -2,6 +2,9 @@
     extract($args);
     $in_stock = get_field('in-stock');
     $product_note = get_field('single_p_settings_product-note','option');
+
+    $note_mode = $args['note_mode'];
+    $product_note_custom = $args['product_note_custom'];
 ?>
 
 <div class="product-info">
@@ -59,8 +62,22 @@
         ?>
     </ul>
 
-    <?php if(!empty($product_note)):?>
-        <div class="product-note scroll-animate"><?=wp_kses_post($product_note);?></div>
+    <?php if ($note_mode !== 'off'): ?>
+
+        <div class="product-note scroll-animate">
+
+            <?php if ($note_mode === 'custom' && !empty($product_note_custom)): ?>
+
+                <?= wp_kses_post($product_note_custom); ?>
+
+            <?php else: ?>
+
+                <?= wp_kses_post($product_note); ?>
+
+            <?php endif; ?>
+
+        </div>
+
     <?php endif; ?>
 
     <button class="scroll-animate btn-buy main-btn third" data-action="togglePopup" data-target="#example_popup">Замовити виріб</button>
