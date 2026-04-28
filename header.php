@@ -14,33 +14,6 @@ $logo = get_field( 'header_logo', 'option' );
                 name="viewport"
                 content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
         >
-        <title>
-            <?php
-            $title = '';
-            if ( class_exists( 'WPSEO_Frontend' ) ) {
-                $yoast = WPSEO_Frontend::get_instance();
-                $title = $yoast->title( get_the_ID() );
-                if ( ! $title ) {
-                    $title = bloginfo( 'name' );
-                    if ( ! is_front_page() ) {
-                        $title = get_the_title() . ' - ' . bloginfo( 'name' );
-                    }
-                }
-            }
-
-            echo $title;
-            ?>
-        </title>
-
-        <?php $site_url = get_site_url(); ?>
-        <link
-                rel="preconnect"
-                href="<?= $site_url ?>"
-        >
-        <link
-                rel="dns-prefetch"
-                href="<?= $site_url ?>"
-        >
 
         <?php include_once __DIR__ . '/inc/preloads.php' ?>
 
