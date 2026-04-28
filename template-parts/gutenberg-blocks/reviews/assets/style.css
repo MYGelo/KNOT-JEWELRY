@@ -26,6 +26,7 @@
         /*height: clamp(432px, 41.4vw, 595px);*/
         aspect-ratio: 1.2 / 2;
         z-index: 2;
+        display: block;
 
         & .svg-wrapper {
             position: absolute;
