@@ -56,22 +56,29 @@ function site_seo_head() {
 
 ?>
 
-<title><?php echo esc_html($title); ?></title>
+    <title><?php echo esc_html($title); ?></title>
 
-<meta name="description" content="<?php echo esc_attr($desc); ?>">
+    <meta name="description" content="<?php echo esc_attr($desc); ?>">
 
-<link rel="canonical" href="<?php echo esc_url($url); ?>">
+    <link rel="canonical" href="<?php echo esc_url($url); ?>">
 
-<meta property="og:title" content="<?php echo esc_attr($title); ?>">
-<meta property="og:description" content="<?php echo esc_attr($desc); ?>">
-<meta property="og:type" content="<?php echo esc_attr($type); ?>">
-<meta property="og:url" content="<?php echo esc_url($url); ?>">
-<meta property="og:image" content="<?php echo esc_url($img); ?>">
+    <!-- OpenGraph -->
+    <meta property="og:title" content="<?php echo esc_attr($title); ?>">
+    <meta property="og:description" content="<?php echo esc_attr($desc); ?>">
+    <meta property="og:type" content="<?php echo esc_attr($type); ?>">
+    <meta property="og:url" content="<?php echo esc_url($url); ?>">
+    <meta property="og:image" content="<?php echo esc_url($img); ?>">
+    <meta property="og:site_name" content="<?php echo esc_attr(get_bloginfo('name')); ?>">
+    <meta property="og:locale" content="uk_UA">
 
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="<?php echo esc_attr($title); ?>">
-<meta name="twitter:description" content="<?php echo esc_attr($desc); ?>">
-<meta name="twitter:image" content="<?php echo esc_url($img); ?>">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?php echo esc_attr($title); ?>">
+    <meta name="twitter:description" content="<?php echo esc_attr($desc); ?>">
+    <meta name="twitter:image" content="<?php echo esc_url($img); ?>">
 
 <?php
 }
