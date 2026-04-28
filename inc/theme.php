@@ -29,6 +29,9 @@ add_action('wp_enqueue_scripts', function () {
 	wp_dequeue_style('wc-block-style');
 }, 100);
 
+remove_action('wp_head', 'print_emoji_detection_script', 7);
+remove_action('wp_print_styles', 'print_emoji_styles');
+
 // get name of first block on the page for styles preload
 function get_first_block_name_on_page($post_id = null)
 {
