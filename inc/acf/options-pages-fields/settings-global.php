@@ -396,6 +396,47 @@ acf_add_local_field_group(array(
             ),
         ),
 
+        array(
+            'key'   => 'tab_seo_settings',
+            'label' => 'SEO Settings',
+            'name'  => '',
+            'type'  => 'tab',
+            'placement' => 'top',
+        ),
+
+        array(
+            'key'     => 'field_seo_site_title',
+            'label'   => 'Site SEO Title',
+            'name'    => 'site_seo_title',
+            'type'    => 'text',
+            'instructions' => 'Default title for homepage and fallback for posts',
+            'wrapper' => array(
+                'width' => '50%',
+            ),
+        ),
+
+        array(
+            'key'     => 'field_seo_site_description',
+            'label'   => 'Site SEO Description',
+            'name'    => 'site_seo_description',
+            'type'    => 'textarea',
+            'rows'    => 3,
+            'instructions' => 'Default description for homepage and fallback for posts',
+            'wrapper' => array(
+                'width' => '50%',
+            ),
+        ),
+
+        array(
+            'key'           => 'field_seo_site_og_image',
+            'label'         => 'Default OG Image',
+            'name'          => 'site_og_image',
+            'type'          => 'image',
+            'return_format' => 'url',
+            'preview_size'  => 'medium',
+            'library'       => 'all',
+            'instructions'  => 'Used when post does not have its own image',
+        ),
 
     ),
     'location' => array(
