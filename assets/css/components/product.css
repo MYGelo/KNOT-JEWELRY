@@ -320,6 +320,7 @@
                 background-color: white;
                 color: black;
                 z-index: 1;
+                font-size: 14px;
             }
 
             .styled__input {
