@@ -61,6 +61,17 @@ $button_text = get_field('comments_button_text','option') ?: 'Надіслати
             ></textarea>
         </div>
 
+        <div class="styled">
+            <label class="styled-label">Фото</label>
+
+            <input
+                    class="styled__input scroll-animate"
+                    type="file"
+                    id="comment-photo"
+                    accept="image/jpeg,image/png,image"
+            >
+        </div>
+
         <button class="btn-buy main-btn third scroll-animate" id="comment-submit"><?=$button_text?></button>
     </div>
 </section>
