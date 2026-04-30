@@ -38,9 +38,8 @@
 
     .comment-photo {
         position: relative;
-        padding-top: clamp(100px,14vw,200px);
-        max-width: clamp(125px,17.4vw,250px);
-        width: 100%;
+        height: clamp(100px,14vw,200px);
+        width: clamp(125px,17.4vw,250px);
         border-radius:10px;
         margin-top:10px;
         cursor: zoom-in;
