@@ -36,6 +36,36 @@
         margin-bottom: 12px;
     }
 
+    .comment-photo {
+        position: relative;
+        padding-top: clamp(100px,14vw,200px);
+        max-width: clamp(125px,17.4vw,250px);
+        width: 100%;
+        border-radius:10px;
+        margin-top:10px;
+        cursor: zoom-in;
+
+        .gallery-zoom {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0, 0, 0, .45);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 1;
+            animation: bouncePause 2s ease-in-out infinite;
+            pointer-events: none;
+        }
+    }
+
     .comment-footer {
         display: flex;
         justify-content: space-between;

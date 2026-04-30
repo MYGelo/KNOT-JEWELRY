@@ -15,6 +15,9 @@ class GalleryPopup {
         this.swiper = null
         this.hasZoomed = false
 
+        this.lastTap = 0
+        this.mode = null // gallery | comment
+
         this.bindEvents()
     }
 
@@ -33,8 +36,12 @@ class GalleryPopup {
 
     onOpen(e) {
 
+        if(this.mode === 'comment') return
+
         const zoom = e.target.closest('.gallery-zoom')
         if(!zoom) return
+
+        this.mode = 'gallery'
 
         const mainSwiper = this.gallery.querySelector('.gallery-main')?.swiper
         const index = mainSwiper?.clickedIndex ?? 0
@@ -42,7 +49,7 @@ class GalleryPopup {
         this.openPopup()
         this.initSwiper()
 
-        this.swiper.slideToLoop(index,0)
+        this.swiper?.slideToLoop(index,0)
 
         this.showHint()
     }
@@ -57,6 +64,8 @@ class GalleryPopup {
     closePopup() {
         this.popup.classList.remove('open')
         document.body.style.overflow=''
+
+        this.mode = null
     }
 
 
@@ -79,7 +88,11 @@ class GalleryPopup {
 
     initSwiper() {
 
-        if(this.swiper) return
+        // ❗ КЛЮЧЕВОЙ FIX: всегда пересоздаём
+        if(this.swiper){
+            this.swiper.destroy(true,true)
+            this.swiper = null
+        }
 
         this.wrapper.innerHTML=''
 
@@ -90,6 +103,7 @@ class GalleryPopup {
 
             const zoomWrap=document.createElement('div')
             zoomWrap.className='swiper-zoom-container'
+            zoomWrap.dataset.scale = 1
 
             const image=document.createElement('img')
 
@@ -114,11 +128,6 @@ class GalleryPopup {
             preloadImages:false,
             lazy:true,
 
-            // effect:'fade',
-            // fadeEffect:{
-            //     crossFade:true
-            // },
-
             zoom:{
                 maxRatio:5,
                 minRatio:1,
@@ -137,7 +146,6 @@ class GalleryPopup {
     }
 
 
-    /* WHEEL ZOOM FIXED */
     onZoomWheel(e) {
 
         const slide = this.popup.querySelector('.swiper-slide-active')
@@ -153,7 +161,6 @@ class GalleryPopup {
 
         container.dataset.scale = scale
 
-        // FIX: correct template string
         container.style.transform = `translate3d(0,0,0) scale(${scale})`
         container.style.transformOrigin = 'center center'
 
@@ -161,16 +168,13 @@ class GalleryPopup {
     }
 
 
-    /* DOUBLE TAP */
     addDoubleTapZoom() {
-
-        let lastTap = 0
 
         this.popup.addEventListener('touchend',(e)=>{
 
             const now = Date.now()
 
-            if(now - lastTap < 300){
+            if(now - this.lastTap < 300){
 
                 const slide = this.popup.querySelector('.swiper-slide-active')
                 const zoom = slide?.querySelector('.swiper-zoom-container')
@@ -182,18 +186,20 @@ class GalleryPopup {
                 scale = scale > 1 ? 1 : 2
 
                 zoom.dataset.scale = scale
-                zoom.style.transform = scale === 1 ? '' : `scale(${scale})`
-                // zoom.style.transformOrigin = '50% 50%'
+
+                zoom.style.transform =
+                    scale === 1
+                        ? 'translate3d(0,0,0) scale(1)'
+                        : `translate3d(0,0,0) scale(${scale})`
 
                 this.hideZoomHint()
             }
 
-            lastTap = now
-        })
+            this.lastTap = now
+        }, { passive:true })
     }
 
 
-    /* HINT */
     showHint() {
 
         if(!this.hint) return
@@ -225,7 +231,6 @@ class GalleryPopup {
     }
 
 
-    /* RESET */
     resetZoom() {
 
         const slide = this.popup.querySelector('.swiper-slide-active')
@@ -234,6 +239,7 @@ class GalleryPopup {
         const zoom = slide.querySelector('.swiper-zoom-container')
         if(!zoom) return
 
+        zoom.dataset.scale = 1
         zoom.style.transform = 'translate3d(0,0,0) scale(1)'
 
         this.hasZoomed = false
@@ -242,12 +248,77 @@ class GalleryPopup {
             this.hint.classList.remove('hide')
         }
     }
+
+
+    openCommentImage(src){
+
+        this.mode = 'comment'
+
+        // ❗ важно: полностью убиваем старый swiper
+        if(this.swiper){
+            this.swiper.destroy(true,true)
+            this.swiper = null
+        }
+
+        this.wrapper.innerHTML = ''
+
+        const slide = document.createElement('div')
+        slide.className = 'swiper-slide'
+
+        const zoomWrap = document.createElement('div')
+        zoomWrap.className='swiper-zoom-container'
+        zoomWrap.dataset.scale = 1
+
+        const img = document.createElement('img')
+
+        img.src = src
+        img.loading = 'eager'
+
+        zoomWrap.appendChild(img)
+        slide.appendChild(zoomWrap)
+
+        this.wrapper.appendChild(slide)
+
+        this.openPopup()
+
+        this.swiper = new Swiper('.gallery-popup-slider',{
+
+            slidesPerView:1,
+            speed:400,
+            spaceBetween:50,
+
+            zoom:{
+                maxRatio:5,
+                minRatio:1,
+                toggle:false
+            },
+
+            navigation:{
+                nextEl:'.gallery-popup .swiper-button-next',
+                prevEl:'.gallery-popup .swiper-button-prev'
+            }
+
+        })
+    }
 }
 
 
+/* =========================
+   INIT
+========================= */
+
 document.addEventListener('DOMContentLoaded', () => {
 
-    new GalleryPopup()
+    const popup = new GalleryPopup()
+
+    document.addEventListener("click",(e)=>{
+
+        const img = e.target.closest(".comment-photo img")
+        if(!img) return
+
+        popup.openCommentImage(img.src)
+    })
+
 
     const thumbsEl = document.querySelector('.gallery-thumbs');
     let thumbs = null;
@@ -265,13 +336,10 @@ document.addEventListener('DOMContentLoaded', () => {
             },
         });
 
-        // Проверяем количество слайдов
         const totalSlides = thumbsEl.querySelectorAll('.swiper-slide').length;
         if (totalSlides < 4) {
             const paginationEl = thumbsEl.querySelector('.swiper-pagination');
-            if (paginationEl) {
-                paginationEl.remove(); // убираем сам элемент прогрессбара
-            }
+            if (paginationEl) paginationEl.remove();
         }
     }
 
