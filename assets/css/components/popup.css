@@ -141,4 +141,8 @@
 		font-size: 14px;
 		margin-right: auto;
 	}
+
+	.wpcf7-list-item-label a{
+		text-decoration: underline;
+	}
 }
