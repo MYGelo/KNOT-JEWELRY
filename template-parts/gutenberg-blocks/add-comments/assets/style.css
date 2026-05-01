@@ -1,5 +1,5 @@
 .add-comments {
-    padding: clamp(60px, 6vw, 120px) 0;
+    margin: clamp(60px, 6vw, 120px) 0;
     overflow: hidden;
     .swiper {
         overflow: visible;
