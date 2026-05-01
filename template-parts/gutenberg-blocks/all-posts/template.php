@@ -1,6 +1,7 @@
 <?php
 $main_title   = get_field('all-posts_main_title') ?? '';
 $description  = get_field('all-posts_description') ?? '';
+$is_sticky    = get_field('all-posts_use_sticky') ?? '';
 
 $block_anchor = $block['anchor'] ?? '';
 $block_classes = 'all-posts';
@@ -18,7 +19,7 @@ $initial_query = new WP_Query([
 ]);
 ?>
 
-<section class="<?= esc_attr($block_classes) ?>" id="<?= esc_attr($block_anchor) ?>">
+<section class="<?= esc_attr($block_classes) ?> <?= $is_sticky ? 'sticky-item' : ''?>" id="<?= esc_attr($block_anchor) ?>">
     <div class="container">
         <div class="all-posts__wrapper">
             <?php if ($main_title): ?>

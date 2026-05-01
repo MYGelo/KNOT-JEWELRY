@@ -1,4 +1,5 @@
 .all-posts {
+    position: relative;
 
     .all-posts__wrapper {
         display: flex;
@@ -86,6 +87,7 @@
             border: 1px solid black;
             font-size: clamp(14px,1.11112vw,16px);
             cursor: pointer;
+            background-color: transparent;
 
             &::placeholder {
                 color: black;
@@ -97,6 +99,21 @@
 
             &:focus {
                 outline: transparent;
+            }
+        }
+    }
+
+    &.sticky-item {
+        .all-posts__title-wrapper {
+            position: sticky;
+            top: 70px;
+            z-index: 2;
+
+            .all-posts__search,
+            .all-posts__filter {
+                backdrop-filter: blur(6px);
+                box-shadow: 0 0 12px 0 #0000004f;
+                background-color: #efefe93b;
             }
         }
     }

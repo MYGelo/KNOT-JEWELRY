@@ -48,7 +48,7 @@ if ($comments_data === false) {
         foreach ($posts as $post) {
 
             if (has_post_thumbnail($post->ID)) {
-                $thumbs[$post->ID] = get_the_post_thumbnail_url($post->ID, 'medium');
+                $thumbs[$post->ID] = get_the_post_thumbnail_url($post->ID, 'medium_large');
             }
 
         }
