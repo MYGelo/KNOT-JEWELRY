@@ -1,6 +1,7 @@
 .add-comments {
-    padding: clamp(60px, 6vw, 120px) 0;
+    margin-bottom: var(--section-space);
     overflow: hidden;
+
     .swiper {
         overflow: visible;
     }
@@ -66,21 +67,29 @@
     }
 
     .stock-card-back-icon {
-        display: flex;
-        position: absolute;
-        top: 0;
-        right: 0;
-        padding: 10px;
-        margin: 10px;
-        border-radius: 50%;
         backdrop-filter: blur(6px);
+        border-radius: 10px;
         color: #fff;
+        display: flex;
+        margin: 7px;
+        padding: 5px;
+        position: absolute;
+        right: 0;
+        top: 0;
 
         & svg {
             mix-blend-mode: difference;
             fill: currentColor;
             animation: bouncePause 2s ease-in-out infinite;
         }
+    }
+
+    .comment-text {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
 
     .comment-footer {
