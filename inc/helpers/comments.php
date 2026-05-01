@@ -128,6 +128,9 @@ function add_comment_ajax() {
         'comment_approved'=> 1
     ]);
 
+
+    delete_transient('all_comments_block');
+
     if ($photo_url) {
         add_comment_meta($comment_id, 'comment_photo', $photo_url);
     }
