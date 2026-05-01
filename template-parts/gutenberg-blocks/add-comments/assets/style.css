@@ -1,5 +1,6 @@
 .add-comments {
-    margin: clamp(60px, 6vw, 120px) 0;
+    margin-bottom: var(--section-space);
+    
     overflow: hidden;
     .swiper {
         overflow: visible;
