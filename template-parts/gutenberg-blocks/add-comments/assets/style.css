@@ -1,14 +1,15 @@
 .add-comments {
     padding: clamp(60px, 6vw, 120px) 0;
+    overflow: hidden;
+    .swiper {
+        overflow: visible;
+    }
 
     h2 {
         margin-bottom: 10px;
     }
     .add-comments__desc {
         margin-bottom: 24px;
-    }
-    .comments-slider {
-        padding: 10px 0;
     }
 
     .comments-slider .swiper-slide {
@@ -46,7 +47,7 @@
         position: relative;
         width: 100%;
         height: 200px;
-        border-radius: 14px;
+        border-radius: 0 16px 16px 0;
         overflow: hidden;
     }
 

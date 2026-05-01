@@ -5,9 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
         window.commentsSwiper = new Swiper('.comments-slider', {
             slidesPerView: 'auto',
             spaceBetween: 24,
-            // autoplay: {
-            //     delay: 4000,
-            // },
+            autoplay: {
+                delay: 4000,
+            },
             freeMode: false,
             speed: 500,
         });
