@@ -41,7 +41,7 @@
         height: clamp(100px,14vw,200px);
         width: clamp(125px,17.4vw,250px);
         border-radius:10px;
-        margin-top:10px;
+        margin: 10px 0;
         cursor: zoom-in;
 
         .gallery-zoom {
