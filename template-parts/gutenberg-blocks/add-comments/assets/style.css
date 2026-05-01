@@ -1,0 +1,97 @@
+.add-comments {
+    padding: clamp(60px, 6vw, 120px) 0;
+    overflow: hidden;
+    .swiper {
+        overflow: visible;
+    }
+
+    h2 {
+        margin-bottom: 10px;
+    }
+    .add-comments__desc {
+        margin-bottom: 24px;
+    }
+
+    .comments-slider .swiper-slide {
+        height: auto;
+        display: flex;
+        max-width: clamp(324px, 30.9723vw, 446px);
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    .comment-card {
+        position: relative;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        transition: 0.3s ease;
+        border-radius: 0 16px 16px 0;
+        box-shadow: 0 0 10px rgb(0 0 0 / 10%);
+        padding: clamp(10px, 1.389vw, 20px);
+        background: #faf8f5a3;
+        border-left: 2px solid #c8a96a;
+
+        &:hover {
+            transform: translateY(-4px);
+        }
+    }
+
+    .comment-photo {
+        position: relative;
+        width: 100%;
+        height: 200px;
+        border-radius: 0 16px 16px 0;
+        overflow: hidden;
+    }
+
+    .stock-card-back-icon {
+        display: flex;
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 10px;
+        animation: bouncePause 2s ease-in-out infinite;
+        mix-blend-mode: difference;
+        color: white;
+
+        & svg {
+            fill: currentColor;
+        }
+    }
+
+    .comment-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+        font-size: 13px;
+        color: #666;
+        border-top: 1px solid rgba(0,0,0,0.06);
+        padding-top: 12px;
+    }
+
+    .comment-author {
+        font-weight: 500;
+        color: #111;
+    }
+
+    .comment-date {
+        opacity: 0.7;
+    }
+
+    .comment-link {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+
+    }
+}
