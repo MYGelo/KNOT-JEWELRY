@@ -300,10 +300,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     searchInput?.addEventListener(
         'input',
-        debounce(() => loadPosts(1, { scroll: false }), 400)
+        debounce(() => loadPosts(1, { scroll: true }), 800)
     );
 
-    searchBtn?.addEventListener('click', () => loadPosts(1));
+    searchBtn?.addEventListener('click', () => loadPosts(1, { scroll: true }));
 
     /* -------------------------------- */
     /* FILTER CHANGE                    */
