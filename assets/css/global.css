@@ -302,10 +302,13 @@ section {
 
 	&:focus,
 	&:hover {
-		background-color: #000000A3;
-		cursor: pointer;
-		outline: none;
+		@media (hover: hover) {
+			background-color: #000000A3;
+			cursor: pointer;
+			outline: none;
+		}
 	}
+
 }
 
 .primary_button {
@@ -315,13 +318,15 @@ section {
 
 	color: var(--white);
 	border-radius: 60px;
-	padding: 16px 40px;
+	padding: 16px 32px;
 
 	background-color: var(--title-color);
 
 
-	&:hover::before {
-		opacity: 0;
+	@media (hover: hover) {
+		&:hover::before {
+			opacity: 0;
+		}
 	}
 
 	&[disabled] {
@@ -863,7 +868,7 @@ form {
 		}
 
 		&.breadcrumbs-home a {
-			opacity: 0.85;
+			opacity: 0.95;
 		}
 
 		&:not(:last-child):after {
