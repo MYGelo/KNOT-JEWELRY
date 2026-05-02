@@ -133,6 +133,12 @@
         -ms-user-select: none;
         user-select: none;
 
+        transition: 300ms ease;
+
+        &:hover {
+            transform: translateY(-4px);
+        }
+
         @media (max-width: 768px) {
             &:nth-child(5n + 5) {
                 grid-column: span 2;
