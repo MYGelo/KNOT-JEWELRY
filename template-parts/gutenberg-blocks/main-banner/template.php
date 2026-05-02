@@ -1,8 +1,8 @@
 <?php
 $main_title         = get_field('main_banner_main_title') ?? '';
-$title              = get_field('main_banner_title') ?? '';
+$sub_title          = get_field('main_banner_sub_title') ?? '';
 $description        = get_field('main_banner_description') ?? '';
-$link               = get_field('main_banner_link') ?? '';
+$links              = get_field('main_banner_links') ?? '';
 $poster             = get_field('main_banner_bg') ?? [];
 $min_height         = get_field('main_banner_min_height') === 'true';
 $min_height_class   = $min_height ? '' : 'min-height';
@@ -33,33 +33,70 @@ if (!empty($block['className'])) {
     <div class="container">
         <div class="main-banner__text-con">
             <div class="main-banner__wrapper <?= esc_attr(" align-h-$align_h align-v-$align_v") ?>" style="<?= esc_attr($wrapper_style); ?>">
-                <?php if ($main_title): ?>
-                    <h1 class="scroll-animate"><?php echo wp_kses_post($main_title); ?></h1>
+                <?php if(!empty($sub_title)): ?>
+                    <p class="sub-title"><?=wp_kses_post($sub_title);?></p>
+                <?php endif; ?>
+
+                <?php if (!empty($main_title)): ?>
+                    <h1 class=""><?php echo wp_kses_post($main_title); ?></h1>
                 <?php endif; ?>
 
                 <?php if ($description): ?>
-                    <p class="scroll-animate"><?php echo wp_kses_post($description); ?></p>
+                    <div class=""><?php echo wp_kses_post($description); ?></div>
                 <?php endif; ?>
 
-                <?php if (!empty($link['url'])):?>
-                    <div class="main-banner__link_wrap scroll-animate">
-                        <a class="main-btn primary_button five"
-                           href="<?=esc_url($link['url']);?>"
-                           target="<?=esc_attr($link['target']) ?: '_self';?>"
-                        ><?= wp_kses_post($link['title']);?>
-                            <svg style="rotate: 90deg" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <g clip-path="url(#clip0_2185_6107)">
-                                    <path d="M2.76502 13.8167L14.0787 2.50302M14.0787 2.50302L14.393 13.5025M14.0787 2.50302L3.07929 2.18875" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
-                                </g>
-                                <defs>
-                                    <clipPath id="clip0_2185_6107">
-                                        <rect width="16" height="16" fill="white"/>
-                                    </clipPath>
-                                </defs>
-                            </svg>
-                        </a>
+                <?php if($links): ?>
+                    <div class="main-banner__links">
+                        <?php foreach ($links as $items):
+                            $style = $items['style'];
+                            $link = $items['link'];
+                            ?>
+                            <a href="<?= esc_url($link['url']) ?>"
+                               class="main-btn  <?= esc_attr($style) ?>_button "
+                               target="<?= esc_attr($link['target']) ?>">
+                                <?= esc_html($link['title']) ?>
+                            </a>
+                        <?php endforeach; ?>
                     </div>
-                <?php endif;?>
+                <?php endif; ?>
+
+                <?php if(have_rows('main_banner_features')): ?>
+                    <div class="main-banner__features">
+
+                        <?php while(have_rows('main_banner_features')): the_row();
+
+                            $icon = get_sub_field('icon');
+                            $text = get_sub_field('text');
+
+                            ?>
+
+                            <div class="main-banner__feature">
+                                <?php if (!empty($icon)): ?>
+                                    <div class="main-banner__feature-img">
+                                        <picture>
+                                            <!-- Mobile --> <source srcset="<?= $icon['sizes']['medium_large']; ?>" media="(max-width: 551px)">
+                                            <!-- Desktop --><source srcset="<?= $icon['url']; ?>" media="(min-width: 552px)">
+                                            <img
+                                                    class=""
+                                                    src="<?= esc_url($icon['sizes']['large'] ?: $icon['sizes']['medium_large']); ?>"
+                                                    alt="<?= esc_attr($icon['alt'] ?: $icon['title']); ?>"
+                                                    width="<?= esc_attr($icon['width'] ?? ''); ?>"
+                                                    height="<?= esc_attr($icon['height'] ?? ''); ?>"
+                                                    loading="lazy"
+                                                    decoding="async"
+                                            >
+                                        </picture>
+                                    </div>
+                                <?php endif; ?>
+
+                                <p class="main-banner__feature-text"><?= wp_kses_post($text) ?></p>
+
+                            </div>
+
+                        <?php endwhile; ?>
+
+                    </div>
+                <?php endif; ?>
             </div>
 
             <?php if (is_array($poster_png) && !empty($poster_png['url'])): ?>
@@ -98,12 +135,12 @@ if (!empty($block['className'])) {
                 <!-- VIDEO -->
                 <?php if (!empty($video)): ?>
                     <video
-                        class="main-banner__video"
-                        autoplay
-                        muted
-                        loop
-                        playsinline
-                        preload="auto"
+                            class="main-banner__video"
+                            autoplay
+                            muted
+                            loop
+                            playsinline
+                            preload="auto"
                     >
                         <source src="<?= esc_url($video); ?>" type="video/mp4">
                     </video>

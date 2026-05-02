@@ -74,7 +74,13 @@ acf_add_local_field_group(array(
             ),
         ),
 
-
+        // SUB TITLE
+        array(
+            'key'   => 'field_main_banner_sub_title',
+            'label' => 'Sub Title',
+            'name'  => 'main_banner_sub_title',
+            'type'  => 'text',
+        ),
 
         // MAIN TITLE
         array(
@@ -82,9 +88,6 @@ acf_add_local_field_group(array(
             'label' => 'Main Title',
             'name'  => 'main_banner_main_title',
             'type'  => 'text',
-            'wrapper' => array(
-                'width' => '100',
-            ),
         ),
 
         // DESCRIPTION
@@ -92,20 +95,44 @@ acf_add_local_field_group(array(
             'key'   => 'field_main_banner_description',
             'label' => 'Description',
             'name'  => 'main_banner_description',
-            'type'  => 'textarea',
-            'wrapper' => array(
-                'width' => '100',
-            ),
+            'type'  => 'wysiwyg',
         ),
 
         // LINK
         array(
-            'key'   => 'field_main_banner_link',
-            'label' => 'Link',
-            'name'  => 'main_banner_link',
-            'type'  => 'link',
-            'wrapper' => array(
-                'width' => '100',
+            'key' => 'field_main_banner_links',
+            'label' => 'Banner Links',
+            'name' => 'main_banner_links',
+            'type' => 'repeater',
+            'layout' => 'row',
+            'button_label' => 'Add Link',
+            'sub_fields' => array(
+
+                array(
+                    'key' => 'field_main_banner_link_item',
+                    'label' => 'Link',
+                    'name' => 'link',
+                    'type' => 'link',
+                    'wrapper' => array(
+                        'width' => '60',
+                    ),
+                ),
+
+                array(
+                    'key' => 'field_main_banner_link_style',
+                    'label' => 'Style',
+                    'name' => 'style',
+                    'type' => 'button_group',
+                    'choices' => array(
+                        'primary' => 'Primary',
+                        'outline' => 'Outline',
+                    ),
+                    'default_value' => 'primary',
+                    'wrapper' => array(
+                        'width' => '40',
+                    ),
+                ),
+
             ),
         ),
 
@@ -159,6 +186,39 @@ acf_add_local_field_group(array(
             'preview_size'  => 'medium_large',
             'wrapper' => array(
                 'width' => '50',
+            ),
+        ),
+
+        array(
+            'key' => 'field_main_banner_features',
+            'label' => 'Banner Features',
+            'name' => 'main_banner_features',
+            'type' => 'repeater',
+            'layout' => 'row',
+            'button_label' => 'Add Feature',
+            'sub_fields' => array(
+
+                array(
+                    'key' => 'field_main_banner_feature_icon',
+                    'label' => 'SVG Icon',
+                    'name' => 'icon',
+                    'type' => 'image',
+                    'return_format' => 'array',
+                    'wrapper' => array(
+                        'width' => '50',
+                    ),
+                ),
+
+                array(
+                    'key' => 'field_main_banner_feature_text',
+                    'label' => 'Text',
+                    'name' => 'text',
+                    'type' => 'text',
+                    'wrapper' => array(
+                        'width' => '50',
+                    ),
+                ),
+
             ),
         ),
 
