@@ -32,7 +32,7 @@
         min-height: clamp(600px,49.098vw,70dvh);
         max-height: 70dvh;
         @media (max-width: 767px) {
-            min-height: 700px;
+            /*min-height: 650px;*/
             aspect-ratio: unset;
         }
 
