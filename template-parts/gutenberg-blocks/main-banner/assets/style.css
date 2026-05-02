@@ -229,7 +229,7 @@
     .primary_button,
     .outline_button {
         padding: clamp(8px,1.11112vw,16px) clamp(12px,2.223vw,32px);
-        font-size: clamp(12px,1.11112vw,16px);
+        /*font-size: clamp(12px,1.11112vw,16px);*/
     }
     .primary_button {
         border: 1px solid transparent;
