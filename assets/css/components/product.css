@@ -3,6 +3,7 @@
     display: grid;
     grid-template-columns: 1fr 2fr;
     gap: clamp(20px,3.48vw,50px);
+    align-items: start;
 
     @media (max-width: 767px) {
         grid-template-columns: 1fr;

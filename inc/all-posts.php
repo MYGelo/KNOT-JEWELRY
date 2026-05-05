@@ -174,6 +174,7 @@ function site_filter_posts($request) {
 
 
     $query = new WP_Query($args);
+    update_post_thumbnail_cache($query);
 
     /*
     |--------------------------------------------------------------------------
