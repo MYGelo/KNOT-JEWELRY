@@ -1,11 +1,16 @@
 <?php
+
 function clear_reviews_block_cache($post_id) {
+
     if (wp_is_post_autosave($post_id) || wp_is_post_revision($post_id)) {
         return;
     }
+
     delete_transient('reviews_block_' . $post_id);
 }
+
 add_action('save_post', 'clear_reviews_block_cache');
+add_action('acf/save_post', 'clear_reviews_block_cache');
 
 
 function clear_in_stock_cache($post_id = null) {
