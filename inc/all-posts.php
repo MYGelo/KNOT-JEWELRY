@@ -8,11 +8,6 @@ function get_filter_cache_version() {
     return get_option('filter_cache_version', 1);
 }
 
-function bump_filter_cache() {
-    update_option('filter_cache_version', time());
-}
-
-
 /*
 | REST ROUTES
 */
@@ -86,14 +81,56 @@ function site_filter_posts($request) {
         ]));
 
 
-    /* CACHE READ */
+    /* CACHE READ (IDs only) */
 
     if (!defined('DISABLE_FILTER_CACHE') || DISABLE_FILTER_CACHE === false) {
 
         $cached = get_transient($cache_key);
 
         if ($cached !== false) {
-            return $cached;
+
+            $post_ids = $cached['post_ids'];
+            $total_pages = $cached['total_pages'];
+
+            $posts = get_posts([
+                'post_type' => 'post',
+                'post__in' => $post_ids,
+                'orderby' => 'post__in',
+                'posts_per_page' => -1,
+                'update_post_meta_cache' => true,
+                'update_post_term_cache' => true
+            ]);
+
+            global $post;
+
+            ob_start();
+
+            foreach ($posts as $post) {
+                setup_postdata($post);
+
+                get_template_part(
+                    'template-parts/components/post',
+                    'card'
+                );
+            }
+
+            wp_reset_postdata();
+
+            $posts_html = ob_get_clean();
+
+            ob_start();
+
+            $paged = $page;
+            include get_template_directory() . '/template-parts/components/pagination.php';
+
+            $pagination_html = ob_get_clean();
+
+            return [
+                'posts' => $posts_html,
+                'pagination' => $pagination_html,
+                'total_pages' => $total_pages,
+                'current_page' => $paged,
+            ];
         }
     }
 
@@ -135,11 +172,9 @@ function site_filter_posts($request) {
         'paged' => $page,
         'post_status' => 'publish',
         'ignore_sticky_posts' => true,
-
         'update_post_meta_cache' => true,
         'update_post_term_cache' => true,
-
-        'cache_results' => true, // OPT
+        'cache_results' => true
     ];
 
     if ($search) {
@@ -150,11 +185,10 @@ function site_filter_posts($request) {
         $args['tax_query'] = $tax_query;
     }
 
-
     $query = new WP_Query($args);
 
 
-    /* OPT: image cache warmup */
+    /* IMAGE CACHE WARMUP */
 
     if ($query->posts) {
 
@@ -169,9 +203,8 @@ function site_filter_posts($request) {
 
             if ($thumb_id) {
                 get_post($thumb_id);
-                wp_get_attachment_image_src($thumb_id, 'full');
+                wp_get_attachment_image_src($thumb_id, 'medium');
             }
-
         }
     }
 
@@ -222,10 +255,14 @@ function site_filter_posts($request) {
     ];
 
 
-    /* CACHE WRITE */
+    /* CACHE WRITE (IDs only) */
 
     if (!defined('DISABLE_FILTER_CACHE') || DISABLE_FILTER_CACHE === false) {
-        set_transient($cache_key, $response, DAY_IN_SECONDS); // OPT
+
+        set_transient($cache_key, [
+            'post_ids' => wp_list_pluck($query->posts, 'ID'),
+            'total_pages' => $total_pages
+        ], DAY_IN_SECONDS);
     }
 
     return $response;
@@ -278,7 +315,7 @@ function site_filter_available($request) {
         'posts_per_page' => -1,
         'post_status' => 'publish',
         'fields' => 'ids',
-        'cache_results' => true // OPT
+        'cache_results' => true
     ];
 
     if ($search) {
@@ -297,11 +334,7 @@ function site_filter_available($request) {
         'product_type' => []
     ];
 
-
-    /* OPT: preload term cache */
-
     update_object_term_cache($query->posts, 'post');
-
 
     foreach ($query->posts as $post_id) {
 
@@ -334,17 +367,6 @@ function site_filter_available($request) {
 
     return $available;
 }
-
-
-/*
-| CACHE INVALIDATION
-*/
-
-add_action('save_post_post', 'bump_filter_cache');
-add_action('created_term', 'bump_filter_cache');
-add_action('edited_term', 'bump_filter_cache');
-add_action('delete_term', 'bump_filter_cache');
-
 
 // config.php
 // define('DISABLE_FILTER_CACHE', true);
