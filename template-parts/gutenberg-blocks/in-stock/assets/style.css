@@ -78,6 +78,10 @@
     .stock-card {
         .stock-card-back {
             backface-visibility:hidden;
+
+            & h3 {
+                padding-right: 15px;
+            }
         }
 
         &.flipped {

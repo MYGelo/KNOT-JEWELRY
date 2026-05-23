@@ -30,9 +30,9 @@ $price_meta = get_post_meta(get_the_ID(), 'price', true);
     <div class="all-posts__price-wrapper">
 
         <div class="all-posts__categories">
-
             <?php
-            foreach (['material','stone'] as $tax) {
+
+            foreach (['material','stone', 'category'] as $tax) {
 
                 $terms = get_the_terms(get_the_ID(), $tax);
 
@@ -40,10 +40,20 @@ $price_meta = get_post_meta(get_the_ID(), 'price', true);
 
                     foreach ($terms as $term) {
 
-                        echo '<span class="all-posts__category">'
+                        // Для category выводим только in-stock
+                        if ($tax === 'category' && $term->slug !== 'in-stock') {
+                            continue;
+                        }
+
+                        $class = 'all-posts__category';
+
+                        if ($term->slug === 'in-stock') {
+                            $class .= ' product-stock';
+                        }
+
+                        echo '<span class="' . esc_attr($class) . '">'
                             . esc_html($term->name)
                             . '</span>';
-
                     }
                 }
             }
