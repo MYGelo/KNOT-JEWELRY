@@ -339,10 +339,11 @@
 
     /* активный слой (заменяет 3 анимации на статичный + micro transition) */
     .filter-dropdown__item input[type="checkbox"] + .filter-arrow {
-        position: absolute;
-        left: 0;
-        top: 0;
-        transform: translateY(-50%);
+        /*position: absolute;*/
+        /*left: 0;*/
+        /*top: 0;*/
+        /*transform: translateY(-50%);*/
+        margin-left: -27px;
         width: 22px;
         height: 22px;
         /*background: linear-gradient(135deg, rgba(0, 128, 250, 0.9), #0089ff, rgba(0, 234, 255, 0.95),  #143C78FF);*/
