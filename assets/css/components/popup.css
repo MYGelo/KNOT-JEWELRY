@@ -43,7 +43,7 @@
 		padding: clamp(15px,1.68vw,25px);
 		background-color: #fff;
 		border-radius: 16px;
-		/*width: 100%;*/
+		width: 100%;
 
 		/*===== Scroll Bar =====*/
 		&::-webkit-scrollbar {
@@ -142,7 +142,54 @@
 		margin-right: auto;
 	}
 
-	.wpcf7-list-item-label a{
-		text-decoration: underline;
+	.order-form__alert {
+		padding: 12px 14px;
+		border: 1px solid #c0392b;
+		border-radius: 4px;
+		color: #c0392b;
+		font-size: 14px;
+	}
+
+	.field-error {
+		display: block;
+		margin-top: 6px;
+		font-size: 13px;
+		color: #c0392b;
+		min-height: 1em;
+	}
+
+	.styled__input.is-invalid,
+	select.styled__input.is-invalid {
+		border-color: #c0392b;
+	}
+
+	.ring-size-notice {
+		margin: 8px 0 0;
+		font-size: 13px;
+		line-height: 1.4;
+		color: #555;
+	}
+
+	.order-form__privacy-label {
+		display: flex;
+		align-items: flex-start;
+		gap: 10px;
+		font-size: 14px;
+		line-height: 1.4;
+		cursor: pointer;
+
+		input {
+			margin-top: 3px;
+			flex-shrink: 0;
+		}
+
+		a {
+			text-decoration: underline;
+		}
+	}
+
+	.order-form__submit[disabled] {
+		opacity: 0.6;
+		cursor: not-allowed;
 	}
 }

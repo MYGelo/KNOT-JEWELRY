@@ -58,7 +58,6 @@
 				event.preventDefault()
 
 				const popup = target.closest('[data-action="togglePopup"]').getAttribute('data-target')
-				console.log('test');
 				if(popup) {
 					document.querySelector(popup).classList.toggle('open')
 					body.classList.add('overflow')
