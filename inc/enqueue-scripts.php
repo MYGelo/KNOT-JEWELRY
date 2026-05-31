@@ -71,7 +71,8 @@ function theme_scripts()
         wp_enqueue_style('single-comments', get_stylesheet_directory_uri() . '/assets/css/components/single-comments.css', array(), null);
 
         wp_enqueue_script( 'product', get_template_directory_uri() . '/assets/js/product.js', [], filemtime( get_template_directory() . '/assets/js/product.js' ), true );
-        wp_enqueue_script( 'telegram-bot', get_template_directory_uri() . '/assets/js/telegram-bot.js', [], filemtime( get_template_directory() . '/assets/js/telegram-bot.js' ), true );
+        wp_enqueue_script( 'order-form-js', get_template_directory_uri() . '/assets/js/order-form.js', [], filemtime( get_template_directory() . '/assets/js/order-form.js' ), true );
+        wp_localize_script( 'order-form-js', 'knotOrderForm', knot_order_form_config() );
 
         wp_enqueue_script('comments-js', get_template_directory_uri().'/assets/js/comments.js', [], null, true);
         wp_localize_script('comments-js','comment_ajax',['url'=>admin_url('admin-ajax.php'), 'post_id'=>get_the_ID()]);
