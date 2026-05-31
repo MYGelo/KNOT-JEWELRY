@@ -363,7 +363,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const lines = ['📏 Розмір: ' + (size || '-')];
 
         if (parseFloat(size) > 19) {
-            lines.push('⚠️ Розмір >19 — ціна може змінитися, майстер зв’яжеться');
+            lines.push('⚠️⚠️⚠️ Розмір > 19 ⚠️⚠️⚠️');
         }
 
         return lines.join('\n');
