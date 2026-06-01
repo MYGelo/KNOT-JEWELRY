@@ -16,6 +16,6 @@ require_once __DIR__ . '/inc/helpers/order-form.php';
 
 require_once __DIR__ . '/inc/helpers/comments.php';
 
-//require_once __DIR__ . '/inc/helpers/seo.php';
+require_once __DIR__ . '/inc/helpers/seo.php';
 
 require_once __DIR__ . '/inc/helpers/cash.php';
