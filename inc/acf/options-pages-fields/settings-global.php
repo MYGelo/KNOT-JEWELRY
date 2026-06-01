@@ -438,6 +438,15 @@ acf_add_local_field_group(array(
             'instructions'  => 'Used when post does not have its own image',
         ),
 
+        array(
+            'key'          => 'field_google_site_verification',
+            'label'        => 'Google Search Console verification',
+            'name'         => 'google_site_verification',
+            'type'         => 'text',
+            'instructions' => 'Код з Google Search Console (метод HTML-тег). Вставте лише значення content="...", без лапок і без всього тега.',
+            'placeholder'  => 'abc123xyz...',
+        ),
+
     ),
     'location' => array(
         array(

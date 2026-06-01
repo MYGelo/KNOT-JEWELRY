@@ -36,6 +36,10 @@ function maintenance_redirect()
 		return;
 	}
 
+	if (function_exists('knot_is_seo_bot_request') && knot_is_seo_bot_request()) {
+		return;
+	}
+
 	if (is_page($slug)) {
 		return;
 	}
