@@ -23,10 +23,11 @@
 	.care__sections {
 		display: flex;
 		flex-direction: column;
+		gap: clamp(40px, 6.95vw, 100px);
 
-		@media (max-width: 991px) {
+		@media (min-width: 992px) {
 			&.is-gap-none {
-				gap: clamp(40px, 6.95vw, 100px);
+				gap: 0;
 			}
 		}
 	}
