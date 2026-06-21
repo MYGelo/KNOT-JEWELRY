@@ -4,7 +4,7 @@
 	.care__hero {
 		text-align: center;
 		max-width: 740px;
-		margin: 0 auto clamp(60px, 6.95vw, 100px);
+		margin: 0 auto clamp(40px, 6.95vw, 100px);
 	}
 
 	.care__hero-title {
@@ -23,7 +23,7 @@
 	.care__sections {
 		display: flex;
 		flex-direction: column;
-		gap: clamp(40px, 6.95vw, 100px);
+		gap: clamp(60px, 6.95vw, 100px);
 
 		@media (min-width: 992px) {
 			&.is-gap-none {
