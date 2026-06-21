@@ -111,7 +111,7 @@ $show_margin   = get_field('show_margin') ?? '';
 							<?php endif; ?>
 
 							<?php if ($extra): ?>
-								<div class="care-section__rte"><?= wp_kses_post($extra); ?></div>
+								<div class="care-section__rte-2"><?= wp_kses_post($extra); ?></div>
 							<?php endif; ?>
 						</div>
 
