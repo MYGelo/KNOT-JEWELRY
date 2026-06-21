@@ -30,7 +30,7 @@ $show_margin   = get_field('show_margin') ?? '';
 
 		<?php if (!empty($sections)): ?>
 			<div class="care__sections <?= $show_margin ? 'is-gap-none' : ''?>">
-				<?php foreach ($sections as $section):
+				<?php foreach ($sections as $index => $section):
 					$number    = $section['number'] ?? '';
 					$title     = $section['title'] ?? '';
 					$image     = $section['image'] ?? null;
@@ -64,7 +64,7 @@ $show_margin   = get_field('show_margin') ?? '';
 						];
 					}
 					?>
-					<article class="care-section care-section--img-<?= esc_attr($position); ?>">
+					<article class="care-section care-section--img-<?= esc_attr($position); ?>" id="care-section_<?=$index?>">
 
 						<div class="care-section__media">
 							<?php if ($image && !empty($image['url'])): ?>
