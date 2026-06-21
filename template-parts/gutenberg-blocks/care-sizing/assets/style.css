@@ -168,7 +168,6 @@
 	.care-table {
 		width: 100%;
 		border-collapse: collapse;
-		margin: clamp(20px, 2.4vw, 32px) 0;
 
 		thead th {
 			text-align: left;
