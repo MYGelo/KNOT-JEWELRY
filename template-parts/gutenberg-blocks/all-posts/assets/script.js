@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let page = 1;
     let loading = false;
-    let isInitialLoad = true;
 
     const materialEls = document.querySelectorAll('.filter-material');
     const stoneEls = document.querySelectorAll('.filter-stone');
@@ -42,10 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
     /* -------------------------------- */
     /* UTILS                            */
     /* -------------------------------- */
-
-    function wait(ms) {
-        return new Promise(res => setTimeout(res, ms));
-    }
 
     function debounce(fn, delay) {
         let t;
@@ -90,14 +85,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         loading = true;
 
-        loader?.classList.add('active');
-        allPostWrap.classList.add('is-loading');
+        // показуємо лоадер тільки якщо запит іде довше 200ms
+        let loaderVisible = false;
+        const loaderTimer = setTimeout(() => {
+            loader?.classList.add('active');
+            allPostWrap.classList.add('is-loading');
+            loaderVisible = true;
+        }, 200);
 
         const filters = getFilters();
 
         try {
 
-            const fetchPromise = fetch('/wp-json/site/v1/filter-posts', {
+            const data = await fetch('/wp-json/site/v1/filter-posts', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -111,11 +111,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (scroll) scrollToSection();
 
-            const [data] = await Promise.all([
-                fetchPromise,
-                wait(1000)
-            ]);
-
             postsWrap.innerHTML = data.posts;
             paginationWrap.innerHTML = data.pagination;
 
@@ -123,18 +118,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
             closeFilter();
 
-            isInitialLoad = false;
-
-            await updateAvailableFilters();
+            if (data.available) {
+                updateFilters(data.available);
+            }
 
         } catch (err) {
             console.error(err);
         }
 
+        clearTimeout(loaderTimer);
+        loader?.classList.remove('active');
         loading = false;
 
-        loader?.classList.remove('active');
-        allPostWrap.classList.remove('is-loading');
+        if (loaderVisible) {
+            setTimeout(() => allPostWrap.classList.remove('is-loading'), 500);
+        } else {
+            allPostWrap.classList.remove('is-loading');
+        }
     }
 
     /* -------------------------------- */
@@ -289,8 +289,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let suggestAbort = null;
     let closeTimer   = null;
+    let blockNextClick = false;
+
+    document.addEventListener('click', (e) => {
+        if (blockNextClick) {
+            blockNextClick = false;
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    }, { capture: true });
 
     function closeSuggestions() {
+        if (!suggestionsEl) return;
         suggestionsEl.classList.remove('active');
         clearTimeout(closeTimer);
         closeTimer = setTimeout(() => { suggestionsEl.innerHTML = ''; }, 250);
@@ -331,6 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 btn.addEventListener('pointerdown', (e) => {
                     e.preventDefault();
+                    blockNextClick = true;
                     searchInput.value = item.title;
                     runSearch();
                 });

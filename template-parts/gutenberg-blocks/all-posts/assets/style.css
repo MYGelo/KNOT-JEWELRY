@@ -148,6 +148,7 @@
             background-color: #f2f2f2;
             box-shadow: 0 0 12px 0 #0000004f;
             border-radius: 10px;
+            max-height: 60vh;
             max-height: 60dvh;
             overflow-y: auto;
             overflow-x: hidden;
