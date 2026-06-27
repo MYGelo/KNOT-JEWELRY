@@ -28,7 +28,16 @@ $initial_query = new WP_Query([
 
             <div class="all-posts__title-wrapper">
                 <!-- ПОИСК -->
-                <input class="all-posts__search" type="text" id="ajax-search" placeholder="Пошук..." autocomplete="off">
+                <div class="all-posts__search-wrap">
+                    <input class="all-posts__search" type="text" id="ajax-search" placeholder="Пошук..." autocomplete="off">
+                    <button type="button" class="all-posts__search-btn" id="ajax-search-icon-btn" aria-label="Пошук">
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="7.5" cy="7.5" r="6" stroke="currentColor" stroke-width="1.3"/>
+                            <path d="M12 12L16 16" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                    <div class="all-posts__suggestions" id="search-suggestions"></div>
+                </div>
 
                 <button class="all-posts__filter">
                     ФІЛЬТР
@@ -114,6 +123,11 @@ $initial_query = new WP_Query([
 
                             <div class="filter-dropdown__item">
                                 <strong>Камінь</strong>
+                                <label>
+                                    <input type="checkbox" class="filter-stone" value="no-stone">
+                                    <div class="filter-arrow"></div>
+                                    Без каменя
+                                </label>
                                 <?php foreach (get_terms(['taxonomy' => 'stone', 'hide_empty' => false]) as $term): ?>
                                     <label>
                                         <input type="checkbox" class="filter-stone" value="<?= esc_attr($term->slug); ?>">
