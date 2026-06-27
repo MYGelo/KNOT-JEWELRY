@@ -339,7 +339,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 btn.className = 'all-posts__suggestion-item';
                 btn.textContent = item.title;
 
+                let pointerStartY = 0;
+
                 btn.addEventListener('pointerdown', (e) => {
+                    pointerStartY = e.clientY;
+                });
+
+                btn.addEventListener('pointerup', (e) => {
+                    if (Math.abs(e.clientY - pointerStartY) > 10) return;
                     e.preventDefault();
                     blockNextClick = true;
                     searchInput.value = item.title;
