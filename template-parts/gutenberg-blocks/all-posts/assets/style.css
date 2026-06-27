@@ -75,7 +75,6 @@
         gap: 10px;
         justify-content: space-between;
 
-        .all-posts__search,
         .all-posts__filter {
             display: flex;
             gap: 15px;
@@ -88,17 +87,127 @@
             font-size: clamp(14px,1.11112vw,16px);
             cursor: pointer;
             background-color: transparent;
+        }
+
+        /* ------ SEARCH WRAP ------ */
+        .all-posts__search-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: clamp(5px,0.7vw,10px) clamp(10px,1.4vw,20px);
+            border-radius: 25px;
+            border: 1px solid currentColor;
+            gap: 8px;
+            background-color: transparent;
+            max-width: 350px;
+            width: 100%;
+        }
+
+        .all-posts__search {
+            flex: 1;
+            min-width: 0;
+            border: none;
+            background: transparent;
+            font-size: clamp(14px,1.11112vw,16px);
+            color: currentColor;
+            outline: none;
 
             &::placeholder {
                 color: currentColor;
                 font: 400 clamp(14px, 1.11112vw, 16px) / 1 var(--font), sans-serif;
             }
         }
-        .all-posts__search {
-            margin-left: 0;
 
-            &:focus {
-                outline: transparent;
+        .all-posts__search-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border: none;
+            background: transparent;
+            color: currentColor;
+            cursor: pointer;
+            border-radius: 50%;
+            -webkit-tap-highlight-color: transparent;
+            transition: opacity 200ms;
+
+            &:active {
+                opacity: 0.5;
+            }
+        }
+
+        /* ------ SUGGESTIONS ------ */
+        .all-posts__suggestions {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background-color: #f2f2f2;
+            box-shadow: 0 0 12px 0 #0000004f;
+            border-radius: 10px;
+            max-height: 60dvh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            z-index: 100;
+            opacity: 0;
+            transform: translateY(-6px);
+            pointer-events: none;
+            transition: opacity 220ms ease, transform 220ms ease;
+
+            &::-webkit-scrollbar {
+                width: 14px;
+            }
+
+            &::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background: linear-gradient(
+                    180deg,
+                    #FFFFFF00,
+                    #111,
+                    #555,
+                    #111,
+                    #FFFFFF00
+                );
+                border-radius: 10px;
+                border: 5px solid transparent;
+                background-clip: content-box;
+            }
+
+            &.active {
+                opacity: 1;
+                transform: translateY(0);
+                pointer-events: auto;
+            }
+        }
+
+        .all-posts__suggestion-item {
+            display: block;
+            width: 100%;
+            min-height: 48px;
+            padding: 12px 20px;
+            text-align: left;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            font-size: clamp(14px,1.11112vw,16px);
+            color: var(--text-color, #636363);
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            transition: background 150ms;
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            &:active,
+            &:hover {
+                background: rgba(0,0,0,0.04);
             }
         }
     }
@@ -109,7 +218,7 @@
             top: 70px;
             z-index: 2;
 
-            .all-posts__search,
+            .all-posts__search-wrap,
             .all-posts__filter {
                 backdrop-filter: blur(6px);
                 box-shadow: 0 0 12px 0 #0000004f;

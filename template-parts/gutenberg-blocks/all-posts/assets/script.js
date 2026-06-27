@@ -15,7 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const bg = document.querySelector('.filter-dropdown__bg');
 
     const searchBtn = document.getElementById('ajax-search-btn');
+    const searchIconBtn = document.getElementById('ajax-search-icon-btn');
     const resetBtn = document.getElementById('ajax-reset-btn');
+    const suggestionsEl = document.getElementById('search-suggestions');
 
     let page = 1;
     let loading = false;
@@ -187,9 +189,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const onlyMaterials = active.materials.length > 0 && activeCount === 1;
         const onlyTypes = active.product_type.length > 0 && activeCount === 1;
 
-        // -----------------------------------
-        // STONES
-        // -----------------------------------
         stoneEls.forEach(el => {
 
             const label = el.closest('label');
@@ -199,7 +198,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // stones свободные только в stones-only режиме
             if (onlyStones) {
                 label.classList.remove('unavailable');
                 return;
@@ -209,9 +207,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         });
 
-        // -----------------------------------
-        // MATERIALS
-        // -----------------------------------
         materialEls.forEach(el => {
 
             const label = el.closest('label');
@@ -221,7 +216,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // materials свободные только в materials-only режиме
             if (onlyMaterials) {
                 label.classList.remove('unavailable');
                 return;
@@ -231,9 +225,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         });
 
-        // -----------------------------------
-        // PRODUCT TYPE
-        // -----------------------------------
         typeEls.forEach(el => {
 
             const label = el.closest('label');
@@ -243,7 +234,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // types свободные только в types-only режиме
             if (onlyTypes) {
                 label.classList.remove('unavailable');
                 return;
@@ -263,7 +253,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!label) return;
 
             if (active) {
-                // только НЕ выбранные
                 if (!el.checked) {
                     label.classList.add('checkbox-loading');
                 } else {
@@ -295,14 +284,94 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* -------------------------------- */
+    /* SUGGESTIONS                      */
+    /* -------------------------------- */
+
+    let suggestAbort = null;
+    let closeTimer   = null;
+
+    function closeSuggestions() {
+        suggestionsEl.classList.remove('active');
+        clearTimeout(closeTimer);
+        closeTimer = setTimeout(() => { suggestionsEl.innerHTML = ''; }, 250);
+    }
+
+    function runSearch() {
+        closeSuggestions();
+        searchInput?.blur();
+        loadPosts(1, { scroll: true });
+    }
+
+    async function fetchSuggestions(q) {
+
+        if (suggestAbort) suggestAbort.abort();
+        suggestAbort = new AbortController();
+
+        try {
+            const res = await fetch(
+                `/wp-json/site/v1/search-suggest?q=${encodeURIComponent(q)}`,
+                { signal: suggestAbort.signal }
+            );
+            const data = await res.json();
+
+            if (!data.length) {
+                closeSuggestions();
+                return;
+            }
+
+            clearTimeout(closeTimer);
+            suggestionsEl.classList.remove('active');
+            suggestionsEl.innerHTML = '';
+
+            data.forEach(item => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'all-posts__suggestion-item';
+                btn.textContent = item.title;
+
+                btn.addEventListener('pointerdown', (e) => {
+                    e.preventDefault();
+                    searchInput.value = item.title;
+                    runSearch();
+                });
+
+                suggestionsEl.appendChild(btn);
+            });
+
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    suggestionsEl.classList.add('active');
+                });
+            });
+
+        } catch (err) {
+            if (err.name !== 'AbortError') console.error(err);
+        }
+    }
+
+    /* -------------------------------- */
     /* SEARCH                           */
     /* -------------------------------- */
 
-    searchInput?.addEventListener(
-        'input',
-        debounce(() => loadPosts(1, { scroll: true }), 800)
-    );
+    searchInput?.addEventListener('input', debounce(() => {
+        const q = searchInput.value.trim();
+        if (q.length >= 2) {
+            fetchSuggestions(q);
+        } else {
+            closeSuggestions();
+        }
+    }, 300));
 
+    searchInput?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') runSearch();
+        if (e.key === 'Escape') closeSuggestions();
+    });
+
+    searchInput?.addEventListener('blur', () => {
+        setTimeout(closeSuggestions, 150);
+    });
+
+    searchIconBtn?.addEventListener('click', runSearch);
     searchBtn?.addEventListener('click', () => loadPosts(1, { scroll: true }));
 
     /* -------------------------------- */
@@ -332,6 +401,7 @@ document.addEventListener('DOMContentLoaded', () => {
     resetBtn?.addEventListener('click', () => {
 
         searchInput.value = '';
+        closeSuggestions();
 
         document.querySelectorAll(
             '.filter-material, .filter-stone, .filter-product_type'

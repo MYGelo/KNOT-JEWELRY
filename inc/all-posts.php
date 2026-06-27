@@ -26,6 +26,12 @@ add_action('rest_api_init', function () {
         'permission_callback' => '__return_true'
     ]);
 
+    register_rest_route('site/v1', '/search-suggest', [
+        'methods'  => 'GET',
+        'callback' => 'site_search_suggest',
+        'permission_callback' => '__return_true'
+    ]);
+
 });
 
 
@@ -413,6 +419,48 @@ function site_filter_available($request) {
     }
 
     return $available;
+}
+
+/*
+| SEARCH SUGGEST
+*/
+
+function site_search_suggest(WP_REST_Request $request) {
+
+    $q = sanitize_text_field($request->get_param('q') ?? '');
+
+    if (mb_strlen($q) < 2) {
+        return rest_ensure_response([]);
+    }
+
+    $query = new WP_Query([
+        'post_type'              => 'post',
+        'post_status'            => 'publish',
+        'posts_per_page'         => 8,
+        's'                      => $q,
+        'fields'                 => 'ids',
+        'no_found_rows'          => true,
+        'update_post_meta_cache' => false,
+        'update_post_term_cache' => false,
+    ]);
+
+    $suggestions = [];
+    $seen_titles = [];
+
+    foreach ($query->posts as $id) {
+        $title = get_the_title($id);
+        $key   = mb_strtolower(trim($title));
+
+        if (isset($seen_titles[$key])) continue;
+
+        $seen_titles[$key] = true;
+        $suggestions[] = [
+            'id'    => $id,
+            'title' => $title,
+        ];
+    }
+
+    return rest_ensure_response($suggestions);
 }
 
 // config.php
