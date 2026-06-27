@@ -147,11 +147,34 @@ function site_filter_posts($request) {
         ];
     }
 
-    if ($stones) {
+    $no_stone      = in_array('no-stone', $stones, true);
+    $real_stones   = array_values(array_filter($stones, fn($s) => $s !== 'no-stone'));
+
+    if ($no_stone && $real_stones) {
+        $tax_query[] = [
+            'relation' => 'OR',
+            [
+                'taxonomy' => 'stone',
+                'operator' => 'NOT EXISTS',
+            ],
+            [
+                'taxonomy' => 'stone',
+                'field'    => 'slug',
+                'terms'    => $real_stones,
+                'operator' => 'IN',
+            ],
+        ];
+    } elseif ($no_stone) {
         $tax_query[] = [
             'taxonomy' => 'stone',
-            'field' => 'slug',
-            'terms' => $stones
+            'operator' => 'NOT EXISTS',
+        ];
+    } elseif ($real_stones) {
+        $tax_query[] = [
+            'taxonomy' => 'stone',
+            'field'    => 'slug',
+            'terms'    => $real_stones,
+            'operator' => 'IN',
         ];
     }
 
@@ -283,12 +306,34 @@ function site_filter_available($request) {
 
     $tax_query = ['relation' => 'AND'];
 
-    if ($stones) {
+    $no_stone_avail    = in_array('no-stone', $stones, true);
+    $real_stones_avail = array_values(array_filter($stones, fn($s) => $s !== 'no-stone'));
+
+    if ($no_stone_avail && $real_stones_avail) {
+        $tax_query[] = [
+            'relation' => 'OR',
+            [
+                'taxonomy' => 'stone',
+                'operator' => 'NOT EXISTS',
+            ],
+            [
+                'taxonomy' => 'stone',
+                'field'    => 'slug',
+                'terms'    => $real_stones_avail,
+                'operator' => 'IN',
+            ],
+        ];
+    } elseif ($no_stone_avail) {
         $tax_query[] = [
             'taxonomy' => 'stone',
-            'field' => 'slug',
-            'terms' => $stones,
-            'operator' => 'IN'
+            'operator' => 'NOT EXISTS',
+        ];
+    } elseif ($real_stones_avail) {
+        $tax_query[] = [
+            'taxonomy' => 'stone',
+            'field'    => 'slug',
+            'terms'    => $real_stones_avail,
+            'operator' => 'IN',
         ];
     }
 
@@ -352,6 +397,8 @@ function site_filter_available($request) {
             foreach ($s as $term) {
                 $available['stones'][] = $term->slug;
             }
+        } else {
+            $available['stones'][] = 'no-stone';
         }
 
         if ($t) {

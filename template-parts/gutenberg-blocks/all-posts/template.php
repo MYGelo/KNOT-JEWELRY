@@ -114,6 +114,11 @@ $initial_query = new WP_Query([
 
                             <div class="filter-dropdown__item">
                                 <strong>Камінь</strong>
+                                <label>
+                                    <input type="checkbox" class="filter-stone" value="no-stone">
+                                    <div class="filter-arrow"></div>
+                                    Без каменя
+                                </label>
                                 <?php foreach (get_terms(['taxonomy' => 'stone', 'hide_empty' => false]) as $term): ?>
                                     <label>
                                         <input type="checkbox" class="filter-stone" value="<?= esc_attr($term->slug); ?>">
