@@ -317,6 +317,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (suggestAbort) suggestAbort.abort();
         suggestAbort = new AbortController();
 
+        searchIconBtn?.classList.add('is-searching');
+
         try {
             const res = await fetch(
                 `/wp-json/site/v1/search-suggest?q=${encodeURIComponent(q)}`,
@@ -364,6 +366,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (err) {
             if (err.name !== 'AbortError') console.error(err);
+        } finally {
+            searchIconBtn?.classList.remove('is-searching');
         }
     }
 

@@ -119,6 +119,7 @@
         }
 
         .all-posts__search-btn {
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -134,8 +135,28 @@
             -webkit-tap-highlight-color: transparent;
             transition: opacity 200ms;
 
+            svg {
+                transition: opacity 200ms;
+            }
+
             &:active {
                 opacity: 0.5;
+            }
+
+            &.is-searching {
+                svg {
+                    opacity: 0.2;
+                }
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    inset: 0;
+                    border-radius: 50%;
+                    border: 2px solid transparent;
+                    border-top-color: currentColor;
+                    animation: spin .7s linear infinite;
+                }
             }
         }
 
