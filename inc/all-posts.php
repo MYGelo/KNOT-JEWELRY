@@ -41,7 +41,7 @@ add_action('rest_api_init', function () {
 
 function site_sanitize_filter_array($value): array {
     if (!is_array($value)) return [];
-    return array_values(array_map('sanitize_text_field', array_filter($value, 'is_string')));
+    return array_values(array_filter(array_map('strval', $value), fn($s) => $s !== ''));
 }
 
 function site_filter_cache_key(string $prefix, array $data): string {
@@ -161,7 +161,7 @@ function site_filter_posts($request) {
     if ($use_cache) {
         $cached = get_transient($cache_key);
 
-        if ($cached !== false) {
+        if ($cached !== false && isset($cached['available'])) {
             $post_ids    = $cached['post_ids'];
             $total_pages = $cached['total_pages'];
             $available   = $cached['available'];
@@ -207,20 +207,6 @@ function site_filter_posts($request) {
     $base_args = ['post_type' => 'post', 'post_status' => 'publish'];
     if ($search) $base_args['s'] = $search;
     if (count($tax_query) > 1) $base_args['tax_query'] = $tax_query;
-
-
-    /* ALL IDs — for available terms */
-
-    $all_ids_query = new WP_Query(array_merge($base_args, [
-        'posts_per_page'         => -1,
-        'fields'                 => 'ids',
-        'no_found_rows'          => true,
-        'ignore_sticky_posts'    => true,
-        'update_post_meta_cache' => false,
-        'update_post_term_cache' => false,
-    ]));
-
-    $available = site_compute_available_terms($all_ids_query->posts);
 
 
     /* PAGED QUERY */
@@ -277,6 +263,20 @@ function site_filter_posts($request) {
     wp_reset_postdata();
 
 
+    /* ALL IDs — for available terms (after paged to avoid term cache interference) */
+
+    $all_ids_query = new WP_Query(array_merge($base_args, [
+        'posts_per_page'         => -1,
+        'fields'                 => 'ids',
+        'no_found_rows'          => true,
+        'ignore_sticky_posts'    => true,
+        'update_post_meta_cache' => false,
+        'update_post_term_cache' => false,
+    ]));
+
+    $available = site_compute_available_terms($all_ids_query->posts);
+
+
     /* RESPONSE */
 
     $response = [
@@ -313,42 +313,23 @@ function site_filter_available($request) {
     $stones       = site_sanitize_filter_array($request['stones']       ?? []);
     $product_type = site_sanitize_filter_array($request['product_type'] ?? []);
 
-    $ms = $materials;    sort($ms);
-    $ss = $stones;       sort($ss);
-    $ps = $product_type; sort($ps);
-
-    $cache_key = site_filter_cache_key('filter_avail_', [$search, $ms, $ss, $ps]);
-    $use_cache = !defined('DISABLE_FILTER_CACHE') || DISABLE_FILTER_CACHE === false;
-
-    if ($use_cache) {
-        $cached = get_transient($cache_key);
-        if ($cached !== false) return $cached;
-    }
-
     $tax_query = site_build_tax_query($stones, $materials, $product_type);
 
     $args = [
-        'post_type'              => 'post',
-        'posts_per_page'         => -1,
-        'post_status'            => 'publish',
-        'fields'                 => 'ids',
-        'no_found_rows'          => true,
-        'ignore_sticky_posts'    => true,
-        'update_post_meta_cache' => false,
-        'update_post_term_cache' => false,
+        'post_type'      => 'post',
+        'posts_per_page' => -1,
+        'post_status'    => 'publish',
+        'fields'         => 'ids',
+        'no_found_rows'  => true,
+        'cache_results'  => true,
     ];
 
     if ($search) $args['s'] = $search;
     if (count($tax_query) > 1) $args['tax_query'] = $tax_query;
 
-    $query     = new WP_Query($args);
-    $available = site_compute_available_terms($query->posts);
+    $query = new WP_Query($args);
 
-    if ($use_cache) {
-        set_transient($cache_key, $available, DAY_IN_SECONDS);
-    }
-
-    return $available;
+    return site_compute_available_terms($query->posts);
 }
 
 
