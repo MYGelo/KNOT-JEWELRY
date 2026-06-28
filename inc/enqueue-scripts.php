@@ -1,17 +1,5 @@
 <?php
 
-// Swiper потрібен: на всіх сторінках single post + де є відповідні блоки
-function knot_needs_swiper(): bool {
-    if (is_singular('post')) return true;
-
-    $swiper_blocks = ['acf/reviews', 'acf/select-post', 'acf/in-stock', 'acf/add-comments'];
-    foreach ($swiper_blocks as $block) {
-        if (has_block($block)) return true;
-    }
-
-    return false;
-}
-
 function auto_enqueue_styles()
 {
 	$base_dir = get_stylesheet_directory() . '/assets/css';
@@ -31,16 +19,9 @@ function auto_enqueue_styles()
 		return;
 	}
 
-    // Кешуємо результат glob() щоб не сканувати FS на кожен запит
-    $cache_key = 'knot_css_files_list';
-    $files = get_transient($cache_key);
-
-    if ($files === false) {
-        $files_root    = glob($base_dir . '/*.css');
-        $files_subdirs = glob($base_dir . '/**/*.css', GLOB_BRACE);
-        $files         = array_merge($files_root ?: [], $files_subdirs ?: []);
-        set_transient($cache_key, $files, 7 * DAY_IN_SECONDS);
-    }
+	$files_root = glob($base_dir . '/*.css');
+	$files_subdirs = glob($base_dir . '/**/*.css', GLOB_BRACE);
+	$files = array_merge($files_root ?: [], $files_subdirs ?: []);
 
 	if (empty($files)) {
 		error_log("No CSS files found in: " . $base_dir);
@@ -64,7 +45,7 @@ function auto_enqueue_styles()
 				'',
 			], $relative_path));
 
-		wp_enqueue_style($handle, esc_url($file_url), [], file_exists($file_path) ? filemtime($file_path) : null);
+		wp_enqueue_style($handle, esc_url($file_url), [], filemtime($file_path));
 	}
 }
 
@@ -81,11 +62,7 @@ function theme_scripts()
 
 	//scripts
 	wp_enqueue_script('main-js', get_template_directory_uri() . '/assets/js/main.js', [], filemtime(get_template_directory() . '/assets/js/main.js'), true);
-
-    // Swiper тільки там де він реально потрібен
-    if (knot_needs_swiper()) {
-        wp_enqueue_script('swiper-script', get_template_directory_uri() . '/assets/js/swiper.min.js', [], filemtime(get_template_directory() . '/assets/js/swiper.min.js'), true);
-    }
+	wp_enqueue_script('swiper-script', get_template_directory_uri() . '/assets/js/swiper.min.js', [], filemtime(get_template_directory() . '/assets/js/swiper.min.js'), true);
 
 
     if (is_singular('post')) {
@@ -98,11 +75,7 @@ function theme_scripts()
         wp_localize_script( 'order-form-js', 'knotOrderForm', knot_order_form_config() );
 
         wp_enqueue_script('comments-js', get_template_directory_uri().'/assets/js/comments.js', [], null, true);
-        wp_localize_script('comments-js','comment_ajax',[
-            'url'     => admin_url('admin-ajax.php'),
-            'post_id' => get_the_ID(),
-            'nonce'   => wp_create_nonce('add_comment_nonce'),
-        ]);
+        wp_localize_script('comments-js','comment_ajax',['url'=>admin_url('admin-ajax.php'), 'post_id'=>get_the_ID()]);
     }
 }
 

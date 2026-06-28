@@ -18,6 +18,14 @@
         'public' => true,
     ]);
 
+    // Создаем термины
+    $materials = ['Позолота', 'Срібло'];
+    foreach ($materials as $term) {
+        if (!term_exists($term, 'material')) {
+            wp_insert_term($term, 'material');
+        }
+    }
+
     // ===============================
     // 2. Таксономія: Камінь
     // ===============================
@@ -35,6 +43,14 @@
         'show_in_rest' => true,
         'public' => true,
     ]);
+
+    // Создаем термины
+    $stones = ['Гранат', 'Лабрадорит', 'Місячний камінь', 'Опал', 'Халцедон'];
+    foreach ($stones as $term) {
+        if (!term_exists($term, 'stone')) {
+            wp_insert_term($term, 'stone');
+        }
+    }
 
     // ===============================
     // 3. Таксономія: Тип виробу
@@ -54,26 +70,7 @@
         'public' => true,
     ]);
 
-    // Дефолтні терміни — тільки якщо ще не створені (один раз за весь час)
-    // get_option() з autoload=yes безкоштовний: вже в пам'яті при кожному запиті
-    if (get_option('knot_default_terms_seeded')) {
-        return;
-    }
-
-    $materials = ['Позолота', 'Срібло'];
-    foreach ($materials as $term) {
-        if (!term_exists($term, 'material')) {
-            wp_insert_term($term, 'material');
-        }
-    }
-
-    $stones = ['Гранат', 'Лабрадорит', 'Місячний камінь', 'Опал', 'Халцедон'];
-    foreach ($stones as $term) {
-        if (!term_exists($term, 'stone')) {
-            wp_insert_term($term, 'stone');
-        }
-    }
-
+    // Создаем термины
     $types = ['Каблучки', 'Сережки'];
     foreach ($types as $term) {
         if (!term_exists($term, 'product_type')) {
@@ -81,5 +78,4 @@
         }
     }
 
-    update_option('knot_default_terms_seeded', true); // autoload=yes за замовчуванням
 });
