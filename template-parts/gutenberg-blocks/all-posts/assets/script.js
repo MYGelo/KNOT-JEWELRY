@@ -85,11 +85,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         loading = true;
 
-        // показуємо лоадер тільки якщо запит іде довше 200ms
         let loaderVisible = false;
         const loaderTimer = setTimeout(() => {
             loader?.classList.add('active');
-            allPostWrap.classList.add('is-loading');
+            allPostWrap?.classList.add('is-loading');
             loaderVisible = true;
         }, 200);
 
@@ -128,13 +127,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         clearTimeout(loaderTimer);
         loader?.classList.remove('active');
+        allPostWrap?.classList.remove('is-loading');
         loading = false;
 
-        if (loaderVisible) {
-            setTimeout(() => allPostWrap.classList.remove('is-loading'), 500);
-        } else {
-            allPostWrap.classList.remove('is-loading');
-        }
     }
 
     /* -------------------------------- */
@@ -445,6 +440,6 @@ document.addEventListener('DOMContentLoaded', () => {
     /* INIT                             */
     /* -------------------------------- */
 
-    loadPosts(1);
+    loader?.classList.remove('active');
 
 });
