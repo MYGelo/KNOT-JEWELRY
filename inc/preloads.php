@@ -25,7 +25,7 @@
 
 <link
 	rel="preload"
-	href="<?= get_field('header_logo', 'option')['url'] ?? '' ?>"
+	href="<?= esc_url(get_field('header_logo', 'option')['url'] ?? '') ?>"
 	as="image"
 >
 
