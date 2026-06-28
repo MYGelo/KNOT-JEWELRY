@@ -5,10 +5,6 @@ add_action('wp_ajax_add_comment', 'add_comment_ajax');
 
 function add_comment_ajax() {
 
-    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'add_comment_nonce')) {
-        wp_die();
-    }
-
     if (empty($_POST['post_id']) || empty($_POST['comment'])) {
         wp_die();
     }
@@ -57,14 +53,14 @@ function add_comment_ajax() {
             wp_die();
         }
 
-        require_once(ABSPATH . 'wp-admin/includes/file.php');
-        require_once(ABSPATH . 'wp-admin/includes/image.php');
+        $allowed = ['image/jpeg', 'image/png', 'image/webp'];
 
-        // Серверна перевірка MIME (а не browser-reported type)
-        $check = wp_check_filetype_and_ext($file['tmp_name'], $file['name']);
-        if (!$check['ext'] || !in_array($check['type'], ['image/jpeg', 'image/png', 'image/webp'], true)) {
+        if (!in_array($file['type'], $allowed)) {
             wp_die();
         }
+
+        require_once(ABSPATH . 'wp-admin/includes/file.php');
+        require_once(ABSPATH . 'wp-admin/includes/image.php');
 
         /*
         =========================

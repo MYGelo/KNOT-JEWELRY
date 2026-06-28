@@ -101,7 +101,7 @@ $initial_query = new WP_Query([
 
                             <div class="filter-dropdown__item">
                                 <strong>Матеріал</strong>
-                                <?php foreach (knot_get_cached_terms('material') as $term): ?>
+                                <?php foreach (get_terms(['taxonomy' => 'material', 'hide_empty' => false]) as $term): ?>
                                     <label>
                                         <input type="checkbox" class="filter-material" value="<?= esc_attr($term->slug); ?>">
                                         <div class="filter-arrow"></div>
@@ -112,7 +112,7 @@ $initial_query = new WP_Query([
 
                             <div class="filter-dropdown__item">
                                 <strong>Тип виробу</strong>
-                                <?php foreach (knot_get_cached_terms('product_type') as $term): ?>
+                                <?php foreach (get_terms(['taxonomy' => 'product_type', 'hide_empty' => false]) as $term): ?>
                                     <label>
                                         <input type="checkbox" class="filter-product_type" value="<?= esc_attr($term->slug); ?>">
                                         <div class="filter-arrow"></div>
@@ -128,7 +128,7 @@ $initial_query = new WP_Query([
                                     <div class="filter-arrow"></div>
                                     Без каменя
                                 </label>
-                                <?php foreach (knot_get_cached_terms('stone') as $term): ?>
+                                <?php foreach (get_terms(['taxonomy' => 'stone', 'hide_empty' => false]) as $term): ?>
                                     <label>
                                         <input type="checkbox" class="filter-stone" value="<?= esc_attr($term->slug); ?>">
                                         <div class="filter-arrow"></div>
