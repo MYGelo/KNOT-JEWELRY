@@ -22,23 +22,6 @@ function add_file_types_to_uploads($file_types)
 
 add_filter('upload_mimes', 'add_file_types_to_uploads');
 
-// Санітизація SVG перед збереженням — прибираємо <script> та inline event handlers
-function knot_sanitize_svg_on_upload(array $file): array {
-    if ($file['type'] !== 'image/svg+xml') return $file;
-
-    $svg = file_get_contents($file['tmp_name']);
-    if ($svg === false) { $file['error'] = 'Не вдалося прочитати SVG.'; return $file; }
-
-    $svg = preg_replace('/<script[\s\S]*?<\/script>/i', '', $svg);
-    $svg = preg_replace('/\s+on\w+\s*=\s*["\'][^"\']*["\']/i', '', $svg);
-    $svg = preg_replace('/\s+(href|xlink:href)\s*=\s*["\']javascript:[^"\']*["\']/i', '', $svg);
-    $svg = preg_replace('/<use[^>]+(href|xlink:href)\s*=\s*["\'][^#][^"\']*["\'][^>]*>/i', '', $svg);
-
-    file_put_contents($file['tmp_name'], $svg);
-    return $file;
-}
-add_filter('wp_handle_upload_prefilter', 'knot_sanitize_svg_on_upload');
-
 // remove block-library styles
 add_action('wp_enqueue_scripts', function () {
 	wp_dequeue_style('wp-block-library');
@@ -52,45 +35,37 @@ remove_action('wp_print_styles', 'print_emoji_styles');
 // get name of first block on the page for styles preload
 function get_first_block_name_on_page($post_id = null)
 {
-	if (!$post_id) $post_id = get_the_ID();
-	if (!$post_id) return null;
-
-    $cache_key = 'knot_first_block_name_' . $post_id;
-    $cached    = get_transient($cache_key);
-    if ($cached !== false) return $cached ?: null;
+	if (!$post_id) {
+		$post_id = get_the_ID();
+	}
 
 	$content = get_the_content(null, false, $post_id);
-	$blocks  = parse_blocks($content);
+
+	$blocks = parse_blocks($content);
 
 	if (empty($blocks) || !isset($blocks[0]['blockName'])) {
-        set_transient($cache_key, '', DAY_IN_SECONDS);
 		return null;
 	}
 
 	$name = $blocks[0]['blockName'];
 	if ($name && strpos($name, '/') !== false) {
 		$parts = explode('/', $name);
-		$name  = end($parts);
+		return end($parts);
 	}
 
-    set_transient($cache_key, $name ?: '', DAY_IN_SECONDS);
-	return $name ?: null;
+	return $name;
 }
 
 // get images URLs of first block on the page for preload
 function get_images_from_first_block_on_page($post_id = null)
 {
-	if (!$post_id) $post_id = get_the_ID();
-	if (!$post_id) return [];
-
-    $cache_key = 'knot_first_block_imgs_' . $post_id;
-    $cached    = get_transient($cache_key);
-    if ($cached !== false) return $cached;
+	if (!$post_id) {
+		$post_id = get_the_ID();
+	}
 
 	$content = apply_filters('the_content', get_post_field('post_content', $post_id));
 
 	if (empty($content)) {
-        set_transient($cache_key, [], DAY_IN_SECONDS);
 		return [];
 	}
 
@@ -106,7 +81,6 @@ function get_images_from_first_block_on_page($post_id = null)
 
 	$nodes = $xpath->query('//body/*[self::section or self::div or self::article or self::header or self::main or self::footer]');
 	if ($nodes->length === 0) {
-        set_transient($cache_key, [], DAY_IN_SECONDS);
 		return [];
 	}
 
@@ -122,7 +96,6 @@ function get_images_from_first_block_on_page($post_id = null)
 		}
 	}
 
-    set_transient($cache_key, $images, DAY_IN_SECONDS);
 	return $images;
 }
 

@@ -19,15 +19,9 @@ function auto_enqueue_styles()
 		return;
 	}
 
-    // Кешуємо результат glob() щоб не сканувати FS на кожен запит
-    $cache_key = 'knot_css_files_list';
-    $files = get_transient($cache_key);
-    if ($files === false) {
-        $files_root    = glob($base_dir . '/*.css');
-        $files_subdirs = glob($base_dir . '/**/*.css', GLOB_BRACE);
-        $files         = array_merge($files_root ?: [], $files_subdirs ?: []);
-        set_transient($cache_key, $files, 7 * DAY_IN_SECONDS);
-    }
+	$files_root = glob($base_dir . '/*.css');
+	$files_subdirs = glob($base_dir . '/**/*.css', GLOB_BRACE);
+	$files = array_merge($files_root ?: [], $files_subdirs ?: []);
 
 	if (empty($files)) {
 		error_log("No CSS files found in: " . $base_dir);
@@ -81,11 +75,7 @@ function theme_scripts()
         wp_localize_script( 'order-form-js', 'knotOrderForm', knot_order_form_config() );
 
         wp_enqueue_script('comments-js', get_template_directory_uri().'/assets/js/comments.js', [], null, true);
-        wp_localize_script('comments-js','comment_ajax',[
-            'url'     => admin_url('admin-ajax.php'),
-            'post_id' => get_the_ID(),
-            'nonce'   => wp_create_nonce('add_comment_nonce'),
-        ]);
+        wp_localize_script('comments-js','comment_ajax',['url'=>admin_url('admin-ajax.php'), 'post_id'=>get_the_ID()]);
     }
 }
 
