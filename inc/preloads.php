@@ -15,6 +15,7 @@
 	onload="this.rel=`stylesheet`"
 >
 
+<?php if (knot_needs_swiper()): ?>
 <?php $ver = filemtime(get_template_directory() . '/assets/css/swiper.css'); ?>
 <link
         rel="preload"
@@ -22,10 +23,11 @@
         as="style"
         onload="this.rel=`stylesheet`"
 >
+<?php endif; ?>
 
 <link
 	rel="preload"
-	href="<?= get_field('header_logo', 'option')['url'] ?? '' ?>"
+	href="<?= esc_url(get_field('header_logo', 'option')['url'] ?? '') ?>"
 	as="image"
 >
 
@@ -66,12 +68,14 @@ endif; ?>
 	as="script"
 >
 
+<?php if (knot_needs_swiper()): ?>
 <?php $swiper_ver = filemtime(get_template_directory() . '/assets/js/swiper.min.js'); ?>
 <link
         rel="preload"
         href="<?= get_template_directory_uri() ?>/assets/js/swiper.min.js?ver=<?= $swiper_ver ?>"
         as="script"
 >
+<?php endif; ?>
 
 <!-- Fonts -->
 <link

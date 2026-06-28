@@ -45,6 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         formData.append("action","add_comment")
         formData.append("post_id", comment_ajax.post_id)
+        formData.append("nonce", comment_ajax.nonce)
         formData.append("author", name)
         formData.append("comment", text)
         formData.append("hp", hp)
