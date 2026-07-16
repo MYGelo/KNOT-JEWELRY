@@ -56,7 +56,7 @@ function knot_get_privacy_policy_url(): string {
     return home_url('/privacy-policy/');
 }
 
-function knot_order_form_config(): array {
+function knot_telegram_credentials(): array {
     $bot_token = defined('KNOT_TELEGRAM_BOT_TOKEN')
         ? KNOT_TELEGRAM_BOT_TOKEN
         : '8622055916:AAG9C41IjiLjaIqSskYbfOyi0wTrX_A90Ls';
@@ -64,6 +64,12 @@ function knot_order_form_config(): array {
     $chat_id = defined('KNOT_TELEGRAM_CHAT_ID')
         ? KNOT_TELEGRAM_CHAT_ID
         : '@KnotJewelryOrders';
+
+    return [$bot_token, $chat_id];
+}
+
+function knot_order_form_config(): array {
+    [$bot_token, $chat_id] = knot_telegram_credentials();
 
     return [
         'telegramBotToken' => $bot_token,
@@ -73,5 +79,25 @@ function knot_order_form_config(): array {
         'ringSizes'        => knot_get_ring_sizes(),
         'minFormTime'      => 2500,
         'resendDelay'      => 10000,
+    ];
+}
+
+/**
+ * Global cart config (not tied to a single product).
+ */
+function knot_cart_config(): array {
+    [$bot_token, $chat_id] = knot_telegram_credentials();
+
+    return [
+        'telegramBotToken' => $bot_token,
+        'telegramChatId'   => $chat_id,
+        'thankYouUrl'      => home_url('/thank-you-page/'),
+        'ringSizes'        => knot_get_ring_sizes(),
+        'privacyUrl'       => knot_get_privacy_policy_url(),
+        'currency'         => '₴',
+        'minFormTime'      => 2500,
+        'resendDelay'      => 10000,
+        'maxItems'         => 50,
+        'maxQty'           => 99,
     ];
 }

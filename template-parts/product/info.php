@@ -80,5 +80,24 @@
 
     <?php endif; ?>
 
-    <button class="scroll-animate btn-buy main-btn third" data-action="togglePopup" data-target="#example_popup">Замовити виріб</button>
+    <?php
+    $needs_ring_size = knot_product_needs_ring_size(get_the_ID());
+    $product_image   = get_the_post_thumbnail_url(get_the_ID(), 'medium');
+    ?>
+
+    <div class="product-actions scroll-animate ">
+        <button
+                type="button"
+                class="btn-cart main-btn second"
+                data-cart-add
+                data-id="<?= esc_attr(get_the_ID()); ?>"
+                data-title="<?= esc_attr(get_the_title()); ?>"
+                data-price="<?= esc_attr($price ?? ''); ?>"
+                data-link="<?= esc_url(get_permalink()); ?>"
+                data-image="<?= esc_url($product_image ?: ''); ?>"
+                data-needs-size="<?= $needs_ring_size ? '1' : '0'; ?>"
+        >Додати в кошик</button>
+
+        <button class="btn-buy main-btn third" data-action="togglePopup" data-target="#example_popup">Замовити виріб</button>
+    </div>
 </div>

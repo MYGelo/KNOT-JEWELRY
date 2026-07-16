@@ -181,6 +181,7 @@
         }
 
 
+
         .product-price {
             display: flex;
             align-items: baseline;
@@ -273,12 +274,31 @@
 
 
         .btn-buy {
-            margin-right: 0;
+            margin: 0;
 
             @media (max-width: 767px) {
                 width: 100%;
             }
         }
+        .product-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            flex-direction: row;
+            flex-wrap: wrap;
+
+            .btn-cart {
+                width: fit-content;
+                margin: 0;
+
+                @media (max-width: 767px) {
+                    width: 100%;
+                }
+            }
+        }
+=
+
+
 
         .product-note {
             margin-top: 12px;
