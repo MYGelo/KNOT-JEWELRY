@@ -35,7 +35,7 @@ $step2_btn  = $form_opt['step2_button'] ?? '← Назад';
 
             <div class="cart-drawer__foot" data-cart-foot hidden>
                 <div class="cart-drawer__summary">
-                    <span>Разом:</span>
+                    <span>До сплати:</span>
                     <span class="cart-drawer__total" data-cart-total>0 ₴</span>
                 </div>
                 <button type="button" class="btn main-btn third cart-drawer__checkout" data-cart-goto="intro">
