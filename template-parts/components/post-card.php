@@ -21,9 +21,11 @@ $price_meta = get_post_meta(get_the_ID(), 'price', true);
     </a>
 
     <div class="all-post__text-content">
-        <h2 class="all-posts__item-title">
-            <?php the_title(); ?>
-        </h2>
+        <a href="<?= esc_url(get_permalink($post_id)) ?>">
+            <h2 class="all-posts__item-title">
+                <?php the_title(); ?>
+            </h2>
+        </a>
     </div>
 
 
