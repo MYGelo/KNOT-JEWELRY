@@ -9,9 +9,7 @@
 	cursor: pointer;
 	color: var(--title-color);
 	transition: opacity .3s;
-	backdrop-filter: blur(var(--bg-blur));
 	border-radius: 8px;
-	background: #ffffff;
 
 	.header__cart-icon {
 		position: absolute;
