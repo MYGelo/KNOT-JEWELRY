@@ -82,7 +82,19 @@
 
     <?php
     $needs_ring_size = knot_product_needs_ring_size(get_the_ID());
-    $product_image   = get_the_post_thumbnail_url(get_the_ID(), 'medium');
+    $product_image   = get_the_post_thumbnail_url(get_the_ID(), 'large')
+        ?: get_the_post_thumbnail_url(get_the_ID(), 'medium');
+
+    $term_names = static function (string $taxonomy): string {
+        $terms = get_the_terms(get_the_ID(), $taxonomy);
+        if (!$terms || is_wp_error($terms)) {
+            return '';
+        }
+        return implode(', ', wp_list_pluck($terms, 'name'));
+    };
+    $product_material = $term_names('material');
+    $product_stone    = $term_names('stone');
+    $product_type     = $term_names('product_type');
     ?>
 
     <div class="product-actions scroll-animate ">
@@ -95,6 +107,9 @@
                 data-price="<?= esc_attr($price ?? ''); ?>"
                 data-link="<?= esc_url(get_permalink()); ?>"
                 data-image="<?= esc_url($product_image ?: ''); ?>"
+                data-material="<?= esc_attr($product_material); ?>"
+                data-stone="<?= esc_attr($product_stone); ?>"
+                data-type="<?= esc_attr($product_type); ?>"
                 data-needs-size="<?= $needs_ring_size ? '1' : '0'; ?>"
         >Додати в кошик</button>
 
