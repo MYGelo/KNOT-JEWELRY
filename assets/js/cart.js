@@ -87,6 +87,9 @@
 				price: price,
 				link: safeUrl(item.link),
 				image: safeUrl(item.image),
+				material: String(item.material || '').slice(0, 120),
+				stone: String(item.stone || '').slice(0, 120),
+				type: String(item.type || '').slice(0, 120),
 				needsSize: needsSize,
 				size: String(item.size || '').slice(0, 20),
 				qty: qty
@@ -485,6 +488,9 @@
 				price: btn.dataset.price,
 				link: btn.dataset.link,
 				image: btn.dataset.image,
+				material: btn.dataset.material,
+				stone: btn.dataset.stone,
+				type: btn.dataset.type,
 				needsSize: btn.dataset.needsSize === '1',
 				size: '',
 				qty: 1
@@ -504,6 +510,9 @@
 				price: item.price,
 				link: item.link,
 				image: item.image,
+				material: item.material,
+				stone: item.stone,
+				type: item.type,
 				needsSize: true,
 				size: '',
 				qty: 1
@@ -663,39 +672,43 @@
 			const instagram = formatInstagramLink(data['your-instagram']);
 
 			const lines = [
-				'🛒 Нове замовлення з КОШИКА — KNŌT JEWELRY',
-				'',
+				'🛒 Нове замовлення з КОШИКА — KNŌT JEWELRY:',
 				'👤 Ім\'я: ' + data['full-name'],
 				'📞 Телефон: ' + data['your-phone'],
 				'💬 Telegram: ' + (telegram || '-'),
 				'📷 Instagram: ' + (instagram || '-'),
-				'',
 				'📝 Коментар:',
 				data['your-message'] || '-',
 				'',
-				'💍 Позиції:',
-				''
+				'Позиції:'
 			];
 
 			state.forEach(function (item, index) {
-				const sizePart = item.size ? ' — розмір ' + item.size : '';
-				const lineSum = item.price * item.qty;
-				lines.push(
-					(index + 1) + ') ' + item.title + sizePart +
-					' — ' + item.qty + ' шт × ' + formatMoney(item.price) + ' = ' + formatMoney(lineSum)
-				);
-				if (item.link) lines.push('   🔗 ' + item.link);
-				if (item.size && parseFloat(item.size) > 19) {
-					lines.push('   ⚠️ Розмір > 19 — ціна може змінитися');
+				lines.push((index + 1) + ') 💍 Товар: ' + item.title);
+				lines.push('💰 Ціна: ' + formatMoney(item.price));
+
+				if (item.qty > 1) {
+					lines.push('🔢 Кількість: ' + item.qty + ' шт');
+					lines.push('🧮 Сума: ' + formatMoney(item.price * item.qty));
 				}
+
+				if (item.size) {
+					lines.push('📏 Розмір: ' + item.size);
+					if (parseFloat(item.size) > 19) {
+						lines.push('⚠️ Розмір > 19 — ціна може змінитися');
+					}
+				}
+
+				lines.push('⚙️ Матеріал: ' + (item.material || '-'));
+				lines.push('💎 Камінь: ' + (item.stone || '-'));
+				lines.push('📦 Тип: ' + (item.type || '-'));
+				if (item.link) lines.push('🔗 Посилання: ' + item.link);
+				lines.push('');
 			});
 
-			lines.push('');
 			lines.push('💰 Разом: ' + formatMoney(totalSum()));
 
-			const url = 'https://api.telegram.org/bot' + token + '/sendMessage';
-
-			return fetch(url, {
+			return fetch('https://api.telegram.org/bot' + token + '/sendMessage', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ chat_id: chatId, text: lines.join('\n') })
