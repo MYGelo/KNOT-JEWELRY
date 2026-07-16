@@ -224,6 +224,7 @@
 	border-radius: 8px;
 	font-size: 13px;
 	color: var(--text-color);
+	touch-action: manipulation;
 	transition: border-color .2s;
 }
 
