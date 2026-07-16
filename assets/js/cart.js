@@ -389,6 +389,11 @@
 			drawer.setAttribute('aria-hidden', 'false');
 			body.classList.add('overflow');
 			if (main) main.classList.add('ev-none');
+
+			// iOS Safari caches hit-testing for controls built while the drawer
+			// was hidden (pointer-events: none) — rebuild them now that it's
+			// visible and interactive so selects are tappable on first try.
+			renderItems();
 		}
 
 		function closeDrawer() {
@@ -522,8 +527,10 @@
 		}
 
 		function focusPendingSize() {
+			// Just scroll the pending ring into view — no programmatic focus(),
+			// which on iOS Safari leaves the <select> needing an extra tap.
 			const pending = itemsEl && itemsEl.querySelector('.cart-item__size-select.is-invalid');
-			if (pending) pending.focus();
+			if (pending) pending.scrollIntoView({ block: 'nearest' });
 		}
 
 		/* ---------------- CHECKOUT ---------------- */
