@@ -15,6 +15,8 @@
 
 		const RING_SIZES = Array.isArray(config.ringSizes) ? config.ringSizes : [];
 		const COATINGS = ['Тип покриття ', 'Родій (білий)', 'Позолота'];
+		// The first option means "no coating chosen".
+		const NO_COATING = COATINGS[0];
 
 		const body = document.body;
 		const main = document.querySelector('main');
@@ -24,7 +26,6 @@
 		const totalEl = drawer.querySelector('[data-cart-total]');
 		const checkoutBtn = drawer.querySelector('[data-cart-goto="intro"]');
 		const hintEl = drawer.querySelector('[data-cart-hint]');
-		const coatingNoteEl = drawer.querySelector('[data-cart-coating-note]');
 		const steps = drawer.querySelectorAll('[data-step]');
 		const stepForm = drawer.querySelector('[data-step="form"]');
 		const countEls = document.querySelectorAll('[data-cart-count]');
@@ -94,7 +95,7 @@
 				type: String(item.type || '').slice(0, 120),
 				needsSize: needsSize,
 				size: String(item.size || '').slice(0, 20),
-				coating: COATINGS.includes(item.coating) ? item.coating : 'Без',
+				coating: COATINGS.includes(item.coating) ? item.coating : NO_COATING,
 				qty: qty
 			};
 		}
@@ -102,7 +103,7 @@
 		function sameVariant(a, b) {
 			return a.id === b.id
 				&& (a.size || '') === (b.size || '')
-				&& (a.coating || 'Без') === (b.coating || 'Без');
+				&& (a.coating || NO_COATING) === (b.coating || NO_COATING);
 		}
 
 		function makeUid() {
@@ -132,7 +133,7 @@
 				// another empty line — let the user pick the size there first.
 				const pending = state.find(function (i) {
 					return i.needsSize && i.id === item.id && !i.size
-						&& (i.coating || 'Без') === (item.coating || 'Без');
+						&& (i.coating || NO_COATING) === (item.coating || NO_COATING);
 				});
 				if (pending) {
 					render();
@@ -178,26 +179,23 @@
 			const item = findByUid(uid);
 			if (!item) return;
 			item.size = String(size || '').slice(0, 20);
-			mergeTwin(item);
-			persist();
-			render();
+			applyVariantChange(item);
 		}
 
 		function setCoating(uid, coating) {
 			const item = findByUid(uid);
 			if (!item) return;
-			item.coating = COATINGS.includes(coating) ? coating : 'Без';
-			mergeTwin(item);
-			persist();
-			render();
+			item.coating = COATINGS.includes(coating) ? coating : NO_COATING;
+			applyVariantChange(item);
 		}
 
-		// After a size/coating change, fold identical variants into one line.
-		function mergeTwin(item) {
-			if (item.needsSize && !item.size) return;
-
+		// Shared handler for size/coating edits: merge duplicates (full
+		// re-render) or update the line in place so the note animates.
+		function applyVariantChange(item) {
 			const twin = state.find(function (i) {
-				return i.uid !== item.uid && sameVariant(i, item);
+				return i.uid !== item.uid
+					&& sameVariant(i, item)
+					&& !(item.needsSize && !item.size);
 			});
 
 			if (twin) {
@@ -205,7 +203,27 @@
 				state = state.filter(function (i) {
 					return i.uid !== item.uid;
 				});
+				persist();
+				render();
+				return;
 			}
+
+			persist();
+
+			const line = itemsEl && itemsEl.querySelector('.cart-item[data-key="' + item.uid + '"]');
+			if (line) {
+				const sizeSelect = line.querySelector('.cart-item__size-select');
+				if (sizeSelect) sizeSelect.classList.toggle('is-invalid', item.needsSize && !item.size);
+
+				const note = line.querySelector('.cart-item__coating-note');
+				if (note) {
+					const text = priceNoteText(item);
+					if (text) note.textContent = text;
+					note.classList.toggle('is-visible', !!text);
+				}
+			}
+
+			updateCheckoutState();
 		}
 
 		function hasUnsizedRings() {
@@ -266,19 +284,16 @@
 
 			if (totalEl) totalEl.textContent = formatMoney(totalSum());
 
+			updateCheckoutState();
+		}
+
+		function updateCheckoutState() {
 			const blocked = hasUnsizedRings();
 			if (checkoutBtn) {
 				checkoutBtn.disabled = blocked;
 				checkoutBtn.classList.toggle('is-disabled', blocked);
 			}
 			if (hintEl) hintEl.hidden = !blocked;
-
-			if (coatingNoteEl) {
-				const hasCoating = state.some(function (i) {
-					return (i.coating || 'Без') !== 'Без';
-				});
-				coatingNoteEl.hidden = !hasCoating;
-			}
 		}
 
 		function buildItem(item) {
@@ -348,7 +363,37 @@
 			side.appendChild(remove);
 
 			li.appendChild(side);
+
+			// Full-width price note (size > 19 and/or coating). Rendered
+			// already-visible so opening the cart doesn't animate; changes
+			// animate in place (setCoating).
+			const text = priceNoteText(item);
+			const note = document.createElement('p');
+			note.className = 'cart-item__coating-note';
+			if (text) {
+				note.textContent = text;
+				note.classList.add('is-visible');
+			}
+			li.appendChild(note);
+
 			return li;
+		}
+
+		// Cohesive warning about factors that affect the final price.
+		function priceNoteText(item) {
+			const bigSize = item.size && parseFloat(item.size) > 19;
+			const hasCoating = (item.coating || NO_COATING) !== NO_COATING;
+
+			if (bigSize && hasCoating) {
+				return '⚠️ Нестандартний розмір і обране покриття впливають на вартість — підтвердимо точну ціну при оформленні.';
+			}
+			if (bigSize) {
+				return '⚠️ Нестандартний розмір (понад 19) впливає на вартість — підтвердимо точну ціну при оформленні.';
+			}
+			if (hasCoating) {
+				return '⚠️ Обране покриття впливає на вартість (залежить від покриття та ваги) — підтвердимо точну ціну при оформленні.';
+			}
+			return '';
 		}
 
 		function buildQty(item) {
@@ -386,11 +431,11 @@
 			select.dataset.cartCoatingSelect = '';
 			select.setAttribute('aria-label', 'Тип покриття');
 
-			const current = COATINGS.includes(item.coating) ? item.coating : 'Без';
+			const current = COATINGS.includes(item.coating) ? item.coating : NO_COATING;
 			COATINGS.forEach(function (name) {
 				const opt = document.createElement('option');
 				opt.value = name;
-				opt.textContent = name === 'Без' ? 'Оберіть тип покриття' : name;
+				opt.textContent = name;
 				if (name === current) opt.selected = true;
 				select.appendChild(opt);
 			});
@@ -423,13 +468,6 @@
 			});
 
 			wrap.appendChild(select);
-
-			if (item.size && parseFloat(item.size) > 19) {
-				const note = document.createElement('span');
-				note.className = 'cart-item__note';
-				note.textContent = '⚠️ Розмір понад 19 — ціна може змінитися.';
-				wrap.appendChild(note);
-			}
 
 			return wrap;
 		}
@@ -767,9 +805,9 @@
 					}
 				}
 
-				const coating = item.coating || 'Без';
-				lines.push('🎨 Покриття: ' + coating);
-				if (coating !== 'Без') {
+				const hasCoating = (item.coating || NO_COATING) !== NO_COATING;
+				lines.push('🎨 Покриття: ' + (hasCoating ? item.coating : 'Без'));
+				if (hasCoating) {
 					lines.push('⚠️ Обрано покриття — ціна залежить від покриття та ваги');
 				}
 
