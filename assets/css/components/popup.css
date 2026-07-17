@@ -28,12 +28,7 @@
 		padding: clamp(16px, 4vh, 40px) clamp(12px, 2vw, 20px);
 		overflow-y: auto;
 		-webkit-overflow-scrolling: touch;
-		/* let clicks on the dimmed area reach the overlay (close on outside click) */
-		pointer-events: none;
-	}
-
-	.popup_container {
-		pointer-events: auto;
+		overscroll-behavior: contain;
 	}
 
 	.popup_container {

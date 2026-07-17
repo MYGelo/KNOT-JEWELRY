@@ -65,7 +65,9 @@
 				}
 			}
 
-			if(target.closest('[data-action="closePopup"]')) {
+			// close on ✕/overlay, or on a click directly on the scroll area
+			// (outside the card) — popup_content captures clicks now.
+			if(target.closest('[data-action="closePopup"]') || target.classList.contains('popup_content')) {
 
 				const popup = target.closest('.popup_inner')
 				if(!popup) return
