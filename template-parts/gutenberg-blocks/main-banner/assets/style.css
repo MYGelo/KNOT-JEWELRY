@@ -160,6 +160,7 @@
             display: flex;
             gap: 10px;
             color: white;
+            width: fit-content;
 
             @media (max-width: 551px) {
                 flex-direction: column;
@@ -170,6 +171,15 @@
                 margin: auto 0;
                 font-size: clamp(10px,1.11112vw,16px);
                 text-transform: uppercase;
+            }
+        }
+
+        .main-banner__feature--link {
+            cursor: pointer;
+            transition: opacity .3s;
+
+            &:hover {
+                opacity: .75;
             }
         }
         .main-banner__feature-img {
