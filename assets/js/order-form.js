@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const phoneInput = document.getElementById('order-phone');
     const ringSizeSelect = document.getElementById('order-ring-size');
     const ringSizeNotice = document.getElementById('ring-size-notice');
+    const coatingSelect = document.getElementById('order-coating');
+    const coatingNotice = document.getElementById('coating-notice');
     const needsRingSize = form.dataset.needsRingSize === '1';
 
     const LAST_SEND_KEY = 'knot_last_order_send';
@@ -85,6 +87,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    if (coatingSelect && coatingNotice) {
+        coatingSelect.addEventListener('change', function () {
+            coatingNotice.hidden = !(coatingSelect.value && coatingSelect.value !== 'Без');
+        });
+    }
+
     form.addEventListener('submit', function (event) {
         event.preventDefault();
 
@@ -138,6 +146,7 @@ document.addEventListener('DOMContentLoaded', function () {
             'full-name': form.querySelector('[name="full-name"]')?.value.trim() || '',
             'your-phone': normalizePhone(form.querySelector('[name="your-phone"]')?.value || ''),
             'ring-size': form.querySelector('[name="ring-size"]')?.value || '',
+            coating: form.querySelector('[name="coating"]')?.value || '',
             'your-telegram': form.querySelector('[name="your-telegram"]')?.value.trim() || '',
             'your-instagram': form.querySelector('[name="your-instagram"]')?.value.trim() || '',
             'your-message': form.querySelector('[name="your-message"]')?.value.trim() || '',
@@ -157,9 +166,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const errors = {};
 
         if (!data['full-name']) {
-            errors['full-name'] = 'Вкажіть ім\'я';
+            errors['full-name'] = 'Вкажіть ім\'я та прізвище';
         } else if (data['full-name'].length > 100 || !NAME_REGEX.test(data['full-name'])) {
-            errors['full-name'] = 'Вкажіть коректне ім\'я (мінімум 2 символи, лише літери)';
+            errors['full-name'] = 'Вкажіть коректне ім\'я та прізвище (мінімум 2 символи, лише літери)';
         }
 
         if (!data['your-phone']) {
@@ -314,6 +323,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const ringSizeLine = needsRingSize
             ? buildRingSizeLine(data['ring-size'])
             : '';
+        const coating = data.coating || 'Без';
+        const coatingLine = coating !== 'Без'
+            ? '🎨 Покриття: ' + coating + '\n⚠️ Обрано покриття — ціна може змінитися'
+            : '🎨 Покриття: Без';
 
         const message = [
             '💎 Нове замовлення з сайту KNŌT JEWELRY:',
@@ -330,6 +343,7 @@ document.addEventListener('DOMContentLoaded', function () {
             '💍 Товар: ' + data['product-title'],
             '💰 Ціна: ' + (data['product-price'] || '-'),
             ringSizeLine,
+            coatingLine,
             '⚙️ Матеріал: ' + (data['product-material'] || '-'),
             '💎 Камінь: ' + (data['product-stone'] || '-'),
             '📦 Тип: ' + (data['product-type'] || '-'),

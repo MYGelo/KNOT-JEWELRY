@@ -42,6 +42,7 @@ $step2_btn  = $form_opt['step2_button'] ?? '← Назад';
                     Оформити замовлення
                 </button>
                 <p class="cart-drawer__hint" data-cart-hint hidden>Оберіть розмір для кілець, щоб продовжити.</p>
+                <p class="cart-drawer__coating-note" data-cart-coating-note hidden>🤍 Обрано тип покриття для деяких виробів — фінальна вартість залежить від покриття та ваги. Ми підтвердимо точну ціну під час оформлення.</p>
             </div>
         </div>
 

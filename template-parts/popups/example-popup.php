@@ -88,6 +88,18 @@ $privacy_url     = knot_get_privacy_policy_url();
                                 <span class="field-error" data-error-for="your-phone"></span>
                             </div>
 
+                            <div class="styled coating-field">
+                                <label class="styled-label" for="order-coating">Тип покриття</label>
+                                <select class="styled__input" id="order-coating" name="coating">
+                                    <option value="Без" selected>Без</option>
+                                    <option value="Родій (білий)">Родій (білий)</option>
+                                    <option value="Позолота">Позолота</option>
+                                </select>
+                                <p class="ring-size-notice" id="coating-notice" hidden>
+                                    Фінальна вартість залежить від типу покриття та ваги виробу. Я з радістю розрахую точну ціну й підтверджу її під час оформлення замовлення 🤍
+                                </p>
+                            </div>
+
                             <?php if ($needs_ring_size): ?>
                                 <div class="styled ring-size-field">
                                     <label class="styled-label" for="order-ring-size">Розмір</label>
@@ -98,7 +110,7 @@ $privacy_url     = knot_get_privacy_policy_url();
                                         <?php endforeach; ?>
                                     </select>
                                     <p class="ring-size-notice" id="ring-size-notice" hidden>
-                                        ⚠️ Якщо розмір понад 19 — ціна може змінитися. Майстер зв’яжеться з вами та все пояснить.
+                                        Ви обрали нестандартний розмір — на такий виріб іде більше срібла, тож вартість буде трохи вищою. Я з радістю розрахую точну ціну й підтверджу її під час оформлення замовлення 🤍
                                     </p>
                                     <span class="field-error" data-error-for="ring-size"></span>
                                 </div>

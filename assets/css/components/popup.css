@@ -23,23 +23,24 @@
 
 	.popup_content {
 		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		width: 95%;
-		max-width: 650px;
-		height: 100%;
+		inset: 0;
 		display: flex;
-		align-items: center;
-		justify-content: center;
+		padding: clamp(16px, 4vh, 40px) clamp(12px, 2vw, 20px);
 		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
+		/* let clicks on the dimmed area reach the overlay (close on outside click) */
+		pointer-events: none;
+	}
+
+	.popup_container {
+		pointer-events: auto;
 	}
 
 	.popup_container {
 		display: grid;
 		/*gap: 20px;*/
-		max-height: 95%;
-		overflow-y: auto;
+		margin: auto;
+		max-width: 650px;
 		padding: clamp(15px,1.68vw,25px);
 		background-color: #fff;
 		border-radius: 16px;
@@ -152,10 +153,14 @@
 
 	.field-error {
 		display: block;
-		margin-top: 6px;
-		font-size: 13px;
+		position: absolute;
+		padding: 0 4px;
+		top: -8px;
+		left: 16px;
+		background-color: white;
 		color: #c0392b;
-		min-height: 1em;
+		z-index: 1;
+		font-size: 14px;
 	}
 
 	.styled__input.is-invalid,
@@ -168,6 +173,11 @@
 		font-size: 13px;
 		line-height: 1.4;
 		color: #555;
+	}
+
+	.order-form__privacy .field-error{
+		top: -20px;
+		left: 19px;
 	}
 
 	.order-form__privacy-label {
