@@ -64,6 +64,12 @@ function theme_scripts()
 	wp_enqueue_script('main-js', get_template_directory_uri() . '/assets/js/main.js', [], filemtime(get_template_directory() . '/assets/js/main.js'), true);
 	wp_enqueue_script('swiper-script', get_template_directory_uri() . '/assets/js/swiper.min.js', [], filemtime(get_template_directory() . '/assets/js/swiper.min.js'), true);
 
+	// Navigation speed: hover-prefetch + progress bar (global)
+	$nav_js = get_template_directory() . '/assets/js/nav-speed.js';
+	if (file_exists($nav_js)) {
+		wp_enqueue_script('nav-speed', get_template_directory_uri() . '/assets/js/nav-speed.js', [], filemtime($nav_js), true);
+	}
+
 	// Cart (global)
 	$cart_js = get_template_directory() . '/assets/js/cart.js';
 	if (file_exists($cart_js)) {
