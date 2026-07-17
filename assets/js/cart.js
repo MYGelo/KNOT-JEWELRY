@@ -308,9 +308,10 @@
 			title.textContent = item.title;
 			li.appendChild(title);
 
-			// media
-			const media = document.createElement('div');
+			// media (link to the product when a URL is available)
+			const media = document.createElement(item.link ? 'a' : 'div');
 			media.className = 'cart-item__media';
+			if (item.link) media.href = item.link;
 			if (item.image) {
 				const img = document.createElement('img');
 				img.src = item.image;
