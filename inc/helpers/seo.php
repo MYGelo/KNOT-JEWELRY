@@ -131,19 +131,129 @@ function knot_seo_json_ld() {
 
     $ctx = knot_seo_get_context();
 
-    $schema = [
-        '@context'    => 'https://schema.org',
-        '@type'       => 'WebSite',
-        'name'        => get_bloginfo('name'),
-        'url'         => home_url('/'),
-        'description' => $ctx['desc'],
-        'inLanguage'  => 'uk-UA',
+    $site_url = home_url('/');
+    $org_id   = $site_url . '#organization';
+
+    // Logo (header logo → OG image fallback).
+    $logo = get_field('header_logo', 'option');
+    $logo_url = is_array($logo) ? ($logo['url'] ?? '') : '';
+    if (!$logo_url && !empty($ctx['img'])) {
+        $logo_url = $ctx['img'];
+    }
+
+    // Social profiles → sameAs (seed with known official profiles).
+    $same_as = [
+        'https://www.instagram.com/knotjewelryy/',
+    ];
+    $social = get_field('social_repeater', 'option');
+    if (is_array($social)) {
+        foreach ($social as $item) {
+            if (!empty($item['url'])) {
+                $same_as[] = esc_url_raw($item['url']);
+            }
+        }
+    }
+
+    $organization = [
+        '@type' => 'Organization',
+        '@id'   => $org_id,
+        'name'  => get_bloginfo('name'),
+        'url'   => $site_url,
+        // Gallery / made-to-order brand: returns are not accepted.
+        'hasMerchantReturnPolicy' => [
+            '@type'                => 'MerchantReturnPolicy',
+            'applicableCountry'    => 'UA',
+            'returnPolicyCategory' => 'https://schema.org/MerchantReturnNotPermitted',
+        ],
     ];
 
-    echo '<script type="application/ld+json">' . wp_json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . '</script>' . "\n";
+    if ($logo_url) {
+        $organization['logo'] = $logo_url;
+    }
+    if ($same_as) {
+        $organization['sameAs'] = array_values(array_unique($same_as));
+    }
+
+    $graph = [
+        '@context' => 'https://schema.org',
+        '@graph'   => [
+            [
+                '@type'       => 'WebSite',
+                '@id'         => $site_url . '#website',
+                'name'        => get_bloginfo('name'),
+                'url'         => $site_url,
+                'description' => $ctx['desc'],
+                'inLanguage'  => 'uk-UA',
+                'publisher'   => ['@id' => $org_id],
+            ],
+            $organization,
+        ],
+    ];
+
+    echo '<script type="application/ld+json">' . wp_json_encode($graph, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . '</script>' . "\n";
 }
 
 add_action('wp_head', 'knot_seo_json_ld', 5);
+
+/**
+ * "No returns" merchant policy for Google.
+ */
+function knot_return_policy_node(): array {
+    return [
+        '@type'                => 'MerchantReturnPolicy',
+        'applicableCountry'    => 'UA',
+        'returnPolicyCategory' => 'https://schema.org/MerchantReturnNotPermitted',
+    ];
+}
+
+/**
+ * When Yoast is active it renders its own schema graph and our JSON-LD above is
+ * skipped. Inject the "no returns" policy into the Organization node — and if
+ * the site is represented as a Person (no Organization node), append our own
+ * Organization so the policy is still present. Fires only if Yoast is active.
+ */
+function knot_yoast_schema_graph(array $graph): array {
+    $instagram = 'https://www.instagram.com/knotjewelryy/';
+    $found = false;
+
+    foreach ($graph as &$piece) {
+        if (empty($piece['@type'])) {
+            continue;
+        }
+
+        $types = (array) $piece['@type'];
+        if (!in_array('Organization', $types, true)) {
+            continue;
+        }
+
+        $found = true;
+        $piece['hasMerchantReturnPolicy'] = knot_return_policy_node();
+
+        if (empty($piece['sameAs']) || !is_array($piece['sameAs'])) {
+            $piece['sameAs'] = [];
+        }
+        if (!in_array($instagram, $piece['sameAs'], true)) {
+            $piece['sameAs'][] = $instagram;
+        }
+    }
+    unset($piece);
+
+    if (!$found) {
+        $site_url = home_url('/');
+        $graph[] = [
+            '@type'                   => 'Organization',
+            '@id'                     => $site_url . '#organization',
+            'name'                    => get_bloginfo('name'),
+            'url'                     => $site_url,
+            'sameAs'                  => [$instagram],
+            'hasMerchantReturnPolicy' => knot_return_policy_node(),
+        ];
+    }
+
+    return $graph;
+}
+
+add_filter('wpseo_schema_graph', 'knot_yoast_schema_graph');
 
 function knot_disable_wp_title_tag() {
     if (knot_is_yoast_active()) {
