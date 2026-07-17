@@ -67,10 +67,18 @@ if (!empty($block['className'])) {
 
                             $icon = get_sub_field('icon');
                             $text = get_sub_field('text');
+                            $link = get_sub_field('link');
 
+                            $feature_tag   = !empty($link['url']) ? 'a' : 'div';
+                            $feature_attrs = '';
+                            if (!empty($link['url'])) {
+                                $feature_attrs = ' href="' . esc_url($link['url']) . '"'
+                                    . ' target="' . esc_attr($link['target'] ?: '_self') . '"'
+                                    . ($link['target'] === '_blank' ? ' rel="noopener"' : '');
+                            }
                             ?>
 
-                            <div class="main-banner__feature">
+                            <<?= $feature_tag ?> class="main-banner__feature<?= !empty($link['url']) ? ' main-banner__feature--link' : '' ?>"<?= $feature_attrs ?>>
                                 <?php if (!empty($icon)): ?>
                                     <div class="main-banner__feature-img">
                                         <picture>
@@ -91,7 +99,7 @@ if (!empty($block['className'])) {
 
                                 <p class="main-banner__feature-text"><?= wp_kses_post($text) ?></p>
 
-                            </div>
+                            </<?= $feature_tag ?>>
 
                         <?php endwhile; ?>
 

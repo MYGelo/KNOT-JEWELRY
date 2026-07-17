@@ -219,6 +219,15 @@ acf_add_local_field_group(array(
                     ),
                 ),
 
+                array(
+                    'key' => 'field_main_banner_feature_link',
+                    'label' => 'Link (optional)',
+                    'name' => 'link',
+                    'type' => 'link',
+                    'return_format' => 'array',
+                    'instructions' => 'If set, the whole feature becomes a clickable link.',
+                ),
+
             ),
         ),
 
