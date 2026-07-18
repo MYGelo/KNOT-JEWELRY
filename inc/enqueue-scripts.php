@@ -93,6 +93,16 @@ function theme_scripts()
         wp_enqueue_style('product', get_stylesheet_directory_uri() . '/assets/css/components/product.css', array(), null);
         wp_enqueue_style('single-comments', get_stylesheet_directory_uri() . '/assets/css/components/single-comments.css', array(), null);
 
+        // Recently-viewed section (auto-rendered before comments) reuses in-stock card styles.
+        $in_stock_style = get_template_directory() . '/template-parts/gutenberg-blocks/in-stock/assets/style.css';
+        if (file_exists($in_stock_style)) {
+            wp_enqueue_style('block-in-stock-style', get_template_directory_uri() . '/template-parts/gutenberg-blocks/in-stock/assets/style.css', array(), filemtime($in_stock_style));
+        }
+        $viewed_style = get_template_directory() . '/template-parts/gutenberg-blocks/viewed-posts/assets/style.css';
+        if (file_exists($viewed_style)) {
+            wp_enqueue_style('block-viewed-posts-style', get_template_directory_uri() . '/template-parts/gutenberg-blocks/viewed-posts/assets/style.css', array(), filemtime($viewed_style));
+        }
+
         wp_enqueue_script( 'product', get_template_directory_uri() . '/assets/js/product.js', [], filemtime( get_template_directory() . '/assets/js/product.js' ), true );
         wp_enqueue_script( 'order-form-js', get_template_directory_uri() . '/assets/js/order-form.js', [], filemtime( get_template_directory() . '/assets/js/order-form.js' ), true );
         wp_localize_script( 'order-form-js', 'knotOrderForm', knot_order_form_config() );

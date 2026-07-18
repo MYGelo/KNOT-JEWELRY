@@ -13,20 +13,24 @@ if (have_posts()) :
         <main class="product-page">
             <?php get_template_part('template-parts/components/breadcrumbs'); ?>
 
-            <div class="container">
+            <section class="product-single">
+                <div class="container">
+                    <div class="product">
+                        <?php get_template_part('template-parts/product/gallery', null, $product); ?>
+                        <?php get_template_part('template-parts/product/info', null, $product); ?>
+                    </div>
+                </div>
+            </section>
 
-                <section class="product scroll-animate">
+            <?php get_template_part('template-parts/components/viewed-section', null, [
+                'title'   => 'Ви переглядали',
+                'exclude' => get_the_ID(),
+            ]); ?>
 
-                    <?php get_template_part('template-parts/product/gallery', null, $product); ?>
-                    <?php get_template_part('template-parts/product/info', null, $product); ?>
+            <?php get_template_part('template-parts/product/comment', null, $product); ?>
 
-                </section>
+            <?php get_template_part('template-parts/product/product-popup', null, $product); ?>
 
-                <?php get_template_part('template-parts/product/comment', null, $product); ?>
-
-                <?php get_template_part('template-parts/product/product-popup', null, $product); ?>
-
-            </div>
         </main>
 
     <?php

@@ -13,6 +13,7 @@ $button_text = get_field('comments_button_text','option') ?: 'Надіслати
 ?>
 
 <section class="comments">
+    <div class="container">
     <div class="comments__title-wrapper">
         <h3 class="comments-title scroll-animate">
             <?=$title?> (<span id="comments-count"><?= get_comments_number(); ?></span>)
@@ -73,5 +74,6 @@ $button_text = get_field('comments_button_text','option') ?: 'Надіслати
         </div>
 
         <button class="btn-buy main-btn third scroll-animate" id="comment-submit"><?=$button_text?></button>
+    </div>
     </div>
 </section>
