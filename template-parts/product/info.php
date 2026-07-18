@@ -14,57 +14,57 @@
 
     <!-- Описание -->
     <?php if (get_the_content()): ?>
-        <div class="product-description scroll-animate">
+        <div class="product-description ">
             <?= wp_kses_post(get_the_content()); ?>
         </div>
     <?php endif; ?>
 
     <!-- Наличие -->
     <?php if (has_category('in-stock') && !empty($in_stock)): ?>
-        <p class="product-stock scroll-animate"><?=$in_stock?></p>
+        <p class="product-stock "><?=$in_stock?></p>
     <?php endif; ?>
 
     <!-- Цена -->
-    <div class="product-price scroll-animate product-price--js">
+    <div class="product-price  product-price--js">
         <?php if (!empty($price)): ?>
             <h2 class="current"><?= esc_html($price); ?> ₴</h2>
         <?php endif; ?>
 
         <?php if (!empty($old_price)): ?>
-            <h3 class="old scroll-animate" ><?= esc_html($old_price); ?> ₴</h3>
+            <h3 class="old " ><?= esc_html($old_price); ?> ₴</h3>
         <?php endif; ?>
     </div>
 
     <!-- Свойства продукта -->
-    <ul class="product-props scroll-animate">
+    <ul class="product-props ">
         <!-- Кастомные таксономии -->
         <?php
         // Матеріал
         $material_terms = get_the_terms(get_the_ID(), 'material');
         if ($material_terms && !is_wp_error($material_terms)) {
             $material_names = wp_list_pluck($material_terms, 'name');
-            echo '<li class="scroll-animate">Матеріал: <span class="product-material--js">' . esc_html(implode(', ', $material_names)) . '</span></li>';
+            echo '<li class="">Матеріал: <span class="product-material--js">' . esc_html(implode(', ', $material_names)) . '</span></li>';
         }
 
         // Камінь
         $stone_terms = get_the_terms(get_the_ID(), 'stone');
         if ($stone_terms && !is_wp_error($stone_terms)) {
             $stone_names = wp_list_pluck($stone_terms, 'name');
-            echo '<li class="scroll-animate">Камінь: <span class="product-stone--js">' . esc_html(implode(', ', $stone_names)) . '</span></li>';
+            echo '<li class="">Камінь: <span class="product-stone--js">' . esc_html(implode(', ', $stone_names)) . '</span></li>';
         }
 
         // Тип виробу
         $type_terms = get_the_terms(get_the_ID(), 'product_type');
         if ($type_terms && !is_wp_error($type_terms)) {
             $type_names = wp_list_pluck($type_terms, 'name');
-            echo '<li class="scroll-animate">Тип виробу: <span class="product-type--js">' . esc_html(implode(', ', $type_names)) . '</span></li>';
+            echo '<li class="">Тип виробу: <span class="product-type--js">' . esc_html(implode(', ', $type_names)) . '</span></li>';
         }
         ?>
     </ul>
 
     <?php if ($note_mode !== 'off'): ?>
 
-        <div class="product-note scroll-animate">
+        <div class="product-note ">
 
             <?php if ($note_mode === 'custom' && !empty($product_note_custom)): ?>
 
@@ -97,7 +97,7 @@
     $product_type     = $term_names('product_type');
     ?>
 
-    <div class="product-actions scroll-animate ">
+    <div class="product-actions">
         <button
                 type="button"
                 class="btn-cart main-btn second"

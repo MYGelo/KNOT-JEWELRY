@@ -23,7 +23,8 @@ if (have_posts()) :
             </section>
 
             <?php get_template_part('template-parts/components/viewed-section', null, [
-                'title'   => 'Ви переглядали',
+                'title'   => get_field('viewed_section_title', 'option') ?: 'Ви переглядали',
+                'tap'     => get_field('viewed_section_tap_text', 'option') ?: 'Більше про виріб',
                 'exclude' => get_the_ID(),
             ]); ?>
 

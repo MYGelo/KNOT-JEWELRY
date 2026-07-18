@@ -447,6 +447,30 @@ acf_add_local_field_group(array(
             'placeholder'  => 'abc123xyz...',
         ),
 
+        array(
+            'key'   => 'tab_viewed_section',
+            'label' => 'Переглянуті товари',
+            'type'  => 'tab',
+        ),
+
+        array(
+            'key'           => 'field_viewed_section_title',
+            'label'         => 'Заголовок секції',
+            'name'          => 'viewed_section_title',
+            'type'          => 'text',
+            'default_value' => 'Ви переглядали',
+            'instructions'  => 'Заголовок блоку «Переглянуті товари» на сторінках товару.',
+        ),
+
+        array(
+            'key'           => 'field_viewed_section_tap_text',
+            'label'         => 'Підказка на картці (Tap Text)',
+            'name'          => 'viewed_section_tap_text',
+            'type'          => 'text',
+            'default_value' => 'Більше про виріб',
+            'instructions'  => 'Напис поверх картки товару (наприклад «Більше про виріб»). Порожньо — не показувати.',
+        ),
+
     ),
     'location' => array(
         array(
