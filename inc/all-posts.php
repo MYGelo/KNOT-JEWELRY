@@ -413,7 +413,11 @@ function site_search_suggest(WP_REST_Request $request) {
         if (count($suggestions) >= 8) break;
 
         $seen_titles[$key] = true;
-        $suggestions[]     = ['id' => $post->ID, 'title' => $title];
+        $suggestions[]     = [
+            'id'    => $post->ID,
+            'title' => $title,
+            'link'  => get_permalink($post->ID),
+        ];
     }
 
     return rest_ensure_response($suggestions);

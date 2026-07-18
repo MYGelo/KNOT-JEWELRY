@@ -345,6 +345,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 btn.addEventListener('pointerup', (e) => {
                     if (Math.abs(e.clientY - pointerStartY) > 10) return;
                     e.preventDefault();
+
+                    // Picking a specific suggestion → go straight to that product
+                    // (reliable, unlike a fuzzy keyword search of its title).
+                    if (item.link) {
+                        blockNextClick = true;
+                        closeSuggestions();
+                        window.location.href = item.link;
+                        return;
+                    }
+
                     blockNextClick = true;
                     searchInput.value = item.title;
                     runSearch();
@@ -435,6 +445,27 @@ document.addEventListener('DOMContentLoaded', () => {
     filterBtn?.addEventListener('click', openFilter);
     closeBtn?.addEventListener('click', closeFilter);
     bg?.addEventListener('click', closeFilter);
+
+    /* -------------------------------- */
+    /* RESTORE ON BACK/FORWARD          */
+    /* -------------------------------- */
+
+    // On a fresh reload (e.g. Back button), the browser restores the checkbox
+    // and search-field state, but the server rendered the default (all) posts.
+    // Re-apply the active filters so the list matches the restored UI.
+    window.addEventListener('pageshow', (e) => {
+
+        if (e.persisted) return; // bfcache already restored a consistent DOM
+
+        const f = getFilters();
+        const hasFilters = f.materials.length || f.stones.length || f.product_type.length;
+        const hasSearch = (searchInput?.value || '').trim().length > 0;
+
+        if (hasFilters || hasSearch) {
+            updateAvailableFilters();
+            loadPosts(1);
+        }
+    });
 
     /* -------------------------------- */
     /* INIT                             */
