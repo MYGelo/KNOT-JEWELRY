@@ -27,7 +27,7 @@ $anchor  = $args['anchor']  ?? '';
 				<h2 data-viewed-title><?= esc_html($title) ?></h2>
 			<?php endif; ?>
 
-			<div class="swiper in-stock-slider viewed-slider">
+			<div class="swiper viewed-slider">
 				<div class="swiper-wrapper" data-viewed-list></div>
 			</div>
 

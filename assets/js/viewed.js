@@ -46,7 +46,11 @@
 	/* ---------------- RENDER ---------------- */
 
 	function renderSection() {
-		const section = document.querySelector('[data-viewed]');
+		// Keep only the first section if the block was also placed manually.
+		const sections = document.querySelectorAll('[data-viewed]');
+		for (let i = 1; i < sections.length; i++) sections[i].remove();
+
+		const section = sections[0];
 		if (!section || !config.restUrl) return;
 
 		const list = section.querySelector('[data-viewed-list]');
