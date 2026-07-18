@@ -466,6 +466,15 @@ a.cart-item__media:hover img {
 	gap: 6px;
 }
 
+.cart-order-form .order-form__privacy .field-error{
+	top: 0;
+	left: 19px;
+
+	& a {
+		text-decoration: underline;
+	}
+}
+
 .cart-order-form .styled-label {
 	font-size: 13px;
 	color: var(--text-second);
@@ -497,8 +506,17 @@ a.cart-item__media:hover img {
 }
 
 .cart-order-form .field-error {
-	font-size: 12px;
+	display: block;
+	position: absolute;
+	padding: 0 4px;
+	top: -8px;
+	left: 16px;
+	background-color: white;
 	color: #c0392b;
+	z-index: 1;
+	font-size: 14px;
+
+
 }
 
 .cart-order-form .field-error:empty {
@@ -507,7 +525,7 @@ a.cart-item__media:hover img {
 
 .cart-order-form .order-form__privacy-label {
 	display: flex;
-	align-items: flex-start;
+	align-items: center;
 	gap: 8px;
 	font-size: 13px;
 	line-height: 1.5;

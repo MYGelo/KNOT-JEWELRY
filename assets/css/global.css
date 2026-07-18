@@ -768,7 +768,7 @@ form {
 			width: 100%;
 			padding: 12px 16px;
 			border-radius: 4px;
-			border: 1px solid black;
+			border: 1px solid var(--label);
 			color: black;
 			background-color: white;
 			transition: all 0.2s ease;

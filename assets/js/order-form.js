@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (!data['privacy-policy']) {
-            errors['privacy-policy'] = 'Потрібна згода з правилами';
+            errors['privacy-policy'] = 'Потрібна згода з <a href="/privacy-policy/" target="_blank" rel="noopener noreferrer">правилами</a>';
         }
 
         return errors;
@@ -404,7 +404,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const input = form.querySelector('[name="' + fieldName + '"]');
 
             if (errorEl) {
-                errorEl.textContent = errors[fieldName];
+                // Messages are static, developer-controlled strings; privacy carries a link.
+                errorEl.innerHTML = errors[fieldName];
             }
 
             if (input) {

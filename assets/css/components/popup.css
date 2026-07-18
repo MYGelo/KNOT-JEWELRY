@@ -171,8 +171,12 @@
 	}
 
 	.order-form__privacy .field-error{
-		top: -20px;
+		top: 0;
 		left: 19px;
+
+		& a {
+			text-decoration: underline;
+		}
 	}
 
 	.order-form__privacy-label {
