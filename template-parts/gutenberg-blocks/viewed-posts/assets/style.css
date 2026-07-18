@@ -1,0 +1,4 @@
+/* Recently viewed reuses the in-stock card styles; only block-level tweaks here. */
+.viewed-posts[hidden] {
+	display: none;
+}

@@ -32,7 +32,54 @@ add_action('rest_api_init', function () {
         'permission_callback' => '__return_true',
     ]);
 
+    register_rest_route('site/v1', '/viewed', [
+        'methods'             => 'GET',
+        'callback'            => 'site_viewed_posts',
+        'permission_callback' => '__return_true',
+    ]);
+
 });
+
+/*
+| RECENTLY VIEWED — render cards for the given post IDs (order preserved).
+*/
+function site_viewed_posts(WP_REST_Request $request) {
+    $raw = (string) $request->get_param('ids');
+    $tap = sanitize_text_field((string) $request->get_param('tap'));
+
+    $ids = array_values(array_unique(array_filter(array_map('absint', explode(',', $raw)))));
+    $ids = array_slice($ids, 0, 12);
+
+    if (empty($ids)) {
+        return rest_ensure_response(['html' => '']);
+    }
+
+    $posts = get_posts([
+        'post_type'              => 'post',
+        'post_status'            => 'publish',
+        'post__in'               => $ids,
+        'orderby'                => 'post__in',
+        'posts_per_page'         => count($ids),
+        'no_found_rows'          => true,
+        'update_post_term_cache' => false,
+        'ignore_sticky_posts'    => true,
+    ]);
+
+    $html = '';
+    foreach ($posts as $post) {
+        ob_start();
+        get_template_part('template-parts/components/stock-card', null, [
+            'post_id'  => $post->ID,
+            'tap_text' => $tap,
+        ]);
+        $html .= ob_get_clean();
+    }
+
+    // Per-user, always-fresh data — do not let host/CDN caches store it.
+    nocache_headers();
+
+    return rest_ensure_response(['html' => $html]);
+}
 
 
 /*
