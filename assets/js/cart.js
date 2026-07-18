@@ -709,7 +709,7 @@
 			const errors = {};
 
 			if (!data['full-name']) {
-				errors['full-name'] = 'Вкажіть ім\'я';
+				errors['full-name'] = 'Вкажіть ім\'я та прізвище';
 			} else if (data['full-name'].length > 100 || !NAME_REGEX.test(data['full-name'])) {
 				errors['full-name'] = 'Вкажіть коректне ім\'я (мінімум 2 символи, лише літери)';
 			}
@@ -739,7 +739,7 @@
 			}
 
 			if (!data['privacy-policy']) {
-				errors['privacy-policy'] = 'Потрібна згода з правилами';
+				errors['privacy-policy'] = 'Потрібна згода з <a href="/privacy-policy/" target="_blank" rel="noopener noreferrer">правилами</a>';
 			}
 
 			return errors;
@@ -964,7 +964,8 @@
 			Object.keys(errors).forEach(function (name) {
 				const errorEl = form.querySelector('[data-error-for="' + name + '"]');
 				const input = form.querySelector('[name="' + name + '"]');
-				if (errorEl) errorEl.textContent = errors[name];
+				// Messages are static, developer-controlled strings; privacy carries a link.
+				if (errorEl) errorEl.innerHTML = errors[name];
 				if (input) input.classList.add('is-invalid');
 			});
 			const firstInvalid = form.querySelector('.is-invalid');
