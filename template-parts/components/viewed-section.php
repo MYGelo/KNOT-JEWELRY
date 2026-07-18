@@ -6,7 +6,7 @@
  * @var array $args ['title','tap','exclude','extra','anchor']
  */
 $title   = $args['title']   ?? 'Ви переглядали';
-$tap     = $args['tap']     ?? '';
+$tap     = $args['tap']     ?? 'Більше про виріб';
 $exclude = (int) ($args['exclude'] ?? 0);
 $extra   = $args['extra']   ?? '';
 $anchor  = $args['anchor']  ?? '';
