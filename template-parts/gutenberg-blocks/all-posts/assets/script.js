@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let page = 1;
     let loading = false;
+    let searchIds = null; // exact IDs picked from a suggestion (one title → many posts)
 
     const materialEls = document.querySelectorAll('.filter-material');
     const stoneEls = document.querySelectorAll('.filter-stone');
@@ -104,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     materials: filters.materials,
                     stones: filters.stones,
                     product_type: filters.product_type,
+                    ids: searchIds || [],
                     page: targetPage
                 })
             }).then(res => res.json());
@@ -345,17 +347,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 btn.addEventListener('pointerup', (e) => {
                     if (Math.abs(e.clientY - pointerStartY) > 10) return;
                     e.preventDefault();
-
-                    // Picking a specific suggestion → go straight to that product
-                    // (reliable, unlike a fuzzy keyword search of its title).
-                    if (item.link) {
-                        blockNextClick = true;
-                        closeSuggestions();
-                        window.location.href = item.link;
-                        return;
-                    }
-
                     blockNextClick = true;
+
+                    // Filter the grid by the exact posts behind this title
+                    // (one title can be several products) — reliable, no fuzzy search.
+                    searchIds = Array.isArray(item.ids) ? item.ids : [];
                     searchInput.value = item.title;
                     runSearch();
                 });
@@ -380,6 +376,9 @@ document.addEventListener('DOMContentLoaded', () => {
     /* SEARCH                           */
     /* -------------------------------- */
 
+    // Typing means a new keyword search — drop any picked suggestion IDs.
+    searchInput?.addEventListener('input', () => { searchIds = null; });
+
     searchInput?.addEventListener('input', debounce(() => {
         const q = searchInput.value.trim();
         if (q.length >= 2) {
@@ -390,7 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 300));
 
     searchInput?.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') runSearch();
+        if (e.key === 'Enter') { searchIds = null; runSearch(); }
         if (e.key === 'Escape') closeSuggestions();
     });
 
@@ -398,8 +397,8 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(closeSuggestions, 150);
     });
 
-    searchIconBtn?.addEventListener('click', runSearch);
-    searchBtn?.addEventListener('click', () => loadPosts(1, { scroll: true }));
+    searchIconBtn?.addEventListener('click', () => { searchIds = null; runSearch(); });
+    searchBtn?.addEventListener('click', () => { searchIds = null; loadPosts(1, { scroll: true }); });
 
     /* -------------------------------- */
     /* FILTER CHANGE                    */
@@ -408,6 +407,8 @@ document.addEventListener('DOMContentLoaded', () => {
     [...materialEls, ...stoneEls, ...typeEls].forEach(el => {
 
         el.addEventListener('change', () => {
+
+            searchIds = null; // changing filters cancels a suggestion pick
 
             setCheckboxLoading(true);
 
@@ -427,6 +428,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     resetBtn?.addEventListener('click', () => {
 
+        searchIds = null;
         searchInput.value = '';
         closeSuggestions();
 
