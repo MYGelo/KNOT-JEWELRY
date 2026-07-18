@@ -110,8 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
             }).then(res => res.json());
 
-            if (scroll) scrollToSection();
-
             postsWrap.innerHTML = data.posts;
             paginationWrap.innerHTML = data.pagination;
 
@@ -122,6 +120,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.available) {
                 updateFilters(data.available);
             }
+
+            // Scroll after the DOM is updated and layout settled (search also
+            // blurs the input first, closing the mobile keyboard) — one frame later.
+            if (scroll) requestAnimationFrame(scrollToSection);
 
         } catch (err) {
             console.error(err);
