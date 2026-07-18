@@ -1,0 +1,10 @@
+/* Recently viewed reuses the in-stock card styles; only block-level tweaks here. */
+.viewed-posts[hidden] {
+	display: none;
+}
+
+/* Own slider class (kept separate from .in-stock-slider so the in-stock block's
+   script never grabs this slider); mirror the in-stock slider spacing. */
+.in-stock .viewed-slider {
+	padding: 24px 0;
+}

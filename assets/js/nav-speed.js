@@ -7,14 +7,9 @@
 
 	const origin = location.origin;
 	const prefetched = new Set();
-	let hoverTimer = null;
+	let progressFail = null;
 
-	document.addEventListener('DOMContentLoaded', function () {
-		buildProgressBar();
-		if (allowPrefetch && 'requestIdleCallback' in window) {
-			// nothing eager; prefetch happens on intent below
-		}
-	});
+	document.addEventListener('DOMContentLoaded', buildProgressBar);
 
 	/* ---------------- SPECULATIVE PREFETCH ---------------- */
 
@@ -52,22 +47,16 @@
 
 	if (allowPrefetch) {
 		// Desktop: prefetch on hover intent (small delay avoids over-fetching).
-		document.addEventListener('mouseover', function (event) {
+		// Prefetch on press intent (mousedown / touchstart) rather than hover —
+		// this still gives the server a head start before the click completes,
+		// without firing dozens of requests while the cursor sweeps a listing.
+		document.addEventListener('mousedown', function (event) {
+			if (event.button !== 0) return;
 			const link = event.target.closest && event.target.closest('a');
 			const url = prefetchableUrl(link);
-			if (!url) return;
-
-			clearTimeout(hoverTimer);
-			hoverTimer = setTimeout(function () {
-				prefetch(url);
-			}, 65);
+			if (url) prefetch(url);
 		});
 
-		document.addEventListener('mouseout', function () {
-			clearTimeout(hoverTimer);
-		});
-
-		// Mobile: touchstart fires well before the click.
 		document.addEventListener('touchstart', function (event) {
 			const link = event.target.closest && event.target.closest('a');
 			const url = prefetchableUrl(link);
@@ -94,9 +83,29 @@
 		if (bar) bar.classList.remove('is-loading');
 	}
 
-	// A real navigation away from the page → show feedback immediately.
-	window.addEventListener('beforeunload', startProgress);
+	// Show feedback on a real in-tab navigation click. We deliberately avoid
+	// `beforeunload`/`unload` here — those listeners disable the back/forward
+	// cache (bfcache) in some browsers, which would slow down Back/Forward.
+	document.addEventListener('click', function (event) {
+		if (event.defaultPrevented) return;
+		if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
 
-	// Restore on back/forward (bfcache) so the bar never stays stuck.
+		const link = event.target.closest && event.target.closest('a');
+		if (!link) return;
+		if (link.target && link.target !== '' && link.target !== '_self') return;
+		if (link.hasAttribute('download')) return;
+
+		const href = link.href || '';
+		if (!/^https?:\/\//i.test(href)) return;              // skip mailto:, tel:, etc.
+		if (href.split('#')[0] === location.href.split('#')[0]) return; // same page / anchor
+
+		startProgress();
+
+		// Safety: if the navigation was cancelled by another handler, release it.
+		clearTimeout(progressFail);
+		progressFail = setTimeout(stopProgress, 10000);
+	});
+
+	// Reset on back/forward (bfcache) so the bar never stays stuck.
 	window.addEventListener('pageshow', stopProgress);
 })();
