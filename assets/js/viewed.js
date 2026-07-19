@@ -110,11 +110,10 @@
 
 		if (slider && typeof Swiper !== 'undefined') {
 			if (slider.swiper) slider.swiper.destroy(true, true);
-			// No autoplay: this is a utility "recently viewed" strip below the fold,
-			// not a showcase — no need to run a timer the user may never reach.
 			swiper = new Swiper(slider, {
 				slidesPerView: 'auto',
 				spaceBetween: 24,
+				autoplay: { delay: 4000 },
 				freeMode: false,
 				speed: 500
 			});
