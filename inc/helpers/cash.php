@@ -62,6 +62,22 @@ add_action('updated_post_meta', function($meta_id, $object_id, $meta_key) {
 
 
 /* =========================================================
+| COMMENTS BLOCK CACHE
+========================================================= */
+
+function clear_all_comments_block_cache() {
+    delete_transient('all_comments_block');
+}
+
+/* new comment, approve/spam/trash, edit, delete */
+add_action('wp_insert_comment', 'clear_all_comments_block_cache');
+add_action('wp_set_comment_status', 'clear_all_comments_block_cache');
+add_action('edit_comment', 'clear_all_comments_block_cache');
+add_action('trashed_comment', 'clear_all_comments_block_cache');
+add_action('deleted_comment', 'clear_all_comments_block_cache');
+
+
+/* =========================================================
 | FILTER CACHE VERSION
 ========================================================= */
 
