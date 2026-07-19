@@ -68,18 +68,37 @@
 			+ '?ids=' + encodeURIComponent(ids.join(','))
 			+ '&tap=' + encodeURIComponent(tap);
 
+		// Reveal now and reserve the card-row height before the fetch resolves,
+		// so the content below never jumps when cards arrive (avoids CLS). The
+		// heading shows immediately; cards fade in once loaded.
+		section.hidden = false;
+		section.classList.add('is-loading');
+
 		fetch(url, { headers: { Accept: 'application/json' } })
 			.then(function (response) { return response.json(); })
 			.then(function (res) {
 				const html = res && res.html ? res.html : '';
-				if (!html.trim()) return;
+				if (!html.trim()) {
+					// Nothing to show after all (e.g. items unpublished) — collapse back.
+					section.hidden = true;
+					section.classList.remove('is-loading');
+					return;
+				}
 
 				// Trusted: markup rendered server-side with esc_* applied.
 				list.innerHTML = html;
-				section.hidden = false;
 				initSlider(section);
+
+				// Next frame: drop the loading state so cards fade into the
+				// already-reserved space.
+				requestAnimationFrame(function () {
+					section.classList.remove('is-loading');
+				});
 			})
-			.catch(function () { /* silent — section stays hidden */ });
+			.catch(function () {
+				section.hidden = true;
+				section.classList.remove('is-loading');
+			});
 	}
 
 	/* ---------------- SLIDER + FLIP (mirrors in-stock) ---------------- */
@@ -91,10 +110,11 @@
 
 		if (slider && typeof Swiper !== 'undefined') {
 			if (slider.swiper) slider.swiper.destroy(true, true);
+			// No autoplay: this is a utility "recently viewed" strip below the fold,
+			// not a showcase — no need to run a timer the user may never reach.
 			swiper = new Swiper(slider, {
 				slidesPerView: 'auto',
 				spaceBetween: 24,
-				autoplay: { delay: 4000 },
 				freeMode: false,
 				speed: 500
 			});
