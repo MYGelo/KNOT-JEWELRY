@@ -20,7 +20,6 @@ acf_add_local_field_group(array(
             'label' => 'Tap Text',
             'name'  => 'in-stock_tap_text',
             'type'  => 'text',
-            'default'=> '123',
             'wrapper' => array(
                 'width' => '100',
             ),

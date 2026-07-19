@@ -106,33 +106,48 @@
 	function initSlider(section) {
 		const slider = section.querySelector('.viewed-slider');
 		let swiper = null;
+		let inView = false;
 
 		if (slider && typeof Swiper !== 'undefined') {
 			if (slider.swiper) slider.swiper.destroy(true, true);
-			// No autoplay: this is a utility "recently viewed" strip below the fold,
-			// not a showcase — no need to run a timer the user may never reach.
 			swiper = new Swiper(slider, {
 				slidesPerView: 'auto',
 				spaceBetween: 24,
+				autoplay: { delay: 4000 },
 				freeMode: false,
 				speed: 500
 			});
+			// Hold autoplay until the strip is actually on screen (observer below),
+			// so it doesn't advance several slides before the user scrolls to it.
+			if (swiper.autoplay) swiper.autoplay.stop();
 		}
-
-		bindFlip(section, swiper);
-	}
-
-	function bindFlip(section, swiper) {
-		const cards = section.querySelectorAll('.stock-card');
 
 		function syncAutoplay() {
 			if (!swiper || !swiper.autoplay) return;
-			if (section.querySelector('.stock-card.flipped')) {
-				swiper.autoplay.stop();
-			} else {
+			const anyFlipped = section.querySelector('.stock-card.flipped');
+			if (inView && !anyFlipped) {
 				swiper.autoplay.start();
+			} else {
+				swiper.autoplay.stop();
 			}
 		}
+
+		if (swiper && 'IntersectionObserver' in window) {
+			const io = new IntersectionObserver(function (entries) {
+				inView = entries[0].isIntersecting;
+				syncAutoplay();
+			}, { threshold: 0.25 });
+			io.observe(slider);
+		} else {
+			inView = true; // no observer support: fall back to always-on
+			syncAutoplay();
+		}
+
+		bindFlip(section, swiper, syncAutoplay);
+	}
+
+	function bindFlip(section, swiper, syncAutoplay) {
+		const cards = section.querySelectorAll('.stock-card');
 
 		cards.forEach(function (card) {
 			let flipped = false;

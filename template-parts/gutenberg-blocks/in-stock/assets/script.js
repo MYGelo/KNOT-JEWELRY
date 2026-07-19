@@ -1,12 +1,16 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const cards = document.querySelectorAll('.stock-card')
+    const slider = document.querySelector('.in-stock-slider')
+    if (!slider) return
+
+    // Scope to this slider so the shared .stock-card markup used elsewhere
+    // (e.g. the "recently viewed" strip) never gets these handlers.
+    const cards = slider.querySelectorAll('.stock-card')
     if (!cards.length) return
 
     let swiperInstance = null
+    let inView = false
 
-    const slider = document.querySelector('.in-stock-slider')
-
-    if (slider && typeof Swiper !== 'undefined') {
+    if (typeof Swiper !== 'undefined') {
         swiperInstance = new Swiper(slider, {
             slidesPerView: 'auto',
             spaceBetween: 24,
@@ -16,18 +20,32 @@ document.addEventListener('DOMContentLoaded', function () {
             freeMode: false,
             speed: 500,
         })
+        // Hold autoplay until the slider is actually on screen (observer below),
+        // so it doesn't advance several slides before the user scrolls to it.
+        swiperInstance.autoplay?.stop()
     }
 
     const syncAutoplay = () => {
         if (!swiperInstance?.autoplay) return
 
-        const anyFlipped = document.querySelector('.stock-card.flipped')
+        const anyFlipped = slider.querySelector('.stock-card.flipped')
 
-        if (anyFlipped) {
-            swiperInstance.autoplay.stop()
-        } else {
+        if (inView && !anyFlipped) {
             swiperInstance.autoplay.start()
+        } else {
+            swiperInstance.autoplay.stop()
         }
+    }
+
+    if (swiperInstance && 'IntersectionObserver' in window) {
+        const io = new IntersectionObserver((entries) => {
+            inView = entries[0].isIntersecting
+            syncAutoplay()
+        }, { threshold: 0.25 })
+        io.observe(slider)
+    } else {
+        inView = true // no observer support: fall back to always-on
+        syncAutoplay()
     }
 
     cards.forEach(card => {
