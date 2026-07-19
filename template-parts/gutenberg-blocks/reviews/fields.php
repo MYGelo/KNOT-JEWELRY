@@ -21,7 +21,6 @@ acf_add_local_field_group(array(
             'label' => 'Tap Text',
             'name'  => 'reviews_tap_text',
             'type'  => 'text',
-            'default_value' => '123',
             'wrapper' => array(
                 'width' => '100',
             ),

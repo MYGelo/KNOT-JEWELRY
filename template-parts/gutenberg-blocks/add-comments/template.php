@@ -16,7 +16,7 @@ if ($comments_data === false) {
 
     $comments = get_comments([
         'status'  => 'approve',
-        'number'  => 0,
+        'number'  => 24, // cap the slider so it doesn't render every comment/image
         'orderby' => 'comment_date_gmt',
         'order'   => 'DESC',
         'no_found_rows' => true
@@ -78,9 +78,20 @@ if ($comments_data === false) {
     set_transient('all_comments_block', $comments_data, 10 * MINUTE_IN_SECONDS);
 }
 
-if ($comments_data) : ?>
+if ($comments_data) :
 
-    <section class="<?= esc_attr($block_classes); ?>" id="<?= esc_attr($block_anchor); ?>">
+    // Prime post caches so each slide's get_permalink() doesn't query its post
+    // (N+1) — the cached data holds comment objects but not their posts.
+    $link_post_ids = array_unique(array_filter(array_map(
+        static fn($item) => (int) $item['comment']->comment_post_ID,
+        $comments_data
+    )));
+    if ($link_post_ids) {
+        _prime_post_caches($link_post_ids, false, false);
+    }
+    ?>
+
+    <section class="<?= esc_attr($block_classes); ?>"<?= $block_anchor ? ' id="' . esc_attr($block_anchor) . '"' : '' ?>>
 
         <div class="container">
 
