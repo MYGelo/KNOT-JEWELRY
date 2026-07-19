@@ -26,9 +26,28 @@ if ($posts === false) {
     set_transient('in_stock_posts', $posts, HOUR_IN_SECONDS);
 }
 
-if ($posts) : ?>
+if ($posts) :
 
-    <section class="<?= esc_attr($block_classes) ?>" id="<?= esc_attr($block_anchor) ?>">
+    // Prime post + attachment caches in one pass so each card renders fresh
+    // without its own meta/thumbnail queries (avoids N+1 on cache hit).
+    $post_ids = wp_list_pluck($posts, 'ID');
+    if ($post_ids) {
+        _prime_post_caches($post_ids, false, true);
+    }
+
+    $thumb_ids = [];
+    foreach ($posts as $post) {
+        $tid = get_post_thumbnail_id($post->ID);
+        if ($tid) {
+            $thumb_ids[] = $tid;
+        }
+    }
+    if ($thumb_ids) {
+        _prime_post_caches($thumb_ids, false, true);
+    }
+    ?>
+
+    <section class="<?= esc_attr($block_classes) ?>"<?= $block_anchor ? ' id="' . esc_attr($block_anchor) . '"' : '' ?>>
         <div class="container">
             <div class="stock__wrapper">
 
