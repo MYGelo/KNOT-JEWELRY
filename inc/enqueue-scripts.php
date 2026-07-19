@@ -73,7 +73,7 @@ function theme_scripts()
 	// Recently viewed: record current product + render the block (global)
 	$viewed_js = get_template_directory() . '/assets/js/viewed.js';
 	if (file_exists($viewed_js)) {
-		wp_enqueue_script('viewed-js', get_template_directory_uri() . '/assets/js/viewed.js', [], filemtime($viewed_js), true);
+		wp_enqueue_script('viewed-js', get_template_directory_uri() . '/assets/js/viewed.js', ['swiper-script'], filemtime($viewed_js), true);
 		wp_localize_script('viewed-js', 'knotViewed', [
 			'restUrl'   => esc_url_raw(rest_url('site/v1/viewed')),
 			'currentId' => is_singular('post') ? get_the_ID() : 0,

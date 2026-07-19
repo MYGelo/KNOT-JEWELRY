@@ -65,6 +65,19 @@ function site_viewed_posts(WP_REST_Request $request) {
         'ignore_sticky_posts'    => true,
     ]);
 
+    // Prime attachment caches in one pass so each card doesn't trigger its own
+    // queries for the thumbnail post, its metadata and alt text (avoids N+1).
+    $thumb_ids = [];
+    foreach ($posts as $post) {
+        $tid = get_post_thumbnail_id($post->ID);
+        if ($tid) {
+            $thumb_ids[] = $tid;
+        }
+    }
+    if ($thumb_ids) {
+        _prime_post_caches($thumb_ids, false, true);
+    }
+
     $html = '';
     foreach ($posts as $post) {
         ob_start();

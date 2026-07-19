@@ -8,3 +8,16 @@
 .in-stock .viewed-slider {
 	padding: 24px 0;
 }
+
+/* Reserve the card-row height (card is 320px; slider padding sits on
+   .viewed-slider) before cards load, so revealing the section never shifts the
+   page below it (CLS). Cards fade into the reserved space once loaded. */
+.viewed-posts [data-viewed-list] {
+	min-height: 320px;
+	opacity: 1;
+	transition: opacity .35s ease;
+}
+
+.viewed-posts.is-loading [data-viewed-list] {
+	opacity: 0;
+}
