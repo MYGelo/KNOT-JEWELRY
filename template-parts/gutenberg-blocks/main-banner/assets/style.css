@@ -120,7 +120,7 @@
     }
 
     h1 {
-        margin-bottom: 24px;
+        margin-bottom: clamp(16px,1.67vw,24px);
     }
 
     h2 {
@@ -130,7 +130,11 @@
     span,
     p {
         color: white;
-        margin: 0 auto 16px auto;
+        margin: 0 auto clamp(12px,1.12vw,16px) auto;
+    }
+
+    .sub-text p{
+        font-size: clamp(12px,0.98vw,14px);
     }
 
     .main-banner__links {
@@ -150,7 +154,7 @@
         display: flex;
         align-items: center;
         gap: clamp(32px,3.89vw,56px);
-        margin-top: 20px;
+        margin-top: clamp(10px,1.4vw,20px);
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: center;
@@ -239,7 +243,7 @@
     .primary_button,
     .outline_button {
         padding: clamp(8px,1.11112vw,16px) clamp(12px,2.223vw,32px);
-        /*font-size: clamp(12px,1.11112vw,16px);*/
+        font-size: clamp(14px,1.11112vw,16px);
     }
     .primary_button {
         border: 1px solid transparent;

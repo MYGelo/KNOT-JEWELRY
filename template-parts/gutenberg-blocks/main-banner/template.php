@@ -42,7 +42,7 @@ if (!empty($block['className'])) {
                 <?php endif; ?>
 
                 <?php if ($description): ?>
-                    <div class=""><?php echo wp_kses_post($description); ?></div>
+                    <div class="sub-text"><?php echo wp_kses_post($description); ?></div>
                 <?php endif; ?>
 
                 <?php if($links): ?>
