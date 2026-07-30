@@ -17,6 +17,11 @@
         gap: 14px;
         overflow: hidden;
 
+        .swiper {
+            -webkit-mask: unset;
+            mask: unset;
+        }
+
         /* FIX swiper width bug */
         .gallery-main {
             width: 100%;
