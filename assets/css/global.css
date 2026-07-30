@@ -231,6 +231,15 @@ section {
 }
 
 .swiper {
+	@media (min-width: 1921px) {
+		overflow: hidden;
+		-webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+		mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+		-webkit-mask-repeat: no-repeat;
+		mask-repeat: no-repeat;
+		-webkit-mask-size: 100% 100%;
+		mask-size: 100% 100%;
+	}
 	.swiper-pagination {
 		position: relative;
 		top: 0 !important;
