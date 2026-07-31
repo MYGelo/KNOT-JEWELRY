@@ -281,6 +281,13 @@
 
         }
 
+        .all-posts__post-link {
+            display: flex;
+            flex-direction: column;
+            color: inherit;
+            text-decoration: none;
+        }
+
         .all-posts__post-thumb {
             position: relative;
             aspect-ratio: 1;
