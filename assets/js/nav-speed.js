@@ -9,7 +9,10 @@
 	const prefetched = new Set();
 	let progressFail = null;
 
-	document.addEventListener('DOMContentLoaded', buildProgressBar);
+	document.addEventListener('DOMContentLoaded', function () {
+		buildProgressBar();
+		buildLoader();
+	});
 
 	/* ---------------- SPECULATIVE PREFETCH ---------------- */
 
@@ -73,9 +76,37 @@
 		document.body.appendChild(bar);
 	}
 
+	// Center iOS-style HUD spinner: 12 fading spokes inside a rounded dark box.
+	function buildLoader() {
+		if (document.getElementById('nav-loader')) return;
+
+		const overlay = document.createElement('div');
+		overlay.id = 'nav-loader';
+		overlay.setAttribute('aria-hidden', 'true');
+
+		const box = document.createElement('div');
+		box.className = 'nav-loader__box';
+
+		const spinner = document.createElement('div');
+		spinner.className = 'nav-spinner';
+
+		for (let i = 0; i < 12; i++) {
+			const spoke = document.createElement('i');
+			spoke.style.transform = 'rotate(' + (i * 30) + 'deg)';
+			spoke.style.animationDelay = (-(12 - i) / 12) + 's';
+			spinner.appendChild(spoke);
+		}
+
+		box.appendChild(spinner);
+		overlay.appendChild(box);
+		document.body.appendChild(overlay);
+	}
+
 	function startProgress() {
 		const bar = document.getElementById('nav-progress');
 		if (bar) bar.classList.add('is-loading');
+		const loader = document.getElementById('nav-loader');
+		if (loader) loader.classList.add('is-loading');
 		// Busy cursor everywhere — an unmistakable "something is happening" cue.
 		document.documentElement.classList.add('is-navigating');
 	}
@@ -83,6 +114,8 @@
 	function stopProgress() {
 		const bar = document.getElementById('nav-progress');
 		if (bar) bar.classList.remove('is-loading');
+		const loader = document.getElementById('nav-loader');
+		if (loader) loader.classList.remove('is-loading');
 		document.documentElement.classList.remove('is-navigating');
 	}
 

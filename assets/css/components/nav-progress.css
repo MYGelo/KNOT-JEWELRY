@@ -52,6 +52,67 @@ html.is-navigating * {
 	cursor: progress !important;
 }
 
+/* ---------- CENTER LOADING HUD (iOS-style spinner) ---------- */
+#nav-loader {
+	position: fixed;
+	inset: 0;
+	z-index: 99998;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	background: rgba(255, 255, 255, 0.4);
+	transition: opacity .2s ease, visibility .2s ease;
+}
+
+#nav-loader.is-loading {
+	opacity: 1;
+	visibility: visible;
+}
+
+.nav-loader__box {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 86px;
+	height: 86px;
+	border-radius: 20px;
+	background: rgba(20, 20, 20, 0.74);
+	box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+.nav-spinner {
+	position: relative;
+	width: 36px;
+	height: 36px;
+}
+
+.nav-spinner i {
+	position: absolute;
+	left: 50%;
+	top: 3px;
+	width: 3px;
+	height: 9px;
+	margin-left: -1.5px;
+	border-radius: 2px;
+	background: #fff;
+	transform-origin: 1.5px 15px; /* rotate each spoke around the spinner centre */
+	animation: navSpokeFade 1s linear infinite;
+}
+
+@keyframes navSpokeFade {
+	0%   { opacity: 1; }
+	100% { opacity: 0.2; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nav-spinner i {
+		animation-duration: 1.6s;
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	#nav-progress::before {
 		animation-duration: 1.6s;
