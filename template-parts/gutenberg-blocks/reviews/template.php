@@ -84,7 +84,7 @@ $block_classes = 'reviews' . (!empty($block['className']) ? ' ' . $block['classN
                             'large',
                             false,
                             [
-                                'alt' => get_the_title(),
+                                'alt' => get_the_title($image_id),
                                 'loading'  => 'lazy',
                                 'decoding' => 'async',
                                 'class'    => 'reviews-img'

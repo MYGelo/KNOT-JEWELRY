@@ -343,7 +343,7 @@
                 background-color: #7407070d;
                 color: #6767678f;
                 border-radius: 5px;
-                font-size: clamp(10px, 0.73vw, 14px);
+                font-size: clamp(11px, 0.73vw, 14px);
 
                 &.product-stock {
                     color: #1e7e34;

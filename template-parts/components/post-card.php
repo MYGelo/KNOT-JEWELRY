@@ -14,7 +14,7 @@ $price_meta = get_post_meta(get_the_ID(), 'price', true);
                 $post_id,
                 'medium',
                 [
-                    'alt' => get_the_title(),
+                    'alt' => get_the_title($post_id) . ' ' . $price_meta,
                     'loading' => 'lazy'
                 ]
             ); ?>

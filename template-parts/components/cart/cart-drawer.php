@@ -78,8 +78,8 @@ $step2_btn  = $form_opt['step2_button'] ?? '← Назад';
 
             <form id="cart-order-form" class="order-form cart-order-form" novalidate>
 
-                <input type="text" name="website" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
-                <input type="text" name="math-check" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+                <input type="text" name="website" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true" aria-label="Залиште порожнім">
+                <input type="text" name="math-check" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true" aria-label="Залиште порожнім">
 
                 <div class="order-form__alert" id="cart-order-form-alert" hidden role="alert"></div>
 

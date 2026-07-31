@@ -29,7 +29,7 @@ $initial_query = new WP_Query([
             <div class="all-posts__title-wrapper">
                 <!-- ПОИСК -->
                 <div class="all-posts__search-wrap">
-                    <input class="all-posts__search" type="text" id="ajax-search" placeholder="Пошук..." autocomplete="off">
+                    <input class="all-posts__search" type="text" id="ajax-search" placeholder="Пошук..." aria-label="Пошук" autocomplete="off">
                     <button type="button" class="all-posts__search-btn" id="ajax-search-icon-btn" aria-label="Пошук">
                         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <circle cx="7.5" cy="7.5" r="6" stroke="currentColor" stroke-width="1.3"/>

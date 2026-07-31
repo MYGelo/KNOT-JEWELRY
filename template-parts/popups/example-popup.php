@@ -53,8 +53,8 @@ $privacy_url     = knot_get_privacy_policy_url();
                             novalidate
                             data-needs-ring-size="<?= $needs_ring_size ? '1' : '0' ?>"
                         >
-                            <input type="text" name="website" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
-                            <input type="text" name="math-check" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+                            <input type="text" name="website" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true" aria-label="Залиште порожнім">
+                            <input type="text" name="math-check" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true" aria-label="Залиште порожнім">
 
                             <div class="order-form__alert" id="order-form-alert" hidden role="alert"></div>
 
