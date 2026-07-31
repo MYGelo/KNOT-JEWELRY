@@ -1,21 +1,59 @@
 #nav-progress {
 	position: fixed;
-	top: 0;
+	top: env(safe-area-inset-top, 0px); /* clear the notch in standalone/PWA */
 	left: 0;
+	right: 0;
 	z-index: 99999;
-	width: 100%;
-	height: 3px;
-	background-color: var(--title-color, #111);
-	transform: scaleX(0);
-	transform-origin: left center;
+	height: 4px;
 	opacity: 0;
 	pointer-events: none;
-	will-change: transform, opacity;
+	overflow: hidden;
+	background-color: rgba(200, 169, 106, 0.18); /* faint track */
+	transition: opacity .2s ease;
+}
+
+/* Touch devices (≈90% of traffic here) have no cursor cue, so make the bar
+   itself a bit bolder — the moving segment is the whole signal. */
+@media (pointer: coarse) {
+	#nav-progress {
+		height: 5px;
+	}
+}
+
+/* Indeterminate sweep: a bright segment slides across continuously, so motion
+   is visible no matter how fast (or slow) the next page loads. */
+#nav-progress::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	width: 45%;
+	border-radius: 4px;
+	background: linear-gradient(90deg, transparent, var(--title-color, #111) 35%, #c8a96a 75%, transparent);
+	box-shadow: 0 0 12px rgba(200, 169, 106, 0.85);
+	transform: translateX(-120%);
+	animation: navProgressSweep 1.05s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+	will-change: transform;
 }
 
 #nav-progress.is-loading {
 	opacity: 1;
-	/* creeps toward the end; the page unloads before it completes */
-	transform: scaleX(0.9);
-	transition: transform 8s cubic-bezier(0.1, 0.7, 0.3, 1), opacity 0.2s ease;
+}
+
+@keyframes navProgressSweep {
+	0%   { transform: translateX(-120%); }
+	100% { transform: translateX(330%); }
+}
+
+/* Strong secondary cue: show the "busy" cursor everywhere during navigation. */
+html.is-navigating,
+html.is-navigating * {
+	cursor: progress !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	#nav-progress::before {
+		animation-duration: 1.6s;
+	}
 }

@@ -76,11 +76,14 @@
 	function startProgress() {
 		const bar = document.getElementById('nav-progress');
 		if (bar) bar.classList.add('is-loading');
+		// Busy cursor everywhere — an unmistakable "something is happening" cue.
+		document.documentElement.classList.add('is-navigating');
 	}
 
 	function stopProgress() {
 		const bar = document.getElementById('nav-progress');
 		if (bar) bar.classList.remove('is-loading');
+		document.documentElement.classList.remove('is-navigating');
 	}
 
 	// Show feedback on a real in-tab navigation click. We deliberately avoid
