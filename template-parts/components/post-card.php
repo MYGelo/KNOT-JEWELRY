@@ -13,7 +13,10 @@ $price_meta = get_post_meta(get_the_ID(), 'price', true);
             <?= get_the_post_thumbnail(
                 $post_id,
                 'medium',
-                ['loading' => 'lazy']
+                [
+                    'alt' => get_the_title(),
+                    'loading' => 'lazy'
+                ]
             ); ?>
 
         <?php endif; ?>

@@ -84,6 +84,7 @@ $block_classes = 'reviews' . (!empty($block['className']) ? ' ' . $block['classN
                             'large',
                             false,
                             [
+                                'alt' => get_the_title(),
                                 'loading'  => 'lazy',
                                 'decoding' => 'async',
                                 'class'    => 'reviews-img'
@@ -108,7 +109,7 @@ $block_classes = 'reviews' . (!empty($block['className']) ? ' ' . $block['classN
                                     <div class="svg-wrapper">
 
                                         <?php if ($link): ?>
-                                            <a href="<?= esc_url($link); ?>" class="stock-svg-link"></a>
+                                            <a href="<?= esc_url($link); ?>" class="stock-svg-link"><span style="display: none"><?= esc_url($link); ?></span></a>
                                         <?php endif; ?>
 
                                         <svg aria-hidden="true" focusable="false"><use href="#reviews-ig-icon"/></svg>
