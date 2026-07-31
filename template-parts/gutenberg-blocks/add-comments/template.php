@@ -158,7 +158,7 @@ if ($comments_data) :
                                     </div>
 
                                     <?php if ($post_link): ?>
-                                        <a class="comment-link" href="<?= esc_url($post_link); ?>"></a>
+                                        <a class="comment-link" href="<?= esc_url($post_link); ?>"><span style="display:none;"><?= esc_url($post_link); ?></span></a>
                                     <?php endif; ?>
                                 </div>
                             </div>
