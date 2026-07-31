@@ -15,7 +15,7 @@ acf_add_local_field_group(array(
             ),
         ),
 
-        // TAP TEXT
+        // TAP TEXT (decorative label shown on each card)
         array(
             'key'   => 'field_reviews_tap_text',
             'label' => 'Tap Text',
@@ -23,6 +23,27 @@ acf_add_local_field_group(array(
             'type'  => 'text',
             'wrapper' => array(
                 'width' => '100',
+            ),
+        ),
+
+        // CTA BUTTON (single section link)
+        array(
+            'key'   => 'field_reviews_cta_text',
+            'label' => 'CTA Text',
+            'name'  => 'reviews_cta_text',
+            'type'  => 'text',
+            'default_value' => 'Дивитись у Instagram',
+            'wrapper' => array(
+                'width' => '50',
+            ),
+        ),
+        array(
+            'key'   => 'field_reviews_cta_url',
+            'label' => 'CTA URL (Instagram)',
+            'name'  => 'reviews_cta_url',
+            'type'  => 'url',
+            'wrapper' => array(
+                'width' => '50',
             ),
         ),
 
@@ -47,20 +68,6 @@ acf_add_local_field_group(array(
                     'return_format' => 'array',
                     'preview_size' => 'medium',
                     'library' => 'all',
-                    'wrapper' => array(
-                        'width' => '70',
-                    ),
-                ),
-
-                // LINK
-                array(
-                    'key' => 'field_reviews_item_link',
-                    'label' => 'Item Link',
-                    'name' => 'link',
-                    'type' => 'url',
-                    'wrapper' => array(
-                        'width' => '30',
-                    ),
                 ),
 
             ),
