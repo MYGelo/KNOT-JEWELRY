@@ -99,7 +99,7 @@ $block_classes = 'reviews' . (!empty($block['className']) ? ' ' . $block['classN
                             <div class="reviews-card">
 
                                 <?php if ($link): ?>
-                                    <a href="<?= esc_url($link); ?>" class="reviews-card-link"></a>
+                                    <a href="<?= esc_url($link); ?>" class="reviews-card-link"><span style="display:none;"><?= esc_url($link); ?></span></a>
                                 <?php endif; ?>
 
                                 <div class="reviews__image-wrapper">
