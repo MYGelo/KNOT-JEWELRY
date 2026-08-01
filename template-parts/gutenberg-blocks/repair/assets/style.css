@@ -115,25 +115,6 @@
 		margin-top: clamp(24px, 3vw, 40px);
 	}
 
-	.reviews__cta-wrap {
-		display: flex;
-		justify-content: center;
-		margin-bottom: 24px;
-		gap: 10px;
-		flex-direction: row;
-		flex-wrap: wrap;
-		margin-top: clamp(24px, 3vw, 40px);
-
-		button,
-		.reviews-cta {
-			min-height: 56px;
-			margin: 0;
-			width: fit-content;
-			flex: auto;
-			box-shadow: none;
-		}
-	}
-
 	/* ---------- BEFORE / AFTER COMPARISON ---------- */
 	.repair-cmp {
 		position: relative;
