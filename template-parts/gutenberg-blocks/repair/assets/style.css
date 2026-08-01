@@ -129,6 +129,7 @@
 			margin: 0;
 			width: fit-content;
 			flex: auto;
+			box-shadow: none;
 		}
 	}
 

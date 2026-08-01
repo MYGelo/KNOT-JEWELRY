@@ -27,6 +27,23 @@ if ( function_exists( 'acf_register_block_type' ) ) {
 				wp_enqueue_script( 'block-repair-script', "{$uri_base}/assets/script.js", array(), filemtime( $script ), true );
 			}
 
+			// Restoration-request form → Telegram (own IDs, own config).
+			$form_js = __DIR__ . '/assets/repair-form.js';
+			if ( file_exists( $form_js ) ) {
+				wp_enqueue_script( 'block-repair-form', "{$uri_base}/assets/repair-form.js", array(), filemtime( $form_js ), true );
+
+				$credentials = function_exists( 'knot_telegram_credentials' ) ? knot_telegram_credentials() : array( '', '' );
+
+				wp_localize_script( 'block-repair-form', 'knotRepairForm', array(
+					'telegramBotToken' => $credentials[0] ?? '',
+					'telegramChatId'   => $credentials[1] ?? '',
+					'thankYouUrl'      => home_url( '/thank-you-page/' ),
+					'privacyUrl'       => function_exists( 'knot_get_privacy_policy_url' ) ? knot_get_privacy_policy_url() : '/privacy-policy/',
+					'minFormTime'      => 2500,
+					'resendDelay'      => 10000,
+				) );
+			}
+
 		},
 	) );
 

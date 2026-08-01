@@ -4,13 +4,11 @@ $title      = $form['repair_form_title'] ?? '';
 $step1_text = $form['repair_step1_text'] ?? '';
 $step1_btn  = $form['repair_step1_button'] ?? 'Продовжити';
 $step2_btn  = $form['repair_step2_button'] ?? '← Назад';
-$inst_link = $form['repair_step1_inst_link'] ?? [];
-$product_note = get_field('repair_form_settings_product-note', 'option');
+$inst_link  = $form['repair_step1_inst_link'] ?? [];
 $privacy_url = knot_get_privacy_policy_url();
-
 ?>
 
-<div class="popup_inner" id="example_popup">
+<div class="popup_inner" id="repair_popup">
 
     <span class="overlay" data-action="closePopup"></span>
 
@@ -60,20 +58,21 @@ $privacy_url = knot_get_privacy_policy_url();
 
                     <div class="form-step step-2">
                         <form
-                            id="order-form"
+                            id="repair-order-form"
                             class="order-form"
+                            novalidate
                         >
                             <input type="text" name="website" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true" aria-label="Залиште порожнім">
                             <input type="text" name="math-check" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true" aria-label="Залиште порожнім">
 
-                            <div class="order-form__alert" id="order-form-alert" hidden role="alert"></div>
+                            <div class="order-form__alert" id="repair-form-alert" hidden role="alert"></div>
 
                             <div class="styled">
-                                <label class="styled-label" for="order-full-name">Ім'я та прізвище</label>
+                                <label class="styled-label" for="repair-full-name">Ім'я та прізвище</label>
                                 <input
                                     class="styled__input"
                                     type="text"
-                                    id="order-full-name"
+                                    id="repair-full-name"
                                     name="full-name"
                                     maxlength="100"
                                     autocomplete="name"
@@ -84,11 +83,11 @@ $privacy_url = knot_get_privacy_policy_url();
                             </div>
 
                             <div class="styled">
-                                <label class="styled-label" for="order-phone">Телефон</label>
+                                <label class="styled-label" for="repair-phone">Телефон</label>
                                 <input
                                     class="styled__input"
                                     type="tel"
-                                    id="order-phone"
+                                    id="repair-phone"
                                     name="your-phone"
                                     inputmode="tel"
                                     autocomplete="tel"
@@ -99,11 +98,11 @@ $privacy_url = knot_get_privacy_policy_url();
                             </div>
 
                             <div class="styled">
-                                <label class="styled-label" for="order-telegram">Telegram</label>
+                                <label class="styled-label" for="repair-telegram">Telegram</label>
                                 <input
                                     class="styled__input"
                                     type="text"
-                                    id="order-telegram"
+                                    id="repair-telegram"
                                     name="your-telegram"
                                     maxlength="32"
                                     autocomplete="off"
@@ -113,11 +112,11 @@ $privacy_url = knot_get_privacy_policy_url();
                             </div>
 
                             <div class="styled">
-                                <label class="styled-label" for="order-instagram">Instagram</label>
+                                <label class="styled-label" for="repair-instagram">Instagram</label>
                                 <input
                                     class="styled__input"
                                     type="text"
-                                    id="order-instagram"
+                                    id="repair-instagram"
                                     name="your-instagram"
                                     maxlength="30"
                                     autocomplete="off"
@@ -127,13 +126,13 @@ $privacy_url = knot_get_privacy_policy_url();
                             </div>
 
                             <div class="styled">
-                                <label class="styled-label" for="order-message">Коментар</label>
+                                <label class="styled-label" for="repair-message">Коментар</label>
                                 <textarea
                                     class="styled__input"
-                                    id="order-message"
+                                    id="repair-message"
                                     name="your-message"
                                     maxlength="1000"
-                                    placeholder="Ваше повідомлення (необов’язково)"
+                                    placeholder="Опишіть виріб і бажаний результат (необов’язково)"
                                 ></textarea>
                                 <span class="field-error" data-error-for="your-message"></span>
                             </div>
@@ -149,7 +148,7 @@ $privacy_url = knot_get_privacy_policy_url();
                                 <span class="field-error" data-error-for="privacy-policy"></span>
                             </div>
 
-                            <button type="submit" class="btn main-btn third order-form__submit" id="order-form-submit">
+                            <button type="submit" class="btn main-btn third order-form__submit" id="repair-form-submit">
                                 Надіслати заявку
                             </button>
                         </form>

@@ -111,7 +111,7 @@ if ( $img_ids ) {
 		</div>
 
 		<?php if (!empty( $cta_text )):?>
-			<a class="repair__cta main-btn third" data-action="togglePopup" data-target="#example_popup"><?= esc_html( $cta_text ); ?></a>
+			<button type="button" class="repair__cta main-btn third" data-action="togglePopup" data-target="#repair_popup"><?= esc_html( $cta_text ); ?></button>
 		<?php endif; ?>
 	</div>
 
