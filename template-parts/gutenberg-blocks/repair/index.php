@@ -48,4 +48,14 @@ if ( function_exists( 'acf_register_block_type' ) ) {
 	) );
 
 	require_once __DIR__ . '/fields.php';
+
+	// Print the restoration popup once, in the footer (outside <main>), when a
+	// repair block on the page asked for it. Outside <main> it stays clickable
+	// (main gets pointer-events:none while a popup is open) and it survives the
+	// multiple the_content passes that broke the inline render.
+	add_action( 'wp_footer', static function () {
+		if ( ! empty( $GLOBALS['knot_repair_wants_popup'] ) ) {
+			get_template_part( 'template-parts/popups/repair-popup' );
+		}
+	} );
 }
