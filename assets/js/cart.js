@@ -638,6 +638,11 @@
 		if (phoneInput) attachPhoneMask(phoneInput);
 
 		if (form) {
+			// Clear a field's error the moment the user focuses or edits it, so
+			// the message never lingers over the input.
+			form.addEventListener('input', clearFieldErrorFromEvent);
+			form.addEventListener('focusin', clearFieldErrorFromEvent);
+
 			form.addEventListener('submit', function (event) {
 				event.preventDefault();
 				if (isSubmitting) return;
@@ -945,6 +950,14 @@
 		function safeUrl(value) {
 			const str = String(value || '').trim();
 			return /^https?:\/\//i.test(str) ? str : '';
+		}
+
+		function clearFieldErrorFromEvent(e) {
+			const el = e.target;
+			if (!el || !el.name) return;
+			const errorEl = form.querySelector('[data-error-for="' + el.name + '"]');
+			if (errorEl) errorEl.innerHTML = '';
+			el.classList.remove('is-invalid');
 		}
 
 		function clearErrors() {

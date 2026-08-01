@@ -75,6 +75,17 @@ document.addEventListener('DOMContentLoaded', function () {
 			});
 	});
 
+	// Clear a field's error the moment the user focuses or edits it, so the
+	// message never lingers over the input.
+	function clearFieldError(el) {
+		if (!el || !el.name) return;
+		const errorEl = form.querySelector('[data-error-for="' + el.name + '"]');
+		if (errorEl) errorEl.innerHTML = '';
+		el.classList.remove('is-invalid');
+	}
+	form.addEventListener('input', function (e) { clearFieldError(e.target); });
+	form.addEventListener('focusin', function (e) { clearFieldError(e.target); });
+
 	/* -------------------- DATA -------------------- */
 
 	function valueOf(name) {
