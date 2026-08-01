@@ -116,11 +116,10 @@ if ( $img_ids ) {
 	</div>
 
     <?php
-    // Render the popup once per request (even if the block appears twice) and
-    // only when there is a CTA button to open it.
-    if ( ! empty( $cta_text ) && empty( $GLOBALS['knot_repair_popup_rendered'] ) ) :
-        $GLOBALS['knot_repair_popup_rendered'] = true;
-        get_template_part( 'template-parts/popups/repair-popup' );
-    endif;
+    // Ask for the restoration popup — it's printed once in wp_footer (outside
+    // <main>) so it stays clickable and survives multiple the_content passes.
+    if ( ! empty( $cta_text ) ) {
+        $GLOBALS['knot_repair_wants_popup'] = true;
+    }
     ?>
 </section>
