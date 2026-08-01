@@ -78,6 +78,96 @@ acf_add_local_field_group(array(
             ),
         ),
 
+        array(
+            'key'   => 'tab_repair_form_settings',
+            'label' => 'Repair Form Settings',
+            'name'  => '',
+            'type'  => 'tab',
+            'placement' => 'top',
+        ),
+        array(
+            'key'     => 'field_tab_repair_form_settings_product-note',
+            'label'   => 'Product Note',
+            'name'    => 'repair_form_settings_product-note',
+            'type'    => 'wysiwyg',
+            'default_value' => 'Усі замовлення обробляються вручну. Після заповнення форми я зв’яжуся з вами для підтвердження та уточнення деталей.Щоб пришвидшити обробку, залиште Instagram, Telegram username.'
+        ),
+
+        array(
+            'key' => 'field_repair_form_settings',
+            'label' => 'Repair Form Steps',
+            'name' => 'repair_form_steps',
+            'type' => 'group',
+            'layout' => 'block',
+            'sub_fields' => array(
+
+                array(
+                    'key' => 'field_repair_form_title',
+                    'label' => 'Repair Form Title',
+                    'name' => 'repair_form_title',
+                    'type' => 'text',
+                    'default_value' => 'Формуємо замовлення',
+                ),
+
+                array(
+                    'key'   => 'tab_repair_form_step1',
+                    'label' => 'Step 1',
+                    'type'  => 'tab',
+                ),
+
+                array(
+                    'key' => 'field_repair_form_step1_text',
+                    'label' => 'Step 1 Text',
+                    'name' => 'repair_step1_text',
+                    'type' => 'wysiwyg',
+                    'media_upload' => 0,
+                    'default_value' => '',
+                ),
+
+                array(
+                    'key' => 'field_repair_form_step1_inst_link',
+                    'label' => 'Step 1 Instagram Link',
+                    'name' => 'repair_step1_inst_link',
+                    'type' => 'link',
+                    'return_format' => 'array',
+                    'default_value' => array(
+                        'title' => 'Написати у Instagram',
+                        'url'   => '',
+                        'target' => '_blank',
+                    ),
+                ),
+
+                array(
+                    'key' => 'field_repair_form_step1_btn',
+                    'label' => 'Step 1 Button Text',
+                    'name' => 'repair_step1_button',
+                    'type' => 'text',
+                    'default_value' => 'Продовжити',
+                ),
+
+                /*
+                |--------------------------------------------------------------------------
+                | STEP 2 TAB
+                |--------------------------------------------------------------------------
+                */
+
+                array(
+                    'key'   => 'tab_repair_form_step2',
+                    'label' => 'Step 2',
+                    'type'  => 'tab',
+                ),
+
+                array(
+                    'key' => 'field_repair_form_step2_btn',
+                    'label' => 'Submit Button Text',
+                    'name' => 'repair_step2_button',
+                    'type' => 'text',
+                    'default_value' => '← Назад',
+                ),
+
+            ),
+        ),
+
 //        404
         array(
             'key'   => 'tab_404_page',

@@ -110,8 +110,10 @@ if ( $img_ids ) {
 			<?php endforeach; ?>
 		</div>
 
-		<?php if ( !empty($cta_url) && $cta_text ) : ?>
-			<a class="repair__cta main-btn third" href="<?= esc_url( $cta_url ); ?>"><?= esc_html( $cta_text ); ?></a>
+		<?php if (!empty( $cta_text )):?>
+			<a class="repair__cta main-btn third" data-action="togglePopup" data-target="#example_popup"><?= esc_html( $cta_text ); ?></a>
 		<?php endif; ?>
 	</div>
+
+    <?php get_template_part('template-parts/popups/repair-popup'); ?>
 </section>

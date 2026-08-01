@@ -104,14 +104,6 @@ acf_add_local_field_group(array(
 			'name'          => 'cta_text',
 			'type'          => 'text',
 			'default_value' => 'Замовити реставрацію',
-			'wrapper'       => array( 'width' => '50' ),
-		),
-		array(
-			'key'     => 'field_repair_cta_url',
-			'label'   => 'CTA URL',
-			'name'    => 'cta_url',
-			'type'    => 'url',
-			'wrapper' => array( 'width' => '50' ),
 		),
 
 	),
