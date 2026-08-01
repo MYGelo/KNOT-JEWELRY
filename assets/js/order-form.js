@@ -102,7 +102,6 @@ document.addEventListener('DOMContentLoaded', function () {
         el.classList.remove('is-invalid');
     }
     form.addEventListener('input', function (e) { clearFieldError(e.target); });
-    form.addEventListener('focusin', function (e) { clearFieldError(e.target); });
 
     form.addEventListener('submit', function (event) {
         event.preventDefault();

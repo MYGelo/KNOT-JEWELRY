@@ -641,7 +641,6 @@
 			// Clear a field's error the moment the user focuses or edits it, so
 			// the message never lingers over the input.
 			form.addEventListener('input', clearFieldErrorFromEvent);
-			form.addEventListener('focusin', clearFieldErrorFromEvent);
 
 			form.addEventListener('submit', function (event) {
 				event.preventDefault();

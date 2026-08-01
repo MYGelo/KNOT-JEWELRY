@@ -115,5 +115,12 @@ if ( $img_ids ) {
 		<?php endif; ?>
 	</div>
 
-    <?php get_template_part('template-parts/popups/repair-popup'); ?>
+    <?php
+    // Render the popup once per request (even if the block appears twice) and
+    // only when there is a CTA button to open it.
+    if ( ! empty( $cta_text ) && empty( $GLOBALS['knot_repair_popup_rendered'] ) ) :
+        $GLOBALS['knot_repair_popup_rendered'] = true;
+        get_template_part( 'template-parts/popups/repair-popup' );
+    endif;
+    ?>
 </section>
