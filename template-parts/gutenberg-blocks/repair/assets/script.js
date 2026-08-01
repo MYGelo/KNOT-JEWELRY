@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', function () {
 		const before = cmp.querySelector('[data-repair-before]');
 		const inner = cmp.querySelector('[data-repair-inner]');
 		const handle = cmp.querySelector('[data-repair-handle]');
+		const tagL = cmp.querySelector('.repair-cmp__tag--l');
+		const tagR = cmp.querySelector('.repair-cmp__tag--r');
 		if (!before || !inner || !handle) return;
 
 		function setX(px) {
@@ -15,6 +17,12 @@ document.addEventListener('DOMContentLoaded', function () {
 			before.style.width = px + 'px';
 			inner.style.width = w + 'px'; // keep the clipped image at full width so it aligns
 			handle.style.left = px + 'px';
+
+			// At the extremes only one side is visible — hide the label that would
+			// otherwise sit over the wrong image.
+			const ratio = w ? px / w : 0.5;
+			if (tagL) tagL.classList.toggle('is-hidden', ratio < 0.08);
+			if (tagR) tagR.classList.toggle('is-hidden', ratio > 0.92);
 		}
 
 		function fromEvent(e) {

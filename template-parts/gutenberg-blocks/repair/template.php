@@ -29,16 +29,17 @@ if ( $img_ids ) {
 
 <section class="<?= esc_attr( $block_classes ); ?>"<?= $block_anchor ? ' id="' . esc_attr( $block_anchor ) . '"' : ''; ?>>
 	<div class="container">
-
 		<div class="repair__head">
-			<?php if ( $eyebrow ) : ?>
-				<div class="repair__eyebrow"><span class="repair__rule"></span><?= esc_html( $eyebrow ); ?></div>
+			<?php if ( !empty($eyebrow) ) : ?>
+				<div class="repair__eyebrow"><span class="repair__rule"></span><?= wp_kses_post( $eyebrow ); ?><span class="repair__rule"></div>
 			<?php endif; ?>
-			<?php if ( $title ) : ?>
-				<h2 class="repair__title"><?= esc_html( $title ); ?></h2>
+
+			<?php if ( !empty($title) ) : ?>
+				<h2 class="repair__title"><?= wp_kses_post( $title ); ?></h2>
 			<?php endif; ?>
-			<?php if ( $lead ) : ?>
-				<p class="repair__lead"><?= esc_html( $lead ); ?></p>
+
+			<?php if ( !empty($lead) ) : ?>
+				<p class="repair__lead"><?= wp_kses_post( $lead ); ?></p>
 			<?php endif; ?>
 		</div>
 
@@ -55,13 +56,13 @@ if ( $img_ids ) {
 				$ilead  = $p['lead'] ?? '';
 				?>
 				<figure class="repair-item">
-					<?php if ( $ititle ) : ?>
-						<h3 class="repair-item__title"><?= esc_html( $ititle ); ?></h3>
+					<?php if ( !empty($ititle) ) : ?>
+						<h3 class="repair-item__title"><?= wp_kses_post( $ititle ); ?></h3>
 					<?php endif; ?>
 
 					<div class="repair-cmp" data-repair-cmp>
-
 						<div class="repair-cmp__after">
+                            <span class="repair-cmp__tag repair-cmp__tag--r"><?= wp_kses_post( $al ); ?></span>
 							<?= wp_get_attachment_image( $after, 'large', false, array(
 								'class'    => 'repair-cmp__img',
 								'alt'      => esc_attr( $al ),
@@ -71,6 +72,7 @@ if ( $img_ids ) {
 						</div>
 
 						<div class="repair-cmp__before" data-repair-before>
+                            <span class="repair-cmp__tag repair-cmp__tag--l"><?= wp_kses_post( $bl ); ?></span>
 							<div class="repair-cmp__inner" data-repair-inner>
 								<?= wp_get_attachment_image( $before, 'large', false, array(
 									'class'    => 'repair-cmp__img',
@@ -81,9 +83,6 @@ if ( $img_ids ) {
 							</div>
 						</div>
 
-						<span class="repair-cmp__tag repair-cmp__tag--l"><?= esc_html( $bl ); ?></span>
-						<span class="repair-cmp__tag repair-cmp__tag--r"><?= esc_html( $al ); ?></span>
-
 						<div class="repair-cmp__handle" data-repair-handle>
 							<span class="repair-cmp__grip">
 								<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -92,17 +91,17 @@ if ( $img_ids ) {
 							</span>
 						</div>
 
+                        <p class="repair-item__hint">
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M8 13V4.5a1.5 1.5 0 0 1 3 0V12"/>
+                                <path d="M11 11.5v-2a1.5 1.5 0 0 1 3 0V12"/>
+                                <path d="M14 10.5a1.5 1.5 0 0 1 3 0V12"/>
+                                <path d="M17 11.5a1.5 1.5 0 0 1 3 0V16a6 6 0 0 1-6 6h-2a6 6 0 0 1-5-2.7c-.13-.2-.2-.3-.2-.3-.31-.48-1.4-2.39-3.28-5.73a1.5 1.5 0 0 1 .53-2.02 1.87 1.87 0 0 1 2.28.28L8 13"/>
+                                <path d="M4.5 15.5l-2 1.5M5 19l-2.4.6" opacity="0.55"/>
+                            </svg>
+                            Потягніть, щоб порівняти
+                        </p>
 					</div>
-					<p class="repair-item__hint">
-						<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-							<path d="M8 13V4.5a1.5 1.5 0 0 1 3 0V12"/>
-							<path d="M11 11.5v-2a1.5 1.5 0 0 1 3 0V12"/>
-							<path d="M14 10.5a1.5 1.5 0 0 1 3 0V12"/>
-							<path d="M17 11.5a1.5 1.5 0 0 1 3 0V16a6 6 0 0 1-6 6h-2a6 6 0 0 1-5-2.7c-.13-.2-.2-.3-.2-.3-.31-.48-1.4-2.39-3.28-5.73a1.5 1.5 0 0 1 .53-2.02 1.87 1.87 0 0 1 2.28.28L8 13"/>
-							<path d="M4.5 15.5l-2 1.5M5 19l-2.4.6" opacity="0.55"/>
-						</svg>
-						Потягніть, щоб порівняти
-					</p>
 
 					<?php if ( $ilead ) : ?>
 						<p class="repair-item__lead"><?= nl2br( esc_html( $ilead ) ); ?></p>
@@ -111,9 +110,8 @@ if ( $img_ids ) {
 			<?php endforeach; ?>
 		</div>
 
-		<?php if ( $cta_url && $cta_text ) : ?>
+		<?php if ( !empty($cta_url) && $cta_text ) : ?>
 			<a class="repair__cta main-btn third" href="<?= esc_url( $cta_url ); ?>"><?= esc_html( $cta_text ); ?></a>
 		<?php endif; ?>
-
 	</div>
 </section>

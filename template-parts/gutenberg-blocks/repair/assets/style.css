@@ -76,10 +76,11 @@
 
 	.repair-item__lead {
 		margin-top: 14px;
-		font-size: clamp(13px, 1vw, 15px);
 		line-height: 1.6;
-		color: var(--text-second);
 		text-align: center;
+		padding: clamp(10px, 1.389vw, 20px);
+		border-radius: 16px;
+		box-shadow: 0 0 10px rgb(0 0 0 / 15%);
 	}
 
 	.repair-item__hint {
@@ -87,9 +88,17 @@
 		align-items: center;
 		justify-content: center;
 		gap: 6px;
-		margin-top: 12px;
-		font-size: 12px;
-		color: var(--text-second);
+		position: absolute;
+		bottom: 12px;
+		z-index: 3;
+		padding: 4px 10px;
+		border-radius: 20px;
+		background: rgb(20 18 16 / 85%);
+		color: #fff;
+		font-size: 11px;
+		pointer-events: none;
+		left: 50%;
+		transform: translateX(-50%);
 
 		svg {
 			color: inherit;
@@ -149,14 +158,21 @@
 	letter-spacing: 0.14em;
 	text-transform: uppercase;
 	pointer-events: none;
+	transition: opacity .2s ease;
+}
+
+.repair-cmp__tag.is-hidden {
+	opacity: 0;
 }
 
 .repair-cmp__tag--l {
 	left: 12px;
+	/*top: 12px;*/
 }
 
 .repair-cmp__tag--r {
 	right: 12px;
+	/*bottom: 12px;*/
 }
 
 .repair-cmp__handle {
