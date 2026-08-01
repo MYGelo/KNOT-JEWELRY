@@ -889,3 +889,47 @@ form {
 		opacity: 0.7;
 	}
 }
+
+/* ---------- Instagram CTA ---------- */
+.reviews__cta-wrap {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 24px;
+
+	.reviews-cta {
+		display: inline-flex;
+		justify-content: center;
+		align-items: center;
+		gap: 10px;
+		padding: 14px 30px;
+		border-radius: 60px;
+		color: #fff;
+		font-size: clamp(14px, 1.1vw, 16px);
+		letter-spacing: 0.01em;
+		background: linear-gradient(95deg, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5);
+		background-size: 200% 100%;
+		background-position: 0 0;
+		box-shadow: 0 0 20px rgba(214, 41, 118, 0.35);
+		transition: background-position .6s ease, transform .25s ease, box-shadow .3s ease;
+
+		&:hover {
+			@media (hover: hover) {
+				background-position: 100% 0;
+				transform: translateY(-2px);
+				box-shadow: 0 0 26px rgba(214, 41, 118, 0.45);
+			}
+		}
+
+		&:focus-visible {
+			outline: 2px solid #962fbf;
+			outline-offset: 3px;
+		}
+	}
+
+	.reviews-cta__icon {
+		width: 22px;
+		height: 22px;
+		flex-shrink: 0;
+		color: #fff;
+	}
+}
