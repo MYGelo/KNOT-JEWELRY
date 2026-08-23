@@ -1,3 +1,6 @@
+/* Grid-based list (not a <table>): the same markup collapses into cards on
+   phones by swapping one grid-template-columns value. */
+
 .knot-items__subtitle {
 	max-width: 720px;
 	color: #50575e;
@@ -8,6 +11,7 @@
 	align-items: center;
 	gap: 8px;
 	margin: 12px 0 16px;
+	flex-wrap: wrap;
 }
 
 .knot-items__bar {
@@ -20,6 +24,7 @@
 	z-index: 5;
 	padding: 8px 0;
 	background: #f0f0f1;
+	flex-wrap: wrap;
 }
 
 .knot-items__status {
@@ -27,35 +32,31 @@
 	color: #50575e;
 }
 
-.knot-items__status.is-ok {
-	color: #007017;
-}
+.knot-items__status.is-ok    { color: #007017; }
+.knot-items__status.is-error { color: #b32d2e; }
 
-.knot-items__status.is-error {
-	color: #b32d2e;
-}
+/* ---------- LIST ---------- */
 
-/* ---------- TABLE ---------- */
+.knot-items__list {
+	--knot-cols: 34px 70px 56px minmax(200px, 1fr) 130px 170px;
 
-.knot-items__table {
-	table-layout: auto; /* the title column takes whatever is left */
-	width: 100%;
 	margin-top: 8px;
 	border: 1px solid #c3c4c7;
 	border-radius: 4px;
-	border-collapse: collapse;
 	background: #fff;
 	box-shadow: 0 1px 1px rgba(0, 0, 0, .04);
 }
 
-.knot-items__table th,
-.knot-items__table td {
+.knot-items__head,
+.knot-items__main {
+	display: grid;
+	grid-template-columns: var(--knot-cols);
+	align-items: center;
+	gap: 12px;
 	padding: 10px 12px;
-	text-align: left;
-	vertical-align: middle;
 }
 
-.knot-items__table thead th {
+.knot-items__head {
 	background: #f6f7f7;
 	border-bottom: 1px solid #c3c4c7;
 	font-size: 12px;
@@ -65,47 +66,26 @@
 	color: #50575e;
 }
 
-.knot-items__table .knot-items__row > td {
+.knot-items__item + .knot-items__item,
+.knot-items__item:first-of-type {
 	border-top: 1px solid #f0f0f1;
 }
 
-.knot-items__table tbody tr:first-child > td {
-	border-top: 0;
-}
+.knot-items__item.is-dirty { background: #fcf3d8; }
+.knot-items__item.is-saved { background: #e6f4ea; transition: background-color .8s ease; }
 
-/* Must out-specify the display rules below (a bare `tr { display: block }`
-   would otherwise beat the browser's own [hidden] { display: none }). */
-.knot-items__table tr[hidden] {
-	display: none;
-}
-
-.knot-items__table .knot-items__col-toggle {
-	width: 36px;
-}
-
-.knot-items__table .knot-items__col-id {
-	width: 70px;
+.knot-items__empty {
+	padding: 16px 12px;
 	color: #646970;
 }
 
-.knot-items__table .knot-items__col-thumb {
-	width: 56px;
+/* ---------- CELLS ---------- */
+
+.knot-items__id {
+	color: #646970;
 }
 
-.knot-items__table .knot-items__col-price {
-	width: 130px;
-}
-
-.knot-items__table .knot-items__col-links {
-	width: 160px;
-	white-space: nowrap;
-}
-
-.knot-items__col-links a {
-	margin-right: 10px;
-}
-
-.knot-items__col-thumb img {
+.knot-items__thumb img {
 	width: 40px;
 	height: 40px;
 	object-fit: cover;
@@ -115,6 +95,14 @@
 
 .knot-items__input {
 	width: 100%;
+}
+
+.knot-items__links {
+	white-space: nowrap;
+}
+
+.knot-items__links a {
+	margin-right: 10px;
 }
 
 .knot-items__badge {
@@ -134,26 +122,15 @@
 	cursor: pointer;
 	padding: 0;
 	color: #646970;
+	line-height: 1;
 }
 
-.knot-items__toggle:hover {
-	color: #135e96;
-}
-
-/* ---------- STATE ---------- */
-
-.knot-items__row.is-dirty > td {
-	background-color: #fcf3d8;
-}
-
-.knot-items__row.is-saved > td {
-	background-color: #e6f4ea;
-	transition: background-color .8s ease;
-}
+.knot-items__toggle:hover { color: #135e96; }
 
 /* ---------- DETAILS ---------- */
 
-.knot-items__details > td {
+.knot-items__details {
+	padding: 4px 12px 16px 58px;
 	background: #fbfbfc;
 	box-shadow: inset 0 1px 0 #e0e0e0;
 }
@@ -162,7 +139,7 @@
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 	gap: 16px;
-	padding: 12px 4px;
+	padding-top: 12px;
 }
 
 .knot-items__field {
@@ -181,6 +158,8 @@
 	height: auto;
 	padding: 4px;
 }
+
+/* ---------- STOCK SWITCH ---------- */
 
 .knot-items__stock {
 	display: grid;
@@ -237,13 +216,8 @@
 	transition: transform .2s ease;
 }
 
-.knot-items__switch-input:checked + .knot-items__switch {
-	background: #2271b1;
-}
-
-.knot-items__switch-input:checked + .knot-items__switch::after {
-	transform: translateX(20px);
-}
+.knot-items__switch-input:checked + .knot-items__switch { background: #2271b1; }
+.knot-items__switch-input:checked + .knot-items__switch::after { transform: translateX(20px); }
 
 .knot-items__switch-input:focus-visible + .knot-items__switch {
 	outline: 2px solid #2271b1;
@@ -265,71 +239,53 @@
 	color: #8c8f94;
 }
 
-/* ---------- MOBILE: rows become cards ---------- */
+/* ---------- MOBILE ---------- */
 
 @media screen and (max-width: 782px) {
 
-	.knot-items__bar {
-		top: 46px; /* taller admin bar on small screens */
-		flex-wrap: wrap;
-	}
+	.knot-items__bar { top: 46px; }
 
-	.knot-items__search {
-		flex-wrap: wrap;
-	}
+	.knot-items__search input[type="search"] { flex: 1 1 100%; }
 
-	.knot-items__search input[type="search"] {
-		flex: 1 1 100%;
-	}
-
-	.knot-items__table,
-	.knot-items__table tbody,
-	.knot-items__table tr,
-	.knot-items__table td {
-		display: block;
-		width: auto;
-	}
-
-	.knot-items__table thead {
-		display: none;
-	}
-
-	.knot-items__table {
+	.knot-items__list {
 		border: 0;
 		background: none;
 		box-shadow: none;
 	}
 
-	.knot-items__row {
-		position: relative;
-		padding: 12px 12px 12px 46px;
+	.knot-items__head { display: none; }
+
+	.knot-items__item,
+	.knot-items__item:first-of-type,
+	.knot-items__item + .knot-items__item {
 		margin-bottom: 10px;
 		border: 1px solid #c3c4c7;
 		border-radius: 4px;
 		background: #fff;
 	}
 
-	.knot-items__table .knot-items__row > td {
-		border: 0;
-		padding: 4px 0;
+	.knot-items__item.is-dirty { background: #fcf3d8; }
+	.knot-items__item.is-saved { background: #e6f4ea; }
+
+	/* One column; the toggle keeps its own slot at the top. */
+	.knot-items__main {
+		grid-template-columns: 34px 1fr;
+		align-items: start;
+		gap: 8px 10px;
 	}
 
-	/* Toggle pinned to the card's top-left corner. */
-	.knot-items__table .knot-items__row > .knot-items__col-toggle {
-		position: absolute;
-		top: 10px;
-		left: 8px;
-		padding: 0;
-		width: 30px;
+	.knot-items__toggle { grid-row: 1 / span 5; }
+	.knot-items__toggle .dashicons { font-size: 24px; width: 24px; height: 24px; }
+
+	.knot-items__id,
+	.knot-items__thumb,
+	.knot-items__title,
+	.knot-items__price,
+	.knot-items__links {
+		grid-column: 2;
 	}
 
-	.knot-items__toggle .dashicons {
-		font-size: 24px;
-		width: 24px;
-		height: 24px;
-	}
-
-	.knot-items__table td[data-label]::before {
+	.knot-items__main [data-label]::before {
 		content: attr(data-label);
 		display: block;
 		margin-bottom: 2px;
@@ -339,45 +295,14 @@
 		color: #646970;
 	}
 
-	/* ID and thumbnail sit together on one line. */
-	.knot-items__row > .knot-items__col-id {
-		display: inline-block;
-		margin-right: 12px;
-	}
-
-	.knot-items__row > .knot-items__col-thumb {
-		display: inline-block;
-		vertical-align: bottom;
-	}
-
-	.knot-items__table .knot-items__col-price,
-	.knot-items__table .knot-items__col-links,
-	.knot-items__table .knot-items__col-id,
-	.knot-items__table .knot-items__col-thumb {
-		width: auto;
-	}
-
-	.knot-items__col-links {
-		padding-top: 8px !important;
-	}
-
-	.knot-items__col-links a {
+	.knot-items__links a {
 		display: inline-block;
 		margin: 0 16px 0 0;
 		padding: 6px 0; /* comfortable tap targets */
 	}
 
 	.knot-items__details {
-		margin: -10px 0 10px;
-		border: 1px solid #c3c4c7;
-		border-top: 0;
-		border-radius: 0 0 4px 4px;
-		background: #fbfbfc;
-	}
-
-	.knot-items__details > td {
-		padding: 8px 12px 16px;
-		box-shadow: none;
+		padding: 4px 12px 16px;
 	}
 
 	.knot-items__grid,
@@ -385,7 +310,5 @@
 		grid-template-columns: 1fr;
 	}
 
-	.knot-items__field select[multiple] {
-		width: 100%;
-	}
+	.knot-items__field select[multiple] { width: 100%; }
 }

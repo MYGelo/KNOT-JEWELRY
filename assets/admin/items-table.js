@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const table = document.querySelector('.knot-items__table');
+    const table = document.querySelector('.knot-items__list');
     if (!table || typeof knotItems === 'undefined') return;
 
     const saveButtons = document.querySelectorAll('[data-items-save]');
@@ -22,14 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
         statusEl.className = 'knot-items__status' + (kind ? ' is-' + kind : '');
     }
 
-    function rowOf(el) {
-        // Detail fields live in the sibling row, so fall back to the previous row.
-        const row = el.closest('[data-item-row]');
-        if (row) return row;
-
-        const details = el.closest('[data-item-details]');
-        return details ? details.previousElementSibling : null;
-    }
+    // Details live inside the item, so one lookup covers every field.
+    const rowOf = el => el.closest('[data-item-row]');
 
     table.addEventListener('input', (e) => {
         if (!e.target.classList.contains('knot-items__input')) return;
@@ -62,8 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!toggle) return;
 
         const row = toggle.closest('[data-item-row]');
-        const details = row?.nextElementSibling;
-        if (!details || !details.hasAttribute('data-item-details')) return;
+        const details = row?.querySelector('[data-item-details]');
+        if (!details) return;
 
         const open = details.hidden;
         details.hidden = !open;
@@ -75,25 +69,18 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ---------------- COLLECT + SAVE ---------------- */
 
     function collect(row) {
-        const details = row.nextElementSibling?.hasAttribute('data-item-details')
-            ? row.nextElementSibling
-            : null;
-
         const item = { id: Number(row.dataset.itemId), tax: {} };
-        const scopes = details ? [row, details] : [row];
 
-        scopes.forEach(scope => {
-            scope.querySelectorAll('.knot-items__input').forEach(input => {
-                const field = input.dataset.field;
+        row.querySelectorAll('.knot-items__input').forEach(input => {
+            const field = input.dataset.field;
 
-                if (field === 'tax') {
-                    item.tax[input.dataset.taxonomy] =
-                        Array.from(input.selectedOptions).map(o => Number(o.value));
-                    return;
-                }
+            if (field === 'tax') {
+                item.tax[input.dataset.taxonomy] =
+                    Array.from(input.selectedOptions).map(o => Number(o.value));
+                return;
+            }
 
-                item[field] = input.type === 'checkbox' ? input.checked : input.value;
-            });
+            item[field] = input.type === 'checkbox' ? input.checked : input.value;
         });
 
         return item;

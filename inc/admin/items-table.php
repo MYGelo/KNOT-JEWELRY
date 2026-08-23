@@ -200,55 +200,57 @@ function knot_items_render_page(): void {
             <span class="knot-items__status" data-items-status aria-live="polite"></span>
         </div>
 
-        <?php // Deliberately not .wp-list-table: core ships its own responsive
-              // rules for that class (hiding secondary columns, data-colname
-              // labels) which fight the card layout below. ?>
-        <table class="knot-items__table">
-            <thead>
-                <tr>
-                    <th class="knot-items__col-toggle"><span class="screen-reader-text">Деталі</span></th>
-                    <th class="knot-items__col-id">ID</th>
-                    <th class="knot-items__col-thumb"><span class="screen-reader-text">Фото</span></th>
-                    <th>Назва</th>
-                    <th class="knot-items__col-price">Ціна, ₴</th>
-                    <th class="knot-items__col-links"><span class="screen-reader-text">Дії</span></th>
-                </tr>
-            </thead>
-            <tbody>
+        <?php // A grid-based list rather than a <table>: the same layout has to
+              // collapse into cards on phones, which fights table semantics. ?>
+        <div class="knot-items__list">
+
+            <div class="knot-items__head" aria-hidden="true">
+                <span></span>
+                <span>ID</span>
+                <span></span>
+                <span>Назва</span>
+                <span>Ціна, ₴</span>
+                <span></span>
+            </div>
+
             <?php if (empty($data['rows'])): ?>
-                <tr><td colspan="6">Нічого не знайдено.</td></tr>
+                <p class="knot-items__empty">Нічого не знайдено.</p>
             <?php endif; ?>
 
             <?php foreach ($data['rows'] as $row): ?>
-                <tr class="knot-items__row" data-item-row data-item-id="<?= esc_attr($row['id']) ?>">
-                    <td class="knot-items__col-toggle">
+                <article class="knot-items__item" data-item-row data-item-id="<?= esc_attr($row['id']) ?>">
+
+                    <div class="knot-items__main">
                         <button type="button" class="knot-items__toggle" data-items-toggle aria-expanded="false" aria-label="Показати деталі">
                             <span class="dashicons dashicons-arrow-right"></span>
                         </button>
-                    </td>
-                    <td class="knot-items__col-id" data-label="ID"><?= esc_html($row['id']) ?></td>
-                    <td class="knot-items__col-thumb">
-                        <?php if ($row['thumb']): ?>
-                            <img src="<?= esc_url($row['thumb']) ?>" alt="" width="40" height="40" loading="lazy">
-                        <?php endif; ?>
-                    </td>
-                    <td class="knot-items__col-title" data-label="Назва">
-                        <input type="text" class="knot-items__input" data-field="title" value="<?= esc_attr($row['title']) ?>">
-                        <?php if ($row['status'] !== 'publish'): ?>
-                            <span class="knot-items__badge"><?= esc_html($row['status']) ?></span>
-                        <?php endif; ?>
-                    </td>
-                    <td class="knot-items__col-price" data-label="Ціна, ₴">
-                        <input type="number" min="0" step="1" class="knot-items__input" data-field="price" value="<?= esc_attr($row['price']) ?>">
-                    </td>
-                    <td class="knot-items__col-links">
-                        <?php if ($row['view']): ?><a href="<?= esc_url($row['view']) ?>" target="_blank" rel="noopener">Переглянути</a><?php endif; ?>
-                        <?php if ($row['edit']): ?><a href="<?= esc_url($row['edit']) ?>">Редактор</a><?php endif; ?>
-                    </td>
-                </tr>
 
-                <tr class="knot-items__details" data-item-details hidden>
-                    <td colspan="6">
+                        <span class="knot-items__id" data-label="ID"><?= esc_html($row['id']) ?></span>
+
+                        <span class="knot-items__thumb">
+                            <?php if ($row['thumb']): ?>
+                                <img src="<?= esc_url($row['thumb']) ?>" alt="" width="40" height="40" loading="lazy">
+                            <?php endif; ?>
+                        </span>
+
+                        <span class="knot-items__title" data-label="Назва">
+                            <input type="text" class="knot-items__input" data-field="title" value="<?= esc_attr($row['title']) ?>">
+                            <?php if ($row['status'] !== 'publish'): ?>
+                                <span class="knot-items__badge"><?= esc_html($row['status']) ?></span>
+                            <?php endif; ?>
+                        </span>
+
+                        <span class="knot-items__price" data-label="Ціна, ₴">
+                            <input type="number" min="0" step="1" class="knot-items__input" data-field="price" value="<?= esc_attr($row['price']) ?>">
+                        </span>
+
+                        <span class="knot-items__links">
+                            <?php if ($row['view']): ?><a href="<?= esc_url($row['view']) ?>" target="_blank" rel="noopener">Переглянути</a><?php endif; ?>
+                            <?php if ($row['edit']): ?><a href="<?= esc_url($row['edit']) ?>">Редактор</a><?php endif; ?>
+                        </span>
+                    </div>
+
+                    <div class="knot-items__details" data-item-details hidden>
                         <div class="knot-items__grid">
 
                             <div class="knot-items__field knot-items__field--wide knot-items__stock">
@@ -267,11 +269,6 @@ function knot_items_render_page(): void {
                                 </label>
                             </div>
 
-<!--                            <label class="knot-items__field">-->
-<!--                                <span>Стара ціна, ₴</span>-->
-<!--                                <input type="number" min="0" step="1" class="knot-items__input" data-field="old_price" value="--><?php //= esc_attr($row['old_price']) ?><!--">-->
-<!--                            </label>-->
-
                             <?php foreach ($taxonomies as $tax => $conf):
                                 $selected = $row['terms'][$tax] ?? [];
                                 ?>
@@ -287,13 +284,12 @@ function knot_items_render_page(): void {
                                 </label>
                             <?php endforeach; ?>
 
-
                         </div>
-                    </td>
-                </tr>
+                    </div>
+
+                </article>
             <?php endforeach; ?>
-            </tbody>
-        </table>
+        </div>
 
         <?php if ($data['total_pages'] > 1): ?>
             <div class="tablenav"><div class="tablenav-pages">
