@@ -121,25 +121,16 @@ function knot_normalize_product_terms(): void {
         }
     }
 
-    // Fallback: any other term still carrying a Cyrillic / percent-encoded slug
-    // (e.g. added by hand) gets transliterated too.
-    $translit = static function (string $text): string {
-        $table = [
-            'а'=>'a','б'=>'b','в'=>'v','г'=>'h','ґ'=>'g','д'=>'d','е'=>'e','є'=>'ie','ж'=>'zh',
-            'з'=>'z','и'=>'y','і'=>'i','ї'=>'i','й'=>'i','к'=>'k','л'=>'l','м'=>'m','н'=>'n',
-            'о'=>'o','п'=>'p','р'=>'r','с'=>'s','т'=>'t','у'=>'u','ф'=>'f','х'=>'kh','ц'=>'ts',
-            'ч'=>'ch','ш'=>'sh','щ'=>'shch','ь'=>'','ю'=>'iu','я'=>'ia','ъ'=>'','ы'=>'y','э'=>'e','ё'=>'e',
-        ];
-        return sanitize_title(strtr(mb_strtolower($text, 'UTF-8'), $table));
-    };
-
+    // Fallback for anything not in the map above (e.g. a term added by hand
+    // before the sanitize_title filter existed): romanise its slug too. New
+    // terms don't need this — inc/helpers/translit.php handles them on save.
     foreach (array_keys($map) as $taxonomy) {
         $terms = get_terms(['taxonomy' => $taxonomy, 'hide_empty' => false]);
         if (!is_array($terms)) continue;
 
         foreach ($terms as $term) {
             if (preg_match('/%|[^\x00-\x7F]/', $term->slug)) {
-                $new = $translit($term->name);
+                $new = sanitize_title($term->name);
                 if ($new && $new !== $term->slug) {
                     wp_update_term($term->term_id, $taxonomy, ['slug' => $new]);
                 }
