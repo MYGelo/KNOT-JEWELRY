@@ -337,7 +337,7 @@ function site_catalog_get_results(string $search, array $materials, array $stone
 
     if ($cacheable) {
         $cached = get_transient($cache_key);
-        if (is_array($cached) && isset($cached['available'], $cached['post_ids'], $cached['total_pages'])) {
+        if (is_array($cached) && isset($cached['available'], $cached['post_ids'], $cached['total_pages'], $cached['total_posts'])) {
             return $cached;
         }
     }
@@ -366,6 +366,7 @@ function site_catalog_get_results(string $search, array $materials, array $stone
     $result = [
         'post_ids'    => $query->posts,
         'total_pages' => (int) $query->max_num_pages,
+        'total_posts' => (int) $query->found_posts,
         'available'   => site_compute_available_terms($all_ids_query->posts),
     ];
 
@@ -486,6 +487,8 @@ function site_filter_posts($request) {
 
     ob_start();
     $total_pages   = $results['total_pages'];
+    $total_posts   = $results['total_posts'];
+    $shown_posts   = count($results['post_ids']);
     $paged         = $page;
     $page_base_url = site_catalog_base_url(
         [

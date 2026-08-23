@@ -134,7 +134,15 @@ document.addEventListener('DOMContentLoaded', () => {
     /* LOAD POSTS                       */
     /* -------------------------------- */
 
-    async function loadPosts(targetPage = 1, { scroll = false, push = true } = {}) {
+    // Keep the "24 з 121" counter honest: it always reflects what is actually
+    // in the grid right now (appended pages included).
+    function refreshCount() {
+        const el = paginationWrap?.querySelector('[data-count-current]');
+        if (!el) return;
+        el.textContent = String(postsWrap.querySelectorAll('.all-posts__post-item').length);
+    }
+
+    async function loadPosts(targetPage = 1, { scroll = false, push = true, append = false } = {}) {
 
         if (loading) return;
 
@@ -167,8 +175,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
             }).then(res => res.json());
 
-            postsWrap.innerHTML = data.posts;
+            if (append) {
+                postsWrap.insertAdjacentHTML('beforeend', data.posts);
+            } else {
+                postsWrap.innerHTML = data.posts;
+            }
             paginationWrap.innerHTML = data.pagination;
+            refreshCount();
 
             page = targetPage;
 
@@ -331,6 +344,17 @@ document.addEventListener('DOMContentLoaded', () => {
     /* -------------------------------- */
 
     paginationWrap?.addEventListener('click', (e) => {
+
+        // "Завантажити ще" — appends the next page instead of replacing.
+        const more = e.target.closest('[data-load-more]');
+        if (more) {
+            const next = parseInt(more.dataset.nextPage, 10);
+            if (next) {
+                more.disabled = true;
+                loadPosts(next, { append: true, scroll: false });
+            }
+            return;
+        }
 
         const btn = e.target.closest('.page-num');
 

@@ -623,11 +623,23 @@ section {
 	&.five {
 		background: linear-gradient(90deg, #d2b48c59, #F1E3D259, #d2b48c59, #d2b48c59);
 	}
+	&.six {
+		background: linear-gradient(90deg, rgba(145, 117, 75, 0.91), rgba(122, 121, 121, 0.73),rgba(145, 117, 75, 0.91), rgba(122, 121, 121, 0.73));
+	}
+
+	&.seven {
+		backdrop-filter: blur(6px);
+		box-shadow: 0 0 12px 0 #0000004f;
+		background-color: #efefe93b;
+		color: #75798d;
+		letter-spacing: 1px;
+	}
 	&.first,
 	&.second,
 	&.third,
 	&.four,
-	&.five {
+	&.five,
+	&.six{
 		background-size: 300% 100%;
 		animation: gradientShift 6s ease infinite;
 

@@ -1,6 +1,26 @@
 <?php
 
 if (!isset($total_pages) || !isset($paged)) return;
+
+// Optional: "24 з 121" counter + "load more" button rendered above the numbers.
+$total_posts = isset($total_posts) ? (int) $total_posts : 0;
+$shown_posts = isset($shown_posts) ? (int) $shown_posts : 0;
+
+if ($total_posts > 0) {
+    printf(
+        '<p class="blog__count" data-count-shown="%1$d" data-count-total="%2$d"><span data-count-current>%1$d</span> з %2$d</p>',
+        $shown_posts,
+        $total_posts
+    );
+}
+
+if ($paged < $total_pages) {
+    printf(
+        '<button type="button" class="blog__load-more main-btn seven" data-load-more data-next-page="%d">Показати ще</button>',
+        $paged + 1
+    );
+}
+
 if ($total_pages <= 1) return;
 
 echo '<div class="blog__pagination">';

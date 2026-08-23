@@ -88,6 +88,8 @@ $active_types     = array_flip($catalog['product_type']);
                 <div id="ajax-pagination">
                     <?php
                     $total_pages   = $catalog_results['total_pages'];
+                    $total_posts   = $catalog_results['total_posts'];
+                    $shown_posts   = count($catalog_results['post_ids']);
                     $paged         = $catalog['page'];
                     $page_base_url = site_catalog_base_url($catalog);
                     include get_template_directory() . '/template-parts/components/pagination.php';?>
