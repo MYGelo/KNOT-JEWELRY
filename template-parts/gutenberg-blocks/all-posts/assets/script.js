@@ -568,6 +568,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     })();
 
+    // Landing on a URL that already carries catalog state (search, filters or a
+    // page number): bring the results into view instead of leaving the visitor
+    // at the top of the page.
+    (() => {
+        if (!section) return;
+
+        const p = new URLSearchParams(location.search);
+        const hasState = ['q', 'material', 'type', 'stone', 'pagenum']
+            .some(key => (p.get(key) || '').trim() !== '');
+
+        if (!hasState) return;
+
+        // Wait for layout to settle (the browser may restore its own scroll first).
+        requestAnimationFrame(() => {
+            setTimeout(scrollToSection, 100);
+        });
+    })();
+
     loader?.classList.remove('active');
 
 });
