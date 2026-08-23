@@ -122,7 +122,15 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (failed.size) {
-                setStatus('Не вдалося зберегти: ' + Array.from(failed).join(', '), 'error');
+                // Show why, not just which — the server explains each rejection.
+                const reasons = (data.errors || [])
+                    .map(e => '#' + e.id + ': ' + e.message)
+                    .join('; ');
+
+                setStatus(
+                    reasons || 'Не вдалося зберегти: ' + Array.from(failed).join(', '),
+                    'error'
+                );
                 saveButtons.forEach(b => { b.disabled = false; });
             } else {
                 setStatus('Збережено', 'ok');

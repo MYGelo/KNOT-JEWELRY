@@ -3,8 +3,8 @@
  * Items table — a spreadsheet-like editor for products (posts).
  *
  * Lives in wp-admin on purpose: capabilities, nonces and admin styling are
- * handled by core, and the screen never appears on the public site. The
- * friendly /items-info URL just redirects here.
+ * handled by core, and the screen never appears on the public site.
+ * Reachable from Записи → Таблиця товарів.
  */
 
 const KNOT_ITEMS_PAGE       = 'items-info';
@@ -25,20 +25,6 @@ add_action('admin_menu', function () {
         KNOT_ITEMS_PAGE,
         'knot_items_render_page'
     );
-});
-
-/**
- * /items-info → the admin screen (logged-out users land on the login form).
- */
-add_action('template_redirect', function () {
-    $path = trim(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '', '/');
-
-    if ($path !== KNOT_ITEMS_PAGE) {
-        return;
-    }
-
-    wp_safe_redirect(admin_url('edit.php?page=' . KNOT_ITEMS_PAGE));
-    exit;
 });
 
 /* -------------------------------------------------------------
@@ -118,36 +104,47 @@ function knot_items_get_rows(int $paged, string $search): array {
     $ids = $query->posts;
 
     if ($ids) {
-        _prime_post_caches($ids, false, true);
-    }
+        // Prime posts, their meta AND their terms — the term cache is what keeps
+        // has_term() and get_the_terms() below from querying once per row.
+        _prime_post_caches($ids, true, true);
 
-    // All three taxonomies for every row in one go.
-    $terms_by_post = [];
-    if ($ids) {
-        $objects = wp_get_object_terms($ids, ['material', 'stone', 'product_type'], ['fields' => 'all_with_object_id']);
-        if (!is_wp_error($objects)) {
-            foreach ($objects as $term) {
-                $terms_by_post[$term->object_id][$term->taxonomy][] = (int) $term->term_id;
+        // Featured images live in separate posts; prime them too, otherwise every
+        // thumbnail URL costs its own query.
+        $thumb_ids = [];
+        foreach ($ids as $id) {
+            $thumb_id = get_post_thumbnail_id($id);
+            if ($thumb_id) {
+                $thumb_ids[] = $thumb_id;
             }
+        }
+        if ($thumb_ids) {
+            _prime_post_caches($thumb_ids, false, true);
         }
     }
 
     $rows = [];
     foreach ($ids as $id) {
+
+        // Served from the primed term cache — no queries here.
+        $terms = [];
+        foreach (['material', 'stone', 'product_type'] as $taxonomy) {
+            $assigned = get_the_terms($id, $taxonomy);
+            $terms[$taxonomy] = is_array($assigned) ? wp_list_pluck($assigned, 'term_id') : [];
+        }
+
         $rows[] = [
-            'id'        => $id,
-            'title'     => get_the_title($id),
-            'price'     => get_post_meta($id, 'price', true),
-            'old_price' => get_post_meta($id, 'old_price', true),
+            'id'    => $id,
+            'title' => get_the_title($id),
+            'price' => get_post_meta($id, 'price', true),
             // Availability is the `in-stock` category; the meta holds the text
             // shown next to it ("В наявності – 15.5 розмір").
             'in_stock'      => has_term(KNOT_ITEMS_STOCK_SLUG, 'category', $id),
             'in_stock_note' => knot_items_stock_note((string) get_post_meta($id, 'in-stock', true)),
-            'status'    => get_post_status($id),
-            'thumb'     => get_the_post_thumbnail_url($id, 'thumbnail'),
-            'edit'      => get_edit_post_link($id, ''),
-            'view'      => get_permalink($id),
-            'terms'     => $terms_by_post[$id] ?? [],
+            'status' => get_post_status($id),
+            'thumb'  => get_the_post_thumbnail_url($id, 'thumbnail'),
+            'edit'   => get_edit_post_link($id, ''),
+            'view'   => get_permalink($id),
+            'terms'  => $terms,
         ];
     }
 
@@ -293,12 +290,22 @@ function knot_items_render_page(): void {
 
         <?php if ($data['total_pages'] > 1): ?>
             <div class="tablenav"><div class="tablenav-pages">
-                <?= paginate_links([
-                    'base'    => add_query_arg('paged', '%#%'),
+                <?php
+                // Built from known args only — add_query_arg() on the current
+                // URI would drag any stray query parameter into every link.
+                $page_args = ['page' => KNOT_ITEMS_PAGE];
+                if ($search !== '') {
+                    $page_args['s'] = $search;
+                }
+                $page_args['paged'] = '%#%';
+
+                echo paginate_links([
+                    'base'    => add_query_arg($page_args, admin_url('edit.php')),
                     'format'  => '',
                     'current' => $paged,
                     'total'   => $data['total_pages'],
-                ]) ?>
+                ]);
+                ?>
             </div></div>
         <?php endif; ?>
 
@@ -330,6 +337,7 @@ function knot_items_save(WP_REST_Request $request) {
 
     $saved  = [];
     $failed = [];
+    $errors = [];
 
     foreach ($items as $item) {
         $id = absint($item['id'] ?? 0);
@@ -337,22 +345,44 @@ function knot_items_save(WP_REST_Request $request) {
         // Every row is authorised on its own — never trust the incoming ID.
         if (!$id || get_post_type($id) !== 'post' || !current_user_can('edit_post', $id)) {
             $failed[] = $id;
+            $errors[] = ['id' => $id, 'message' => 'Немає доступу до цього запису.'];
             continue;
         }
 
         if (array_key_exists('title', $item)) {
             $title = sanitize_text_field((string) $item['title']);
-            if ($title !== '' && $title !== get_the_title($id)) {
-                wp_update_post(['ID' => $id, 'post_title' => $title]);
+
+            // An empty title would silently vanish — report it instead.
+            if ($title === '') {
+                $failed[] = $id;
+                $errors[] = ['id' => $id, 'message' => 'Назва не може бути порожньою.'];
+                continue;
+            }
+
+            if ($title !== get_the_title($id)) {
+                $updated = wp_update_post(['ID' => $id, 'post_title' => $title], true);
+
+                if (is_wp_error($updated)) {
+                    $failed[] = $id;
+                    $errors[] = ['id' => $id, 'message' => $updated->get_error_message()];
+                    continue;
+                }
             }
         }
 
-        foreach (['price' => 'price', 'old_price' => 'old_price'] as $key => $meta_key) {
-            if (!array_key_exists($key, $item)) continue;
+        if (array_key_exists('price', $item)) {
+            $raw = trim((string) $item['price']);
 
-            $raw = trim((string) $item[$key]);
-            // Whole hryvnias only.
-            $raw === '' ? delete_post_meta($id, $meta_key) : update_post_meta($id, $meta_key, absint($raw));
+            if ($raw === '') {
+                delete_post_meta($id, 'price');
+            } elseif (is_numeric($raw)) {
+                update_post_meta($id, 'price', absint($raw)); // whole hryvnias
+            } else {
+                // Don't let a typo silently zero the price.
+                $failed[] = $id;
+                $errors[] = ['id' => $id, 'message' => 'Ціна має бути числом.'];
+                continue;
+            }
         }
 
         // Availability = membership in the `in-stock` category (other categories
@@ -406,5 +436,6 @@ function knot_items_save(WP_REST_Request $request) {
     return rest_ensure_response([
         'saved'  => $saved,
         'failed' => $failed,
+        'errors' => $errors,
     ]);
 }
