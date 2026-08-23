@@ -34,12 +34,17 @@ function knot_transliterate(string $text): string {
         return $text;
     }
 
-    $map = knot_translit_map();
+    // Built once per request — this runs on every sanitize_title() call.
+    static $map = null;
 
-    // Uppercase forms map to the same latin letters.
-    foreach (knot_translit_map() as $cyr => $lat) {
-        if ($cyr === '') continue;
-        $map[mb_strtoupper($cyr, 'UTF-8')] = $lat;
+    if ($map === null) {
+        $map = knot_translit_map();
+
+        // Uppercase forms map to the same latin letters.
+        foreach (knot_translit_map() as $cyr => $lat) {
+            if ($cyr === '') continue;
+            $map[mb_strtoupper($cyr, 'UTF-8')] = $lat;
+        }
     }
 
     return strtr($text, $map);

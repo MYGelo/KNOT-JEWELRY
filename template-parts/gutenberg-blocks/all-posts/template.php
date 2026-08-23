@@ -13,14 +13,25 @@ if (!empty($block['className'])) $block_classes .= ' ' . $block['className'];
 $catalog          = site_catalog_request_filters();
 $catalog_page_url = get_permalink() ?: home_url('/');
 
-// Same cached resolver the REST endpoint uses, so SSR and AJAX agree and share
-// the transient cache (plain facet combos, pages 1-3).
-$catalog_results = site_catalog_get_results(
-    $catalog['search'], $catalog['materials'], $catalog['stones'], $catalog['product_type'], [], $catalog['page'], 24
-);
-
 $catalog_has_filters = $catalog['search'] !== ''
     || $catalog['materials'] || $catalog['stones'] || $catalog['product_type'];
+
+// Same cached resolver the REST endpoint uses, so SSR and AJAX agree and share
+// the transient cache (plain facet combos, pages 1-3). Available terms are only
+// needed — and only printed — when filters are active.
+$catalog_results = site_catalog_get_results(
+    $catalog['search'], $catalog['materials'], $catalog['stones'], $catalog['product_type'],
+    [], $catalog['page'], 24, $catalog_has_filters
+);
+
+// Guard against ?pagenum=99999 — clamp to the last real page and re-query once.
+if ($catalog['page'] > 1 && $catalog_results['total_pages'] > 0 && $catalog['page'] > $catalog_results['total_pages']) {
+    $catalog['page']  = $catalog_results['total_pages'];
+    $catalog_results = site_catalog_get_results(
+        $catalog['search'], $catalog['materials'], $catalog['stones'], $catalog['product_type'],
+        [], $catalog['page'], 24, $catalog_has_filters
+    );
+}
 
 $active_materials = array_flip($catalog['materials']);
 $active_stones    = array_flip($catalog['stones']);

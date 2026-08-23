@@ -345,14 +345,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     paginationWrap?.addEventListener('click', (e) => {
 
-        // "Завантажити ще" — appends the next page instead of replacing.
+        // "Показати ще" — appends the next page instead of replacing. It is a
+        // real link (works without JS), so the default navigation is cancelled.
         const more = e.target.closest('[data-load-more]');
         if (more) {
+            e.preventDefault();
+
             const next = parseInt(more.dataset.nextPage, 10);
-            if (next) {
-                more.disabled = true;
-                loadPosts(next, { append: true, scroll: false });
-            }
+            if (!next || loading) return; // don't mark it busy if we can't start
+
+            more.classList.add('is-busy');
+            loadPosts(next, { append: true, scroll: false })
+                .finally(() => more.classList.remove('is-busy'));
             return;
         }
 

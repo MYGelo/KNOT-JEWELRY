@@ -610,7 +610,7 @@
         margin: 14px auto 0;
     }
 
-    .blog__load-more:disabled {
+    .blog__load-more.is-busy {
         opacity: .6;
         pointer-events: none;
     }

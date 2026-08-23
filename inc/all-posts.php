@@ -326,14 +326,14 @@ function site_catalog_is_cacheable(string $search, array $pick_ids, int $page): 
  * Resolve a catalog state to ['post_ids', 'total_pages', 'available'].
  * Cached for the combinations above; always fresh otherwise.
  */
-function site_catalog_get_results(string $search, array $materials, array $stones, array $product_type, array $pick_ids, int $page, int $per_page): array {
+function site_catalog_get_results(string $search, array $materials, array $stones, array $product_type, array $pick_ids, int $page, int $per_page, bool $with_available = true): array {
 
     $ms = $materials;    sort($ms);
     $ss = $stones;       sort($ss);
     $ps = $product_type; sort($ps);
 
     $cacheable = site_catalog_is_cacheable($search, $pick_ids, $page);
-    $cache_key = site_filter_cache_key('filter_posts_', [$ms, $ss, $ps, $page, $per_page]);
+    $cache_key = site_filter_cache_key('filter_posts_', [$ms, $ss, $ps, $page, $per_page, $with_available]);
 
     if ($cacheable) {
         $cached = get_transient($cache_key);
@@ -354,20 +354,27 @@ function site_catalog_get_results(string $search, array $materials, array $stone
     ]));
 
     // All matching IDs — drives the "unavailable" greying of the checkboxes.
-    $all_ids_query = new WP_Query(array_merge($base_args, [
-        'posts_per_page'         => -1,
-        'fields'                 => 'ids',
-        'no_found_rows'          => true,
-        'ignore_sticky_posts'    => true,
-        'update_post_meta_cache' => false,
-        'update_post_term_cache' => false,
-    ]));
+    // Skipped when the caller doesn't need it (unfiltered SSR), saving a query.
+    $available = [];
+
+    if ($with_available) {
+        $all_ids_query = new WP_Query(array_merge($base_args, [
+            'posts_per_page'         => -1,
+            'fields'                 => 'ids',
+            'no_found_rows'          => true,
+            'ignore_sticky_posts'    => true,
+            'update_post_meta_cache' => false,
+            'update_post_term_cache' => false,
+        ]));
+
+        $available = site_compute_available_terms($all_ids_query->posts);
+    }
 
     $result = [
         'post_ids'    => $query->posts,
         'total_pages' => (int) $query->max_num_pages,
         'total_posts' => (int) $query->found_posts,
-        'available'   => site_compute_available_terms($all_ids_query->posts),
+        'available'   => $available,
     ];
 
     if ($cacheable) {
@@ -479,6 +486,14 @@ function site_filter_posts($request) {
     $results = site_catalog_get_results(
         $search, $materials, $stones, $product_type, $pick_ids, $page, $posts_per_page
     );
+
+    // Clamp an out-of-range page (bots, stale links) to the last real one.
+    if ($page > 1 && $results['total_pages'] > 0 && $page > $results['total_pages']) {
+        $page    = (int) $results['total_pages'];
+        $results = site_catalog_get_results(
+            $search, $materials, $stones, $product_type, $pick_ids, $page, $posts_per_page
+        );
+    }
 
     $posts_html = site_render_post_cards($results['post_ids']);
 
