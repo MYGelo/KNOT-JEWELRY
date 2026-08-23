@@ -19,7 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const resetBtn = document.getElementById('ajax-reset-btn');
     const suggestionsEl = document.getElementById('search-suggestions');
 
-    let page = 1;
+    let page = (() => {
+        const pg = parseInt(new URLSearchParams(location.search).get('pagenum') || '1', 10);
+        return pg > 0 ? pg : 1;
+    })();
     let loading = false;
     let searchIds = null; // exact IDs picked from a suggestion (one title → many posts)
 
@@ -37,6 +40,57 @@ document.addEventListener('DOMContentLoaded', () => {
             stones: [...stoneEls].filter(i => i.checked).map(i => i.value),
             product_type: [...typeEls].filter(i => i.checked).map(i => i.value),
         };
+    }
+
+    /* -------------------------------- */
+    /* URL STATE (shareable / SEO)      */
+    /* -------------------------------- */
+
+    // Build the shareable URL for the current filters + page, mirroring the
+    // param names the server reads (?type=&material=&stone=&q=&paged=).
+    function buildUrl(targetPage) {
+        const base = (section && section.dataset.catalogUrl) || location.pathname;
+        const f = getFilters();
+        const q = (searchInput?.value || '').trim();
+
+        // Build manually so the comma separating multi-values stays literal
+        // (URLSearchParams would encode it to %2C). Slugs are latin.
+        const enc = list => list.map(encodeURIComponent).join(',');
+        const parts = [];
+
+        // Names must avoid WP's reserved query vars (m, p, s, paged, page, cat…),
+        // which would route the request away from this page.
+        if (f.materials.length) parts.push('material=' + enc(f.materials));
+        if (f.product_type.length) parts.push('type=' + enc(f.product_type));
+        if (f.stones.length) parts.push('stone=' + enc(f.stones));
+        if (q) parts.push('q=' + encodeURIComponent(q));
+        if (targetPage > 1) parts.push('pagenum=' + targetPage);
+
+        return parts.length ? base + '?' + parts.join('&') : base;
+    }
+
+    function pushUrl(targetPage) {
+        try {
+            history.pushState(null, '', buildUrl(targetPage));
+        } catch (e) { /* ignore */ }
+    }
+
+    // Reflect the current URL back into the controls (used on Back/Forward).
+    function syncUIFromUrl() {
+        const p = new URLSearchParams(location.search);
+        const setChecks = (els, csv) => {
+            const wanted = new Set((csv || '').split(',').filter(Boolean));
+            els.forEach(el => { el.checked = wanted.has(el.value); });
+        };
+
+        if (searchInput) searchInput.value = p.get('q') || '';
+        setChecks(materialEls, p.get('material'));
+        setChecks(stoneEls, p.get('stone'));
+        setChecks(typeEls, p.get('type'));
+        searchIds = null;
+
+        const pg = parseInt(p.get('pagenum') || '1', 10);
+        return pg > 0 ? pg : 1;
     }
 
     /* -------------------------------- */
@@ -80,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
     /* LOAD POSTS                       */
     /* -------------------------------- */
 
-    async function loadPosts(targetPage = 1, { scroll = false } = {}) {
+    async function loadPosts(targetPage = 1, { scroll = false, push = true } = {}) {
 
         if (loading) return;
 
@@ -106,7 +160,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     stones: filters.stones,
                     product_type: filters.product_type,
                     ids: searchIds || [],
-                    page: targetPage
+                    page: targetPage,
+                    // Lets the server build real pagination hrefs that keep the
+                    // active filters (REST has no page context of its own).
+                    base_url: (section && section.dataset.catalogUrl) || ''
                 })
             }).then(res => res.json());
 
@@ -114,6 +171,11 @@ document.addEventListener('DOMContentLoaded', () => {
             paginationWrap.innerHTML = data.pagination;
 
             page = targetPage;
+
+            // Reflect the new state in the URL so it's shareable / bookmarkable
+            // and Back/Forward works. Skipped when the load itself came from a
+            // popstate (Back/Forward), to avoid pushing a duplicate entry.
+            if (push) pushUrl(targetPage);
 
             closeFilter();
 
@@ -273,6 +335,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const btn = e.target.closest('.page-num');
 
         if (!btn || btn.classList.contains('dots')) return;
+
+        e.preventDefault(); // links carry a real href for SEO / no-JS; AJAX here
 
         const target = parseInt(btn.dataset.page);
 
@@ -451,29 +515,34 @@ document.addEventListener('DOMContentLoaded', () => {
     bg?.addEventListener('click', closeFilter);
 
     /* -------------------------------- */
-    /* RESTORE ON BACK/FORWARD          */
+    /* BACK / FORWARD                   */
     /* -------------------------------- */
 
-    // On a fresh reload (e.g. Back button), the browser restores the checkbox
-    // and search-field state, but the server rendered the default (all) posts.
-    // Re-apply the active filters so the list matches the restored UI.
-    window.addEventListener('pageshow', (e) => {
-
-        if (e.persisted) return; // bfcache already restored a consistent DOM
-
-        const f = getFilters();
-        const hasFilters = f.materials.length || f.stones.length || f.product_type.length;
-        const hasSearch = (searchInput?.value || '').trim().length > 0;
-
-        if (hasFilters || hasSearch) {
-            updateAvailableFilters();
-            loadPosts(1);
-        }
+    // The server renders whatever the URL asks for, so on Back/Forward we just
+    // sync the controls to the new URL and re-fetch that state (without pushing
+    // a new history entry). No pageshow refetch is needed anymore.
+    window.addEventListener('popstate', () => {
+        const pg = syncUIFromUrl();
+        updateAvailableFilters();
+        loadPosts(pg, { push: false, scroll: false });
     });
 
     /* -------------------------------- */
     /* INIT                             */
     /* -------------------------------- */
+
+    // SSR already rendered the current URL state and, when filters are active,
+    // ships the available terms in a data attribute — no extra request needed.
+    (() => {
+        const raw = section && section.dataset.available;
+        if (!raw) return;
+
+        try {
+            updateFilters(JSON.parse(raw));
+        } catch (e) {
+            updateAvailableFilters();
+        }
+    })();
 
     loader?.classList.remove('active');
 

@@ -7,9 +7,24 @@ echo '<div class="blog__pagination">';
 
 $dots_threshold = 7;
 
-$btn = function($page, $current) {
+// Optional real URL base (current page + active filters, minus paged). When set,
+// each page becomes a crawlable <a href> for SEO / no-JS; JS still upgrades the
+// click to AJAX via data-page. Page 1 drops the paged param for a clean URL.
+$page_base_url = $page_base_url ?? '';
+
+$make_href = function($page) use ($page_base_url) {
+    if ($page_base_url === '') {
+        return '?pagenum=' . $page;
+    }
+    $url = ($page <= 1)
+        ? remove_query_arg('pagenum', $page_base_url)
+        : add_query_arg('pagenum', $page, $page_base_url);
+    return esc_url(str_replace('%2C', ',', $url));
+};
+
+$btn = function($page, $current) use ($make_href) {
     $active = ($page === $current) ? 'active btn-animate third' : '';
-    return '<button class="page-num '.$active.'" data-page="'.$page.'">'.$page.'</button>';
+    return '<a class="page-num '.$active.'" href="'.$make_href($page).'" data-page="'.$page.'">'.$page.'</a>';
 };
 
 if ($total_pages <= $dots_threshold) {
