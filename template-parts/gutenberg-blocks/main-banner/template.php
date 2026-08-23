@@ -82,8 +82,8 @@ if (!empty($block['className'])) {
                                 <?php if (!empty($icon)): ?>
                                     <div class="main-banner__feature-img">
                                         <picture>
-                                            <!-- Mobile --> <source srcset="<?= $icon['sizes']['medium_large']; ?>" media="(max-width: 551px)">
-                                            <!-- Desktop --><source srcset="<?= $icon['url']; ?>" media="(min-width: 552px)">
+                                            <!-- Mobile --> <source srcset="<?= esc_url($icon['sizes']['medium_large']); ?>" media="(max-width: 551px)">
+                                            <!-- Desktop --><source srcset="<?= esc_url($icon['url']); ?>" media="(min-width: 552px)">
                                             <img
                                                     class=""
                                                     src="<?= esc_url($icon['sizes']['large'] ?: $icon['sizes']['medium_large']); ?>"
@@ -110,8 +110,8 @@ if (!empty($block['className'])) {
             <?php if (is_array($poster_png) && !empty($poster_png['url'])): ?>
                 <div class="main-banner__png">
                     <picture>
-                        <!-- Mobile --> <source srcset="<?= $poster_png['sizes']['medium_large']; ?>" media="(max-width: 551px)">
-                        <!-- Desktop --><source srcset="<?= $poster_png['url']; ?>" media="(min-width: 552px)">
+                        <!-- Mobile --> <source srcset="<?= esc_url($poster_png['sizes']['medium_large']); ?>" media="(max-width: 551px)">
+                        <!-- Desktop --><source srcset="<?= esc_url($poster_png['url']); ?>" media="(min-width: 552px)">
                         <img
                                 src="<?= esc_url($poster_png['sizes']['medium_large']); ?>"
                                 alt="<?= esc_attr($poster_png['alt'] ?: $poster_png['title']); ?>"
@@ -129,8 +129,8 @@ if (!empty($block['className'])) {
         <?php if (is_array($poster) && !empty($poster['url'])): ?>
             <div class="main-banner__bg">
                 <picture>
-                    <!-- Mobile --> <source srcset="<?= $poster_mob['sizes']['large'] ?? $poster['sizes']['medium_large']; ?>" media="(max-width: 551px)">
-                    <!-- Desktop --><source srcset="<?= $poster['url']; ?>" media="(min-width: 552px)">
+                    <!-- Mobile --> <source srcset="<?= esc_url($poster_mob['sizes']['large'] ?? $poster['sizes']['medium_large']); ?>" media="(max-width: 551px)">
+                    <!-- Desktop --><source srcset="<?= esc_url($poster['url']); ?>" media="(min-width: 552px)">
                     <img
                             src="<?= esc_url($poster['sizes']['large'] ?: $poster['sizes']['medium_large']); ?>"
                             alt="<?= esc_attr($poster['alt'] ?: $poster['title']); ?>"

@@ -21,9 +21,9 @@ $bg_mob = $thank_you['background_image_mob'] ?? '';
         <style>
             .thank-you {
                 position: relative;
-                padding-top: clamp(100px,10.07vw,145px);
-                padding-bottom: clamp(32px,3.612vw,52px);
-                min-height: 661px;
+                /*padding-top: clamp(100px,10.07vw,145px);*/
+                /*padding-bottom: clamp(32px,3.612vw,52px);*/
+                /*min-height: 661px;*/
 
                 .thank-you__wrapper {
                     display: flex;
@@ -109,10 +109,10 @@ $bg_mob = $thank_you['background_image_mob'] ?? '';
                 <div class="thank-you__bg">
                     <picture>
                         <!-- Mobile --> <source srcset="<?= !empty($bg_mob['sizes']['large']) ? $bg_mob['sizes']['large'] : $bg['sizes']['medium_large']; ?>" media="(max-width: 551px)">
-                        <!-- Desktop --><source srcset="<?= $bg['url']; ?>" media="(min-width: 552px)">
+                        <!-- Desktop --><source srcset="<?= esc_url($bg['url']); ?>" media="(min-width: 552px)">
                         <img
-                            src="<?= $bg['url'] ?>"
-                            alt="<?= $bg['alt'] ?: $bg['title'] ?>"
+                            src="<?= esc_url($bg['url']); ?>"
+                            alt="<?= esc_attr($bg['alt'] ?: $bg['title']) ?>"
                             width="<?= esc_attr($bg['width'] ?? '') ?>"
                             height="<?= esc_attr($bg['height'] ?? '') ?>"
                             fetchpriority="high"

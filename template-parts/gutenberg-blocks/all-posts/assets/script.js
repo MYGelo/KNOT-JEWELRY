@@ -577,19 +577,55 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     })();
 
-    // Landing on a URL that already carries catalog state (search, filters or a
-    // page number): bring the results into view instead of leaving the visitor
-    // at the top of the page.
+    // Remember which product was opened, so Back can return to that exact card
+    // (the browser's own scroll restoration is unreliable once the grid was
+    // re-rendered, and on mobile it often lands at the top).
+    const ANCHOR_KEY = 'knot_catalog_anchor';
+
+    postsWrap?.addEventListener('click', (e) => {
+        const card = e.target.closest('[data-post-id]');
+        if (!card) return;
+        try {
+            sessionStorage.setItem(ANCHOR_KEY, card.dataset.postId);
+        } catch (err) { /* private mode — just skip */ }
+    });
+
     (() => {
         if (!section) return;
 
+        let anchorId = null;
+        try {
+            anchorId = sessionStorage.getItem(ANCHOR_KEY);
+            sessionStorage.removeItem(ANCHOR_KEY);
+        } catch (err) { /* ignore */ }
+
+        const nav = performance.getEntriesByType?.('navigation')?.[0];
+        const isBackForward = nav
+            ? nav.type === 'back_forward'
+            : (performance.navigation && performance.navigation.type === 2);
+
+        // Coming back: put the previously opened product back under the thumb.
+        if (isBackForward && anchorId) {
+            const card = postsWrap?.querySelector('[data-post-id="' + anchorId + '"]');
+            if (card) {
+                requestAnimationFrame(() => {
+                    setTimeout(() => card.scrollIntoView({ block: 'center' }), 60);
+                });
+                return;
+            }
+        }
+
+        // Never fight the browser's restored scroll position on Back/Forward.
+        if (isBackForward || window.scrollY > 0) return;
+
+        // Fresh visit to a URL that already carries catalog state: bring the
+        // results into view instead of leaving the visitor at the top.
         const p = new URLSearchParams(location.search);
         const hasState = ['q', 'material', 'type', 'stone', 'pagenum']
             .some(key => (p.get(key) || '').trim() !== '');
 
         if (!hasState) return;
 
-        // Wait for layout to settle (the browser may restore its own scroll first).
         requestAnimationFrame(() => {
             setTimeout(scrollToSection, 100);
         });

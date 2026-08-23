@@ -24,7 +24,7 @@ $company_city_zip = $company_info['city_zip'] ?? '';
             <div class="footer__logo-social">
                 <?php if (!empty($footer_logo['url'])):?>
                     <a class="footer__logo" href="/" target="_self">
-                        <img src="<?=$footer_logo['url']?>" alt="<?=$footer_logo['title']?>">
+                        <img src="<?= esc_url($footer_logo['url']) ?>" alt="<?= esc_attr($footer_logo['alt'] ?: $footer_logo['title']) ?>">
                     </a>
                 <?php endif;?>
             </div>
@@ -69,8 +69,8 @@ $company_city_zip = $company_info['city_zip'] ?? '';
 
                                 <?php if (!empty($social['icon']['url'])): ?>
                                     <picture>
-                                        <!-- Mobile --> <source srcset="<?= $social['icon']['sizes']['medium_large']; ?>" media="(max-width: 551px)">
-                                        <!-- Desktop --><source srcset="<?= $social['icon']['url']; ?>" media="(min-width: 552px)">
+                                        <!-- Mobile --> <source srcset="<?= esc_url($social['icon']['sizes']['medium_large']); ?>" media="(max-width: 551px)">
+                                        <!-- Desktop --><source srcset="<?= esc_url($social['icon']['url']); ?>" media="(min-width: 552px)">
                                         <img
                                                 class=""
                                                 src="<?= esc_url($social['icon']['sizes']['large'] ?: $social['icon']['sizes']['medium_large']); ?>"

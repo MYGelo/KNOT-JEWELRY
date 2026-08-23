@@ -56,6 +56,10 @@ add_action('updated_post_meta', function($meta_id, $object_id, $meta_key) {
 
     if (get_post_type($object_id) !== 'post') return;
 
+    // Internal bookkeeping keys don't change what the front end shows.
+    $ignored = ['_knot_preload_images', '_edit_lock', '_edit_last'];
+    if (in_array($meta_key, $ignored, true)) return;
+
     clear_in_stock_cache($object_id);
 
 }, 10, 3);
@@ -75,6 +79,46 @@ add_action('wp_set_comment_status', 'clear_all_comments_block_cache');
 add_action('edit_comment', 'clear_all_comments_block_cache');
 add_action('trashed_comment', 'clear_all_comments_block_cache');
 add_action('deleted_comment', 'clear_all_comments_block_cache');
+
+
+/* =========================================================
+| DELETED / TRASHED CONTENT + MEDIA
+|
+| Everything above reacts to *saving*. Without the hooks below a product that
+| was trashed or deleted — or an image that was removed from the library —
+| would keep being served from a transient until it expired, which shows up
+| as ghost cards and broken images on the front end.
+========================================================= */
+
+function clear_caches_for_gone_post($post_id) {
+
+    $post_type = get_post_type($post_id);
+
+    if ($post_type === 'attachment') {
+        // A deleted image can be referenced by any of the image-bearing caches.
+        delete_transient('in_stock_posts');
+        delete_transient('all_comments_block');
+        bump_filter_cache();
+        return;
+    }
+
+    if ($post_type !== 'post' && $post_type !== 'page') {
+        return;
+    }
+
+    delete_transient('in_stock_posts');
+    delete_transient('all_comments_block');
+    clear_reviews_block_cache($post_id);
+    bump_filter_cache();
+}
+
+add_action('before_delete_post', 'clear_caches_for_gone_post');
+add_action('trashed_post', 'clear_caches_for_gone_post');
+add_action('untrashed_post', 'clear_caches_for_gone_post');
+
+/* media library: deletion and replacement both invalidate stored image data */
+add_action('delete_attachment', 'clear_caches_for_gone_post');
+add_action('attachment_updated', 'clear_caches_for_gone_post');
 
 
 /* =========================================================

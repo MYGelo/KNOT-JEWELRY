@@ -7,37 +7,41 @@ if (!empty($block['className'])) $block_classes .= ' ' . $block['className'];
 $title = get_field('in-stock_main_title');
 $tap_text = get_field('in-stock_tap_text');
 
-/* КЕШ ЗАПРОСА */
-$posts = get_transient('in_stock_posts');
+/* КЕШ ЗАПРОСА — only IDs. Caching whole post objects would keep serving
+   products that were meanwhile trashed or deleted (broken cards / images). */
+$post_ids = get_transient('in_stock_posts');
 
-if ($posts === false) {
+if ($post_ids === false) {
 
-    $posts = get_posts([
+    $post_ids = get_posts([
         'post_type' => 'post',
         'category_name' => 'in-stock',
         'posts_per_page' => -1,
+        'fields' => 'ids',
         'no_found_rows' => true,
-        'update_post_meta_cache' => true,
+        'update_post_meta_cache' => false,
         'update_post_term_cache' => false,
         'ignore_sticky_posts' => true,
         'suppress_filters' => true
     ]);
 
-    set_transient('in_stock_posts', $posts, HOUR_IN_SECONDS);
+    set_transient('in_stock_posts', $post_ids, HOUR_IN_SECONDS);
 }
 
-if ($posts) :
+if ($post_ids) {
 
-    // Prime post + attachment caches in one pass so each card renders fresh
-    // without its own meta/thumbnail queries (avoids N+1 on cache hit).
-    $post_ids = wp_list_pluck($posts, 'ID');
-    if ($post_ids) {
-        _prime_post_caches($post_ids, false, true);
-    }
+    // One query for the posts + their meta; get_post() below is then free.
+    _prime_post_caches($post_ids, false, true);
+
+    // Drop anything deleted or unpublished since the cache was written.
+    $post_ids = array_values(array_filter($post_ids, static function ($id) {
+        $post = get_post($id);
+        return $post && $post->post_status === 'publish';
+    }));
 
     $thumb_ids = [];
-    foreach ($posts as $post) {
-        $tid = get_post_thumbnail_id($post->ID);
+    foreach ($post_ids as $id) {
+        $tid = get_post_thumbnail_id($id);
         if ($tid) {
             $thumb_ids[] = $tid;
         }
@@ -45,6 +49,9 @@ if ($posts) :
     if ($thumb_ids) {
         _prime_post_caches($thumb_ids, false, true);
     }
+}
+
+if ($post_ids) :
     ?>
 
     <section class="<?= esc_attr($block_classes) ?>"<?= $block_anchor ? ' id="' . esc_attr($block_anchor) . '"' : '' ?>>
@@ -58,9 +65,9 @@ if ($posts) :
                 <div class="swiper in-stock-slider">
                     <div class="swiper-wrapper">
 
-                        <?php foreach ($posts as $post):
+                        <?php foreach ($post_ids as $post_id):
                             get_template_part('template-parts/components/stock-card', null, [
-                                'post_id'  => $post->ID,
+                                'post_id'  => $post_id,
                                 'tap_text' => $tap_text,
                             ]);
                         endforeach; ?>

@@ -3,7 +3,7 @@ $post_id = get_the_ID();
 $price_meta = get_post_meta(get_the_ID(), 'price', true);
 ?>
 
-<div class="all-posts__post-item">
+<div class="all-posts__post-item" data-post-id="<?= esc_attr($post_id) ?>">
 
     <?php // Single link around image + title: avoids two adjacent redundant links
           // to the same URL. Image is decorative (alt=""), the title names the link. ?>

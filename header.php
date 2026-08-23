@@ -36,8 +36,8 @@ $logo = get_field( 'header_logo', 'option' );
                     >
                          <?php if (!empty($logo['url'])): ?>
                              <picture>
-                                 <!-- Mobile --> <source srcset="<?= $logo['sizes']['medium_large']; ?>" media="(max-width: 551px)">
-                                 <!-- Desktop --><source srcset="<?= $logo['url']; ?>" media="(min-width: 552px)">
+                                 <!-- Mobile --> <source srcset="<?= esc_url($logo['sizes']['medium_large']); ?>" media="(max-width: 551px)">
+                                 <!-- Desktop --><source srcset="<?= esc_url($logo['url']); ?>" media="(min-width: 552px)">
                                  <img
                                      class=""
                                      src="<?= esc_url($logo['sizes']['large'] ?: $logo['sizes']['medium_large']); ?>"
@@ -110,8 +110,8 @@ $logo = get_field( 'header_logo', 'option' );
 
                             <?php if (!empty($social['icon']['url'])): ?>
                                 <picture>
-                                    <!-- Mobile --> <source srcset="<?= $social['icon']['sizes']['medium_large']; ?>" media="(max-width: 551px)">
-                                    <!-- Desktop --><source srcset="<?= $social['icon']['url']; ?>" media="(min-width: 552px)">
+                                    <!-- Mobile --> <source srcset="<?= esc_url($social['icon']['sizes']['medium_large']); ?>" media="(max-width: 551px)">
+                                    <!-- Desktop --><source srcset="<?= esc_url($social['icon']['url']); ?>" media="(min-width: 552px)">
                                     <img
                                             class=""
                                             src="<?= esc_url($social['icon']['sizes']['large'] ?: $social['icon']['sizes']['medium_large']); ?>"

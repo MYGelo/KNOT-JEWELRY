@@ -24,8 +24,8 @@ $data = array(
             <div class="author__photo image-wrapper">
                 <?php if (!empty($data['photo']['url'])):?>
                     <picture>
-                        <!-- Mobile --> <source srcset="<?= $data['photo']['sizes']['medium_large']; ?>" media="(max-width: 551px)">
-                        <!-- Desktop --><source srcset="<?= $data['photo']['url']; ?>" media="(min-width: 552px)">
+                        <!-- Mobile --> <source srcset="<?= esc_url($data['photo']['sizes']['medium_large']); ?>" media="(max-width: 551px)">
+                        <!-- Desktop --><source srcset="<?= esc_url($data['photo']['url']); ?>" media="(min-width: 552px)">
                         <img
                                 class=""
                                 src="<?= esc_url($data['photo']['sizes']['large'] ?: $data['photo']['sizes']['medium_large']); ?>"
@@ -70,8 +70,8 @@ $data = array(
 
                                     <?php if (!empty($social['icon']['url'])): ?>
                                         <picture>
-                                            <!-- Mobile --> <source srcset="<?= $social['icon']['sizes']['medium_large']; ?>" media="(max-width: 551px)">
-                                            <!-- Desktop --><source srcset="<?= $social['icon']['url']; ?>" media="(min-width: 552px)">
+                                            <!-- Mobile --> <source srcset="<?= esc_url($social['icon']['sizes']['medium_large']); ?>" media="(max-width: 551px)">
+                                            <!-- Desktop --><source srcset="<?= esc_url($social['icon']['url']); ?>" media="(min-width: 552px)">
                                             <img
                                                     class=""
                                                     src="<?= esc_url($social['icon']['sizes']['large'] ?: $social['icon']['sizes']['medium_large']); ?>"
