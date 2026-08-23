@@ -345,10 +345,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     paginationWrap?.addEventListener('click', (e) => {
 
-        // "Показати ще" — appends the next page instead of replacing. It is a
-        // real link (works without JS), so the default navigation is cancelled.
+        // These are real links. Let the browser handle "open in a new tab/window"
+        // (ctrl/cmd/shift-click, middle click) instead of hijacking it.
+        const plainClick = e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
+
+        // "Показати ще" — appends the next page instead of replacing.
         const more = e.target.closest('[data-load-more]');
         if (more) {
+            if (!plainClick) return;
             e.preventDefault();
 
             const next = parseInt(more.dataset.nextPage, 10);
@@ -363,6 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const btn = e.target.closest('.page-num');
 
         if (!btn || btn.classList.contains('dots')) return;
+        if (!plainClick) return;
 
         e.preventDefault(); // links carry a real href for SEO / no-JS; AJAX here
 

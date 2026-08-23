@@ -240,12 +240,26 @@ function site_catalog_base_url(array $filters, string $base = ''): string {
 }
 
 /**
- * Send legacy catalog URLs (long param names / old slugs) to the short
- * canonical form with a 301, so shared links don't split ranking signals.
+ * Canonicalise catalog URLs with a 301: out-of-range page numbers, legacy param
+ * names and legacy slugs all end up on the current, valid address.
  */
-function site_catalog_redirect_legacy_urls(): void {
+function site_catalog_canonical_redirect(): void {
     if (is_admin() || wp_doing_ajax() || !function_exists('knot_is_catalog_page') || !knot_is_catalog_page()) {
         return;
+    }
+
+    // Absurd page numbers (bots, stale links): the site can never have more
+    // pages than "all published posts / per page", and wp_count_posts() is
+    // cached — so this costs nothing and avoids rendering an empty grid.
+    $requested_page = absint($_GET['pagenum'] ?? 0);
+    if ($requested_page > 1) {
+        $published = (int) (wp_count_posts('post')->publish ?? 0);
+        $max_pages = max(1, (int) ceil($published / 24));
+
+        if ($requested_page > $max_pages) {
+            wp_safe_redirect(site_catalog_base_url(site_catalog_request_filters()), 301);
+            exit;
+        }
     }
 
     $has_legacy_param = false;
@@ -277,7 +291,7 @@ function site_catalog_redirect_legacy_urls(): void {
     exit;
 }
 
-add_action('template_redirect', 'site_catalog_redirect_legacy_urls');
+add_action('template_redirect', 'site_catalog_canonical_redirect');
 
 /**
  * Single source of truth for the catalog query args, shared by the REST
@@ -333,11 +347,18 @@ function site_catalog_get_results(string $search, array $materials, array $stone
     $ps = $product_type; sort($ps);
 
     $cacheable = site_catalog_is_cacheable($search, $pick_ids, $page);
-    $cache_key = site_filter_cache_key('filter_posts_', [$ms, $ss, $ps, $page, $per_page, $with_available]);
+    $cache_key = site_filter_cache_key('filter_posts_', [$ms, $ss, $ps, $page, $per_page]);
 
     if ($cacheable) {
         $cached = get_transient($cache_key);
-        if (is_array($cached) && isset($cached['available'], $cached['post_ids'], $cached['total_pages'], $cached['total_posts'])) {
+
+        // One entry per combination. A cached entry may have been written by a
+        // caller that didn't need the available terms — only reuse it if it
+        // already carries what this caller asks for.
+        if (is_array($cached)
+            && isset($cached['post_ids'], $cached['total_pages'], $cached['total_posts'])
+            && (!$with_available || !empty($cached['available']))
+        ) {
             return $cached;
         }
     }

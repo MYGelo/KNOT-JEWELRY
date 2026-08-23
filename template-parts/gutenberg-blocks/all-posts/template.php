@@ -24,9 +24,11 @@ $catalog_results = site_catalog_get_results(
     [], $catalog['page'], 24, $catalog_has_filters
 );
 
-// Guard against ?pagenum=99999 — clamp to the last real page and re-query once.
+// A page number past the end of this particular filtered subset (headers are
+// already sent here, so this clamps rather than redirects; the obviously bogus
+// values are 301'd earlier, on template_redirect).
 if ($catalog['page'] > 1 && $catalog_results['total_pages'] > 0 && $catalog['page'] > $catalog_results['total_pages']) {
-    $catalog['page']  = $catalog_results['total_pages'];
+    $catalog['page']  = (int) $catalog_results['total_pages'];
     $catalog_results = site_catalog_get_results(
         $catalog['search'], $catalog['materials'], $catalog['stones'], $catalog['product_type'],
         [], $catalog['page'], 24, $catalog_has_filters
