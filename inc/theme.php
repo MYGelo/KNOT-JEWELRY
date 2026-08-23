@@ -56,6 +56,58 @@ function get_first_block_name_on_page($post_id = null)
 	return $name;
 }
 
+/**
+ * Collect the acf/* block names used on a page (including nested ones).
+ */
+function knot_collect_acf_block_names(array $blocks, array &$names): void
+{
+	foreach ($blocks as $block) {
+		if (!empty($block['blockName']) && strpos($block['blockName'], 'acf/') === 0) {
+			$names[] = substr($block['blockName'], 4);
+		}
+
+		if (!empty($block['innerBlocks'])) {
+			knot_collect_acf_block_names($block['innerBlocks'], $names);
+		}
+	}
+}
+
+/**
+ * Enqueue the assets of every ACF block on the page *before* wp_head prints.
+ *
+ * Block CSS is normally registered while the block renders — that happens in
+ * the body, so the stylesheet would be printed in the footer (FOUC). Here we
+ * only parse the content (cheap, no rendering) and call each block's own
+ * enqueue_assets callback, which keeps handles and localisations identical.
+ */
+add_action('wp_enqueue_scripts', function () {
+	if (is_admin() || !is_singular() || !function_exists('acf_get_block_types')) {
+		return;
+	}
+
+	$post = get_queried_object();
+	if (!$post instanceof WP_Post) {
+		return;
+	}
+
+	$names = [];
+	knot_collect_acf_block_names(parse_blocks($post->post_content), $names);
+
+	if (!$names) {
+		return;
+	}
+
+	$block_types = acf_get_block_types();
+
+	foreach (array_unique($names) as $name) {
+		$type = $block_types['acf/' . $name] ?? null;
+
+		if ($type && !empty($type['enqueue_assets']) && is_callable($type['enqueue_assets'])) {
+			call_user_func($type['enqueue_assets'], $type);
+		}
+	}
+}, 20);
+
 // get images URLs of first block on the page for preload
 function get_images_from_first_block_on_page($post_id = null)
 {
@@ -63,9 +115,24 @@ function get_images_from_first_block_on_page($post_id = null)
 		$post_id = get_the_ID();
 	}
 
+	if (!$post_id) {
+		return [];
+	}
+
+	// Rendering the whole content just to find the hero image executes every
+	// block a second time, so the result is cached per revision and only
+	// recomputed after the page is edited.
+	$stamp  = (string) get_post_field('post_modified_gmt', $post_id);
+	$cached = get_post_meta($post_id, '_knot_preload_images', true);
+
+	if (is_array($cached) && ($cached['stamp'] ?? null) === $stamp && isset($cached['images'])) {
+		return (array) $cached['images'];
+	}
+
 	$content = apply_filters('the_content', get_post_field('post_content', $post_id));
 
 	if (empty($content)) {
+		update_post_meta($post_id, '_knot_preload_images', ['stamp' => $stamp, 'images' => []]);
 		return [];
 	}
 
@@ -79,22 +146,22 @@ function get_images_from_first_block_on_page($post_id = null)
 
 	$xpath = new DOMXPath($dom);
 
-	$nodes = $xpath->query('//body/*[self::section or self::div or self::article or self::header or self::main or self::footer]');
-	if ($nodes->length === 0) {
-		return [];
-	}
-
-	$firstSection = $nodes->item(0);
-
-	$imgNodes = $xpath->query('.//img[@fetchpriority="high"]', $firstSection);
-
 	$images = [];
-	foreach ($imgNodes as $img) {
-		$src = $img->getAttribute('src');
-		if ($src) {
-			$images[] = $src;
+
+	$nodes = $xpath->query('//body/*[self::section or self::div or self::article or self::header or self::main or self::footer]');
+
+	if ($nodes->length > 0) {
+		$imgNodes = $xpath->query('.//img[@fetchpriority="high"]', $nodes->item(0));
+
+		foreach ($imgNodes as $img) {
+			$src = $img->getAttribute('src');
+			if ($src) {
+				$images[] = $src;
+			}
 		}
 	}
+
+	update_post_meta($post_id, '_knot_preload_images', ['stamp' => $stamp, 'images' => $images]);
 
 	return $images;
 }

@@ -94,9 +94,9 @@ $bg_mob = $page_404['background_image_mob'] ?? '';
                     <div class="error-404__bg">
                         <picture>
                             <!-- Mobile --> <source srcset="<?= !empty($bg_mob['sizes']['large']) ? $bg_mob['sizes']['large'] : $bg['sizes']['medium_large']; ?>" media="(max-width: 551px)">
-                            <!-- Desktop --><source srcset="<?= $bg['url']; ?>" media="(min-width: 552px)">
+                            <!-- Desktop --><source srcset="<?= esc_url($bg['url']); ?>" media="(min-width: 552px)">
                             <img
-                                    src="<?= $bg['url'] ?>"
+                                    src="<?= esc_url($bg['url']); ?>"
                                     alt="<?= $bg['alt'] ?: $bg['title'] ?>"
                                     width="<?= esc_attr($bg['width'] ?? '') ?>"
                                     height="<?= esc_attr($bg['height'] ?? '') ?>"

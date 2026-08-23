@@ -23,11 +23,16 @@
         onload="this.rel=`stylesheet`"
 >
 
-<link
-	rel="preload"
-	href="<?= get_field('header_logo', 'option')['url'] ?? '' ?>"
-	as="image"
->
+<?php // Without the guard an empty field renders href="" and the browser
+      // downloads the current page as if it were an image.
+$logo_preload = get_field('header_logo', 'option')['url'] ?? '';
+if ($logo_preload): ?>
+	<link
+		rel="preload"
+		href="<?= esc_url($logo_preload) ?>"
+		as="image"
+	>
+<?php endif; ?>
 
 <!-- Resources for first block at the page -->
 <?php
@@ -39,7 +44,7 @@ if (file_exists(get_template_directory() . $blockStylesPath)):
 	?>
 	<link
 		rel="preload"
-		href="<?= $blockStylesUrl ?>?ver=<?= $ver ?>"
+		href="<?= esc_url($blockStylesUrl . '?ver=' . $ver) ?>"
 		as="style"
 		onload="this.rel=`stylesheet`"
 	>
@@ -51,7 +56,7 @@ if (!empty($imagesToPreload)):
 	foreach ($imagesToPreload as $item): ?>
 		<link
 			rel="preload"
-			href="<?= $item ?>"
+			href="<?= esc_url($item) ?>"
 			as="image"
             fetchpriority="high"
 		>
