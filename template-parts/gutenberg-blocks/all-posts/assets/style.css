@@ -270,7 +270,12 @@
             transform: translateY(-4px);
         }
 
-        @media (max-width: 768px) {
+        /* 767, not 768: the 3-column layout starts at min-width 768, so at
+           exactly 768px both rules matched and the wide card tore holes in a
+           3-column grid. */
+        @media (max-width: 767px) {
+
+            /* Rhythm in the 2-column grid: 2 + 2 + one full-width card. */
             &:nth-child(5n + 5) {
                 grid-column: span 2;
 
@@ -279,6 +284,14 @@
                 }
             }
 
+            /* A trailing card left alone in its row would leave a visible hole.
+               It happens whenever the total isn't a clean multiple of the
+               rhythm — e.g. 48 items after one "Показати ще" (48 % 5 = 3).
+               Let it take the full width instead. */
+            &:last-child:nth-child(5n + 1),
+            &:last-child:nth-child(5n + 3) {
+                grid-column: span 2;
+            }
         }
 
         .all-posts__post-link {
