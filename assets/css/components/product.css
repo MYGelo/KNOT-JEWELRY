@@ -9,6 +9,39 @@
         grid-template-columns: 1fr;
     }
 
+    /* ===== GALLERY: PRE-INIT =====
+       swiper.css is loaded asynchronously and swiper.min.js runs from the
+       footer, so until both land the slides are ordinary blocks — the gallery
+       renders as a tall stack of full-size images and then collapses. These
+       rules give it the final shape straight away and stop applying the moment
+       Swiper adds .swiper-initialized. */
+
+    .product-gallery .swiper:not(.swiper-initialized) {
+        overflow: hidden;
+    }
+
+    .product-gallery .swiper:not(.swiper-initialized) > .swiper-wrapper {
+        display: flex;
+    }
+
+    /* main gallery uses the fade effect — only the first slide is ever visible */
+    .gallery-main:not(.swiper-initialized) > .swiper-wrapper > .swiper-slide {
+        flex: 0 0 100%;
+    }
+
+    .gallery-main:not(.swiper-initialized) > .swiper-wrapper > .swiper-slide:not(:first-child) {
+        display: none;
+    }
+
+    /* thumbs: three per view with a 12px gap, matching the JS config */
+    .gallery-thumbs:not(.swiper-initialized) > .swiper-wrapper {
+        gap: 12px;
+    }
+
+    .gallery-thumbs:not(.swiper-initialized) > .swiper-wrapper > .swiper-slide {
+        flex: 0 0 calc((100% - 24px) / 3);
+    }
+
     /* ===== GALLERY ===== */
 
     .product-gallery {

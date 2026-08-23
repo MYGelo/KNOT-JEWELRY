@@ -15,13 +15,9 @@
 	onload="this.rel=`stylesheet`"
 >
 
-<?php $ver = filemtime(get_template_directory() . '/assets/css/swiper.css'); ?>
-<link
-        rel="preload"
-        href="<?= get_template_directory_uri() ?>/assets/css/swiper.css?ver=<?= $ver ?>"
-        as="style"
-        onload="this.rel=`stylesheet`"
->
+<?php // swiper.css is now enqueued normally (and only on pages with a slider),
+      // see inc/enqueue-scripts.php — loading it async here caused the sliders
+      // to flash as a vertical stack before the stylesheet applied. ?>
 
 <?php // Without the guard an empty field renders href="" and the browser
       // downloads the current page as if it were an image.
@@ -71,12 +67,15 @@ endif; ?>
 	as="script"
 >
 
-<?php $swiper_ver = filemtime(get_template_directory() . '/assets/js/swiper.min.js'); ?>
-<link
-        rel="preload"
-        href="<?= get_template_directory_uri() ?>/assets/js/swiper.min.js?ver=<?= $swiper_ver ?>"
-        as="script"
->
+<?php // Only worth preloading where a slider is actually rendered.
+if (function_exists('knot_page_needs_swiper') && knot_page_needs_swiper()):
+	$swiper_ver = filemtime(get_template_directory() . '/assets/js/swiper.min.js'); ?>
+	<link
+			rel="preload"
+			href="<?= esc_url(get_template_directory_uri() . '/assets/js/swiper.min.js?ver=' . $swiper_ver) ?>"
+			as="script"
+	>
+<?php endif; ?>
 
 <!-- Fonts -->
 <link

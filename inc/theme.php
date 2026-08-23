@@ -93,6 +93,51 @@ function knot_localize_once(string $handle, string $object_name, array $data): v
 }
 
 /**
+ * Does the current request actually render a Swiper slider?
+ *
+ * swiper.min.js is ~150 KB, so it should not be shipped to pages that have no
+ * slider at all (legal pages, contact, care & sizing, 404 …).
+ */
+function knot_page_needs_swiper(): bool
+{
+	static $needs = null;
+
+	if ($needs !== null) {
+		return $needs;
+	}
+
+	// Product pages: gallery, its popup and the "recently viewed" strip.
+	if (is_singular('post')) {
+		return $needs = true;
+	}
+
+	if (!is_singular()) {
+		return $needs = false;
+	}
+
+	$post = get_queried_object();
+	if (!$post instanceof WP_Post) {
+		return $needs = false;
+	}
+
+	$blocks = knot_get_parsed_blocks($post->ID);
+
+	// A reusable block hides its real content behind a reference — play safe.
+	foreach ($blocks as $block) {
+		if (($block['blockName'] ?? '') === 'core/block') {
+			return $needs = true;
+		}
+	}
+
+	$slider_blocks = ['in-stock', 'reviews', 'add-comments', 'select-post', 'viewed-posts'];
+
+	$names = [];
+	knot_collect_acf_block_names($blocks, $names);
+
+	return $needs = (bool) array_intersect($names, $slider_blocks);
+}
+
+/**
  * Collect the acf/* block names used on a page (including nested ones).
  */
 function knot_collect_acf_block_names(array $blocks, array &$names): void

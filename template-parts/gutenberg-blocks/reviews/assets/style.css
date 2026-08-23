@@ -4,6 +4,18 @@
     .swiper {
         overflow: visible;
     }
+
+    /* Pre-init shape while swiper.css / swiper.min.js are still loading. */
+    .swiper:not(.swiper-initialized) > .swiper-wrapper {
+        display: flex;
+        gap: 24px;
+    }
+
+    .swiper:not(.swiper-initialized) > .swiper-wrapper > .swiper-slide {
+        flex: 0 0 auto;
+        width: 100%; /* capped by the max-width below */
+    }
+
     .swiper-slide {
         max-width: 300px;
         -webkit-tap-highlight-color: transparent;

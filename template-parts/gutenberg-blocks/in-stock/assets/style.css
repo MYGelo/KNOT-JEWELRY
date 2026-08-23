@@ -3,6 +3,21 @@
     .swiper {
         overflow: visible;
     }
+
+    /* Pre-init: swiper.css loads asynchronously and swiper.min.js runs from the
+       footer, so until both arrive the slides are plain blocks and the slider
+       renders as a tall vertical stack. These rules give it the final shape and
+       stop applying as soon as Swiper adds .swiper-initialized.
+       Also covers the "viewed" strip, which reuses this block's markup. */
+    .swiper:not(.swiper-initialized) > .swiper-wrapper {
+        display: flex;
+        gap: 24px;
+    }
+
+    .swiper:not(.swiper-initialized) > .swiper-wrapper > .swiper-slide {
+        flex: 0 0 auto;
+        width: 100%; /* capped by the .swiper-slide max-width below */
+    }
     .swiper-wrapper {
         /*transition-timing-function: linear !important;*/
     }
