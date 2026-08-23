@@ -28,6 +28,17 @@ if ($post_ids === false) {
     set_transient('in_stock_posts', $post_ids, HOUR_IN_SECONDS);
 }
 
+// A cache written before this block switched to IDs holds WP_Post objects —
+// normalise whatever shape came back so a stale entry can't break the cards.
+if (is_array($post_ids)) {
+    $post_ids = array_values(array_filter(array_map(
+        static fn($item) => is_object($item) ? (int) $item->ID : (int) $item,
+        $post_ids
+    )));
+} else {
+    $post_ids = [];
+}
+
 if ($post_ids) {
 
     // One query for the posts + their meta; get_post() below is then free.
