@@ -112,7 +112,7 @@ $bg_mob = $thank_you['background_image_mob'] ?? '';
                         <!-- Desktop --><source srcset="<?= esc_url($bg['url']); ?>" media="(min-width: 552px)">
                         <img
                             src="<?= esc_url($bg['url']); ?>"
-                            alt="<?= $bg['alt'] ?: $bg['title'] ?>"
+                            alt="<?= esc_attr($bg['alt'] ?: $bg['title']) ?>"
                             width="<?= esc_attr($bg['width'] ?? '') ?>"
                             height="<?= esc_attr($bg['height'] ?? '') ?>"
                             fetchpriority="high"

@@ -39,9 +39,7 @@ function get_first_block_name_on_page($post_id = null)
 		$post_id = get_the_ID();
 	}
 
-	$content = get_the_content(null, false, $post_id);
-
-	$blocks = parse_blocks($content);
+	$blocks = knot_get_parsed_blocks($post_id);
 
 	if (empty($blocks) || !isset($blocks[0]['blockName'])) {
 		return null;
@@ -54,6 +52,44 @@ function get_first_block_name_on_page($post_id = null)
 	}
 
 	return $name;
+}
+
+/**
+ * parse_blocks() for a post, memoised per request — several helpers need the
+ * block list and the parser is not free.
+ */
+function knot_get_parsed_blocks($post_id): array
+{
+	static $cache = [];
+
+	$post_id = (int) $post_id;
+	if ($post_id <= 0) {
+		return [];
+	}
+
+	if (!isset($cache[$post_id])) {
+		// 'raw' — the default 'display' context runs the post_content filters,
+		// which third-party code can use to alter markup before we parse it.
+		$cache[$post_id] = parse_blocks((string) get_post_field('post_content', $post_id, 'raw'));
+	}
+
+	return $cache[$post_id];
+}
+
+/**
+ * wp_localize_script() concatenates when called twice for the same handle,
+ * which would duplicate the whole payload (block assets are enqueued early and
+ * again by ACF at render time). This adds the data only once.
+ */
+function knot_localize_once(string $handle, string $object_name, array $data): void
+{
+	$existing = wp_scripts()->get_data($handle, 'data');
+
+	if (is_string($existing) && strpos($existing, 'var ' . $object_name . ' =') !== false) {
+		return;
+	}
+
+	wp_localize_script($handle, $object_name, $data);
 }
 
 /**
@@ -91,7 +127,7 @@ add_action('wp_enqueue_scripts', function () {
 	}
 
 	$names = [];
-	knot_collect_acf_block_names(parse_blocks($post->post_content), $names);
+	knot_collect_acf_block_names(knot_get_parsed_blocks($post->ID), $names);
 
 	if (!$names) {
 		return;
@@ -129,7 +165,7 @@ function get_images_from_first_block_on_page($post_id = null)
 		return (array) $cached['images'];
 	}
 
-	$content = apply_filters('the_content', get_post_field('post_content', $post_id));
+	$content = apply_filters('the_content', get_post_field('post_content', $post_id, 'raw'));
 
 	if (empty($content)) {
 		update_post_meta($post_id, '_knot_preload_images', ['stamp' => $stamp, 'images' => []]);

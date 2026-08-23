@@ -56,6 +56,10 @@ add_action('updated_post_meta', function($meta_id, $object_id, $meta_key) {
 
     if (get_post_type($object_id) !== 'post') return;
 
+    // Internal bookkeeping keys don't change what the front end shows.
+    $ignored = ['_knot_preload_images', '_edit_lock', '_edit_last'];
+    if (in_array($meta_key, $ignored, true)) return;
+
     clear_in_stock_cache($object_id);
 
 }, 10, 3);

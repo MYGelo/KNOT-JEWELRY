@@ -25,7 +25,8 @@ if ( function_exists( 'acf_register_block_type' ) ) {
 			$script = __DIR__ . '/assets/script.js';
 			if ( file_exists( $script ) ) {
 				wp_enqueue_script( 'block-all-posts-script', "{$uri_base}/assets/script.js", array(), filemtime( $script ), true );
-                wp_localize_script(
+                // Once only: this callback also runs early (see inc/theme.php).
+                knot_localize_once(
                     'block-all-posts-script',
                     'ajax_object',
                     [

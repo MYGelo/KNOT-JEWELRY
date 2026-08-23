@@ -34,7 +34,8 @@ if ( function_exists( 'acf_register_block_type' ) ) {
 
 				$credentials = function_exists( 'knot_telegram_credentials' ) ? knot_telegram_credentials() : array( '', '' );
 
-				wp_localize_script( 'block-repair-form', 'knotRepairForm', array(
+				// Once only: this callback also runs early (see inc/theme.php).
+				knot_localize_once( 'block-repair-form', 'knotRepairForm', array(
 					'telegramBotToken' => $credentials[0] ?? '',
 					'telegramChatId'   => $credentials[1] ?? '',
 					'thankYouUrl'      => home_url( '/thank-you-page/' ),
