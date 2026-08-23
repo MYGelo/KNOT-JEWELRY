@@ -8,18 +8,42 @@ $block_classes = 'all-posts';
 
 if (!empty($block['className'])) $block_classes .= ' ' . $block['className'];
 
-$initial_query = new WP_Query([
-    'post_type' => 'post',
-    'posts_per_page' => 24,
-    'paged' => 1,
-    'post_status' => 'publish',
+// Catalog state from the URL (whitelisted terms) → render exactly that state
+// server-side, so a direct link / refresh / crawler / no-JS all get it right.
+$catalog          = site_catalog_request_filters();
+$catalog_page_url = get_permalink() ?: home_url('/');
 
-    'update_post_meta_cache' => true,
-    'update_post_term_cache' => true
-]);
+$catalog_has_filters = $catalog['search'] !== ''
+    || $catalog['materials'] || $catalog['stones'] || $catalog['product_type'];
+
+// Same cached resolver the REST endpoint uses, so SSR and AJAX agree and share
+// the transient cache (plain facet combos, pages 1-3). Available terms are only
+// needed — and only printed — when filters are active.
+$catalog_results = site_catalog_get_results(
+    $catalog['search'], $catalog['materials'], $catalog['stones'], $catalog['product_type'],
+    [], $catalog['page'], 24, $catalog_has_filters
+);
+
+// A page number past the end of this particular filtered subset (headers are
+// already sent here, so this clamps rather than redirects; the obviously bogus
+// values are 301'd earlier, on template_redirect).
+if ($catalog['page'] > 1 && $catalog_results['total_pages'] > 0 && $catalog['page'] > $catalog_results['total_pages']) {
+    $catalog['page']  = (int) $catalog_results['total_pages'];
+    $catalog_results = site_catalog_get_results(
+        $catalog['search'], $catalog['materials'], $catalog['stones'], $catalog['product_type'],
+        [], $catalog['page'], 24, $catalog_has_filters
+    );
+}
+
+$active_materials = array_flip($catalog['materials']);
+$active_stones    = array_flip($catalog['stones']);
+$active_types     = array_flip($catalog['product_type']);
 ?>
 
-<section class="<?= esc_attr($block_classes) ?> <?= $is_sticky ? 'sticky-item' : ''?>" id="<?= esc_attr($block_anchor) ?>">
+<section class="<?= esc_attr($block_classes) ?> <?= $is_sticky ? 'sticky-item' : ''?>" id="<?= esc_attr($block_anchor) ?>"
+         data-catalog-url="<?= esc_url($catalog_page_url) ?>"
+         <?php // Available terms rendered server-side — saves an extra REST call on load. ?>
+         <?= $catalog_has_filters ? 'data-available="' . esc_attr(wp_json_encode($catalog_results['available'])) . '"' : '' ?>>
     <div class="container">
         <div class="all-posts__wrapper">
             <?php if ($main_title): ?>
@@ -29,7 +53,7 @@ $initial_query = new WP_Query([
             <div class="all-posts__title-wrapper">
                 <!-- ПОИСК -->
                 <div class="all-posts__search-wrap">
-                    <input class="all-posts__search" type="text" id="ajax-search" placeholder="Пошук..." aria-label="Пошук" autocomplete="off">
+                    <input class="all-posts__search" type="text" id="ajax-search" placeholder="Пошук..." aria-label="Пошук" autocomplete="off" value="<?= esc_attr($catalog['search']) ?>">
                     <button type="button" class="all-posts__search-btn" id="ajax-search-icon-btn" aria-label="Пошук">
                         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <circle cx="7.5" cy="7.5" r="6" stroke="currentColor" stroke-width="1.3"/>
@@ -71,25 +95,16 @@ $initial_query = new WP_Query([
             <div class="all-posts__posts-wrapper">
                 <!-- ПОСТЫ -->
                 <div id="posts-wrap" class="all-posts__posts-wrap">
-                    <?php
-                    while ($initial_query->have_posts()) {
-
-                        $initial_query->the_post();
-
-                        get_template_part(
-                            'template-parts/components/post',
-                            'card'
-                        );
-
-                    }?>
+                    <?= site_render_post_cards($catalog_results['post_ids']) ?>
                 </div>
-
-                <?php wp_reset_postdata(); ?>
 
                 <div id="ajax-pagination">
                     <?php
-                    $total_pages = $initial_query->max_num_pages;
-                    $paged = 1;
+                    $total_pages   = $catalog_results['total_pages'];
+                    $total_posts   = $catalog_results['total_posts'];
+                    $shown_posts   = count($catalog_results['post_ids']);
+                    $paged         = $catalog['page'];
+                    $page_base_url = site_catalog_base_url($catalog);
                     include get_template_directory() . '/template-parts/components/pagination.php';?>
                 </div>
 
@@ -103,7 +118,7 @@ $initial_query = new WP_Query([
                                 <strong>Матеріал</strong>
                                 <?php foreach (get_terms(['taxonomy' => 'material', 'hide_empty' => false]) as $term): ?>
                                     <label>
-                                        <input type="checkbox" class="filter-material" value="<?= esc_attr($term->slug); ?>">
+                                        <input type="checkbox" class="filter-material" value="<?= esc_attr($term->slug); ?>" <?= isset($active_materials[$term->slug]) ? 'checked' : ''; ?>>
                                         <div class="filter-arrow"></div>
                                         <?= esc_html($term->name); ?>
                                     </label>
@@ -114,7 +129,7 @@ $initial_query = new WP_Query([
                                 <strong>Тип виробу</strong>
                                 <?php foreach (get_terms(['taxonomy' => 'product_type', 'hide_empty' => false]) as $term): ?>
                                     <label>
-                                        <input type="checkbox" class="filter-product_type" value="<?= esc_attr($term->slug); ?>">
+                                        <input type="checkbox" class="filter-product_type" value="<?= esc_attr($term->slug); ?>" <?= isset($active_types[$term->slug]) ? 'checked' : ''; ?>>
                                         <div class="filter-arrow"></div>
                                         <?= esc_html($term->name); ?>
                                     </label>
@@ -124,13 +139,13 @@ $initial_query = new WP_Query([
                             <div class="filter-dropdown__item">
                                 <strong>Камінь</strong>
                                 <label>
-                                    <input type="checkbox" class="filter-stone" value="no-stone">
+                                    <input type="checkbox" class="filter-stone" value="no-stone" <?= isset($active_stones['no-stone']) ? 'checked' : ''; ?>>
                                     <div class="filter-arrow"></div>
                                     Без каменя
                                 </label>
                                 <?php foreach (get_terms(['taxonomy' => 'stone', 'hide_empty' => false]) as $term): ?>
                                     <label>
-                                        <input type="checkbox" class="filter-stone" value="<?= esc_attr($term->slug); ?>">
+                                        <input type="checkbox" class="filter-stone" value="<?= esc_attr($term->slug); ?>" <?= isset($active_stones[$term->slug]) ? 'checked' : ''; ?>>
                                         <div class="filter-arrow"></div>
                                         <?= esc_html($term->name); ?>
                                     </label>

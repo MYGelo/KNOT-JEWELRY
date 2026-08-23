@@ -97,16 +97,62 @@ function site_seo_head() {
 
 add_action('wp_head', 'site_seo_head', 1);
 
+/**
+ * The catalog is a page containing the all-posts block. A filtered/paged state
+ * lives entirely in the query string (?type=&material=&stone=&q=&paged=).
+ */
+function knot_is_catalog_page(): bool {
+    if (!is_singular()) {
+        return false;
+    }
+    $obj = get_queried_object();
+    return $obj instanceof WP_Post && has_block('acf/all-posts', $obj);
+}
+
+function knot_catalog_is_filtered(): bool {
+    foreach (['material', 'type', 'stone', 'q', 'mat', 'typ', 'stn'] as $k) {
+        if (isset($_GET[$k]) && trim((string) wp_unslash($_GET[$k])) !== '') {
+            return true;
+        }
+    }
+
+    return absint($_GET['pagenum'] ?? 0) > 1 || absint($_GET['pg'] ?? 0) > 1;
+}
+
 function knot_seo_robots(array $robots): array {
     if (get_field('maintenance_mode', 'option')) {
         $robots['noindex']  = true;
         $robots['nofollow'] = true;
+        return $robots;
+    }
+
+    // Keep filtered/paged catalog states out of the index (crawl through them,
+    // but index only the clean catalog + product pages) to avoid facet dupes.
+    if (knot_is_catalog_page() && knot_catalog_is_filtered()) {
+        $robots['noindex'] = true;
+        $robots['follow']  = true;
     }
 
     return $robots;
 }
 
 add_filter('wp_robots', 'knot_seo_robots');
+
+// Same rules when Yoast owns the head: force noindex,follow + clean canonical
+// on filtered/paged catalog states.
+add_filter('wpseo_robots', function ($robots) {
+    if (knot_is_catalog_page() && knot_catalog_is_filtered()) {
+        return 'noindex, follow';
+    }
+    return $robots;
+});
+
+add_filter('wpseo_canonical', function ($canonical) {
+    if (knot_is_catalog_page() && knot_catalog_is_filtered()) {
+        return get_permalink();
+    }
+    return $canonical;
+});
 
 function knot_seo_robots_txt(string $output, bool $public): string {
     if (!$public || knot_is_yoast_active()) {

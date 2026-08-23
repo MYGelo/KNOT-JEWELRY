@@ -596,12 +596,37 @@
         margin: 25px auto 0;
     }
 
+    /*===== count + load more =====*/
+    .blog__count {
+        margin-top: 32px;
+        text-align: center;
+        font-size: 14px;
+        letter-spacing: 0.04em;
+        color: var(--text-second);
+    }
+
+    .blog__load-more {
+        display: flex;
+        margin: 14px auto 0;
+    }
+
+    .blog__load-more.is-busy {
+        opacity: .6;
+        pointer-events: none;
+    }
+
+    /* The counter/button already provide the gap above the numbers. */
+    .blog__count + .blog__pagination,
+    .blog__load-more + .blog__pagination {
+        margin-top: 16px;
+    }
+
     /*===== pagination =====*/
     .blog__pagination {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 2px;
+        gap: 7px;
         margin-top: 24px;
 
         @media (max-width: 991px) {

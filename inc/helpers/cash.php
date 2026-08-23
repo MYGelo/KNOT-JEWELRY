@@ -95,3 +95,15 @@ add_action('save_post_post', 'bump_filter_cache');
 add_action('created_term', 'bump_filter_cache');
 add_action('edited_term', 'bump_filter_cache');
 add_action('delete_term', 'bump_filter_cache');
+
+/* Keep the per-taxonomy term list (get_cached_terms) fresh — the filter
+   whitelist reads it, so a re-slug/rename must invalidate it immediately. */
+function clear_cached_terms($term_id, $tt_id = 0, $taxonomy = '') {
+    if ($taxonomy) {
+        delete_transient('terms_' . $taxonomy);
+    }
+}
+
+add_action('created_term', 'clear_cached_terms', 10, 3);
+add_action('edited_term', 'clear_cached_terms', 10, 3);
+add_action('delete_term', 'clear_cached_terms', 10, 3);

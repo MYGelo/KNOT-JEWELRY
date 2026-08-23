@@ -19,7 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const resetBtn = document.getElementById('ajax-reset-btn');
     const suggestionsEl = document.getElementById('search-suggestions');
 
-    let page = 1;
+    let page = (() => {
+        const pg = parseInt(new URLSearchParams(location.search).get('pagenum') || '1', 10);
+        return pg > 0 ? pg : 1;
+    })();
     let loading = false;
     let searchIds = null; // exact IDs picked from a suggestion (one title → many posts)
 
@@ -37,6 +40,57 @@ document.addEventListener('DOMContentLoaded', () => {
             stones: [...stoneEls].filter(i => i.checked).map(i => i.value),
             product_type: [...typeEls].filter(i => i.checked).map(i => i.value),
         };
+    }
+
+    /* -------------------------------- */
+    /* URL STATE (shareable / SEO)      */
+    /* -------------------------------- */
+
+    // Build the shareable URL for the current filters + page, mirroring the
+    // param names the server reads (?type=&material=&stone=&q=&paged=).
+    function buildUrl(targetPage) {
+        const base = (section && section.dataset.catalogUrl) || location.pathname;
+        const f = getFilters();
+        const q = (searchInput?.value || '').trim();
+
+        // Build manually so the comma separating multi-values stays literal
+        // (URLSearchParams would encode it to %2C). Slugs are latin.
+        const enc = list => list.map(encodeURIComponent).join(',');
+        const parts = [];
+
+        // Names must avoid WP's reserved query vars (m, p, s, paged, page, cat…),
+        // which would route the request away from this page.
+        if (f.materials.length) parts.push('material=' + enc(f.materials));
+        if (f.product_type.length) parts.push('type=' + enc(f.product_type));
+        if (f.stones.length) parts.push('stone=' + enc(f.stones));
+        if (q) parts.push('q=' + encodeURIComponent(q));
+        if (targetPage > 1) parts.push('pagenum=' + targetPage);
+
+        return parts.length ? base + '?' + parts.join('&') : base;
+    }
+
+    function pushUrl(targetPage) {
+        try {
+            history.pushState(null, '', buildUrl(targetPage));
+        } catch (e) { /* ignore */ }
+    }
+
+    // Reflect the current URL back into the controls (used on Back/Forward).
+    function syncUIFromUrl() {
+        const p = new URLSearchParams(location.search);
+        const setChecks = (els, csv) => {
+            const wanted = new Set((csv || '').split(',').filter(Boolean));
+            els.forEach(el => { el.checked = wanted.has(el.value); });
+        };
+
+        if (searchInput) searchInput.value = p.get('q') || '';
+        setChecks(materialEls, p.get('material'));
+        setChecks(stoneEls, p.get('stone'));
+        setChecks(typeEls, p.get('type'));
+        searchIds = null;
+
+        const pg = parseInt(p.get('pagenum') || '1', 10);
+        return pg > 0 ? pg : 1;
     }
 
     /* -------------------------------- */
@@ -80,7 +134,15 @@ document.addEventListener('DOMContentLoaded', () => {
     /* LOAD POSTS                       */
     /* -------------------------------- */
 
-    async function loadPosts(targetPage = 1, { scroll = false } = {}) {
+    // Keep the "24 з 121" counter honest: it always reflects what is actually
+    // in the grid right now (appended pages included).
+    function refreshCount() {
+        const el = paginationWrap?.querySelector('[data-count-current]');
+        if (!el) return;
+        el.textContent = String(postsWrap.querySelectorAll('.all-posts__post-item').length);
+    }
+
+    async function loadPosts(targetPage = 1, { scroll = false, push = true, append = false } = {}) {
 
         if (loading) return;
 
@@ -106,14 +168,27 @@ document.addEventListener('DOMContentLoaded', () => {
                     stones: filters.stones,
                     product_type: filters.product_type,
                     ids: searchIds || [],
-                    page: targetPage
+                    page: targetPage,
+                    // Lets the server build real pagination hrefs that keep the
+                    // active filters (REST has no page context of its own).
+                    base_url: (section && section.dataset.catalogUrl) || ''
                 })
             }).then(res => res.json());
 
-            postsWrap.innerHTML = data.posts;
+            if (append) {
+                postsWrap.insertAdjacentHTML('beforeend', data.posts);
+            } else {
+                postsWrap.innerHTML = data.posts;
+            }
             paginationWrap.innerHTML = data.pagination;
+            refreshCount();
 
             page = targetPage;
+
+            // Reflect the new state in the URL so it's shareable / bookmarkable
+            // and Back/Forward works. Skipped when the load itself came from a
+            // popstate (Back/Forward), to avoid pushing a duplicate entry.
+            if (push) pushUrl(targetPage);
 
             closeFilter();
 
@@ -270,9 +345,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     paginationWrap?.addEventListener('click', (e) => {
 
+        // These are real links. Let the browser handle "open in a new tab/window"
+        // (ctrl/cmd/shift-click, middle click) instead of hijacking it.
+        const plainClick = e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
+
+        // "Показати ще" — appends the next page instead of replacing.
+        const more = e.target.closest('[data-load-more]');
+        if (more) {
+            if (!plainClick) return;
+            e.preventDefault();
+
+            const next = parseInt(more.dataset.nextPage, 10);
+            if (!next || loading) return; // don't mark it busy if we can't start
+
+            more.classList.add('is-busy');
+            loadPosts(next, { append: true, scroll: false })
+                .finally(() => more.classList.remove('is-busy'));
+            return;
+        }
+
         const btn = e.target.closest('.page-num');
 
         if (!btn || btn.classList.contains('dots')) return;
+        if (!plainClick) return;
+
+        e.preventDefault(); // links carry a real href for SEO / no-JS; AJAX here
 
         const target = parseInt(btn.dataset.page);
 
@@ -451,29 +548,52 @@ document.addEventListener('DOMContentLoaded', () => {
     bg?.addEventListener('click', closeFilter);
 
     /* -------------------------------- */
-    /* RESTORE ON BACK/FORWARD          */
+    /* BACK / FORWARD                   */
     /* -------------------------------- */
 
-    // On a fresh reload (e.g. Back button), the browser restores the checkbox
-    // and search-field state, but the server rendered the default (all) posts.
-    // Re-apply the active filters so the list matches the restored UI.
-    window.addEventListener('pageshow', (e) => {
-
-        if (e.persisted) return; // bfcache already restored a consistent DOM
-
-        const f = getFilters();
-        const hasFilters = f.materials.length || f.stones.length || f.product_type.length;
-        const hasSearch = (searchInput?.value || '').trim().length > 0;
-
-        if (hasFilters || hasSearch) {
-            updateAvailableFilters();
-            loadPosts(1);
-        }
+    // The server renders whatever the URL asks for, so on Back/Forward we just
+    // sync the controls to the new URL and re-fetch that state (without pushing
+    // a new history entry). No pageshow refetch is needed anymore.
+    window.addEventListener('popstate', () => {
+        const pg = syncUIFromUrl();
+        updateAvailableFilters();
+        loadPosts(pg, { push: false, scroll: false });
     });
 
     /* -------------------------------- */
     /* INIT                             */
     /* -------------------------------- */
+
+    // SSR already rendered the current URL state and, when filters are active,
+    // ships the available terms in a data attribute — no extra request needed.
+    (() => {
+        const raw = section && section.dataset.available;
+        if (!raw) return;
+
+        try {
+            updateFilters(JSON.parse(raw));
+        } catch (e) {
+            updateAvailableFilters();
+        }
+    })();
+
+    // Landing on a URL that already carries catalog state (search, filters or a
+    // page number): bring the results into view instead of leaving the visitor
+    // at the top of the page.
+    (() => {
+        if (!section) return;
+
+        const p = new URLSearchParams(location.search);
+        const hasState = ['q', 'material', 'type', 'stone', 'pagenum']
+            .some(key => (p.get(key) || '').trim() !== '');
+
+        if (!hasState) return;
+
+        // Wait for layout to settle (the browser may restore its own scroll first).
+        requestAnimationFrame(() => {
+            setTimeout(scrollToSection, 100);
+        });
+    })();
 
     loader?.classList.remove('active');
 
