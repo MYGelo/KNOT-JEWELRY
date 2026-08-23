@@ -18,6 +18,10 @@ if ($post_ids === false) {
         'category_name' => 'in-stock',
         'posts_per_page' => -1,
         'fields' => 'ids',
+        // Recently updated products first — editing a product (price, stock
+        // note, photos) moves it back to the front of the slider.
+        'orderby' => 'modified',
+        'order' => 'DESC',
         'no_found_rows' => true,
         'update_post_meta_cache' => false,
         'update_post_term_cache' => false,
