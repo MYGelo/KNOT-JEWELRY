@@ -63,7 +63,14 @@ function theme_scripts()
 
 	//scripts
 	wp_enqueue_script('main-js', get_template_directory_uri() . '/assets/js/main.js', [], filemtime(get_template_directory() . '/assets/js/main.js'), true);
-	wp_enqueue_script('swiper-script', get_template_directory_uri() . '/assets/js/swiper.min.js', [], filemtime(get_template_directory() . '/assets/js/swiper.min.js'), true);
+	// ~150 KB — registered always (blocks may depend on the handle), but only
+	// shipped to pages that actually render a slider.
+	wp_register_script('swiper-script', get_template_directory_uri() . '/assets/js/swiper.min.js', [], filemtime(get_template_directory() . '/assets/js/swiper.min.js'), true);
+
+	if (knot_page_needs_swiper()) {
+		wp_enqueue_script('swiper-script');
+		wp_enqueue_style('swiper-css', get_template_directory_uri() . '/assets/css/swiper.css', [], filemtime(get_template_directory() . '/assets/css/swiper.css'));
+	}
 
 	// Navigation speed: hover-prefetch + progress bar (global)
 	$nav_js = get_template_directory() . '/assets/js/nav-speed.js';

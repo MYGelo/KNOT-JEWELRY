@@ -1,6 +1,21 @@
 .select-post{
     position: relative;
 
+    /* Pre-init shape while swiper.css / swiper.min.js are still loading —
+       four per row with an 18px gap, matching the JS config. */
+    .swiper:not(.swiper-initialized) {
+        overflow: hidden;
+    }
+
+    .swiper:not(.swiper-initialized) > .swiper-wrapper {
+        display: flex;
+        gap: 18px;
+    }
+
+    .swiper:not(.swiper-initialized) > .swiper-wrapper > .swiper-slide {
+        flex: 0 0 calc((100% - 54px) / 4);
+    }
+
     .select-post__title {
         margin-bottom: 24px;
     }

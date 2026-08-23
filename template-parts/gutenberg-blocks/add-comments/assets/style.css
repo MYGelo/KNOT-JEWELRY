@@ -6,6 +6,17 @@
         overflow: visible;
     }
 
+    /* Pre-init shape while swiper.css / swiper.min.js are still loading. */
+    .swiper:not(.swiper-initialized) > .swiper-wrapper {
+        display: flex;
+        gap: 24px;
+    }
+
+    .swiper:not(.swiper-initialized) > .swiper-wrapper > .swiper-slide {
+        flex: 0 0 auto;
+        width: 100%; /* capped by the .comments-slider max-width below */
+    }
+
     h2 {
         margin-bottom: 10px;
     }
