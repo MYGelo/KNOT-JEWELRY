@@ -13,6 +13,7 @@
  */
 
 $needs_ring_size = !empty($args['needs_ring_size']);
+$post_id         = (int) ($args['post_id'] ?? get_the_ID());
 
 $faq      = get_field('product_faq', 'option') ?: [];
 $terms    = get_field('single_form_steps', 'option')['step1_text'] ?? '';
@@ -60,31 +61,57 @@ if ($needs_ring_size) {
     ];
 }
 
-$items = array_filter($items, static fn(array $item): bool => $item['title'] !== '' && $item['text'] !== '');
+$items = array_values(array_filter(
+    $items,
+    static fn(array $item): bool => $item['title'] !== '' && $item['text'] !== ''
+));
 
 if (!$items) {
     return;
 }
 ?>
 
-<div class="product-faq">
-    <?php foreach ($items as $item): ?>
-        <?php // Deliberately no name= grouping: closing a neighbour at the same
-              // time as one opens moves everything between them, and that
-              // collision is what read as a jerky animation. Each item now only
-              // pushes what is below it. ?>
-        <details class="product-terms">
-            <summary class="product-terms__summary"><?= esc_html($item['title']); ?></summary>
+<?php // Buttons and divs rather than <details>: the panel's height is driven by
+      // the script (product.js), which is what lets it animate closed as well as
+      // open. Same accordion mechanics as the image-list block. ?>
+<div class="product-faq" data-accordion>
+    <?php foreach ($items as $index => $item): ?>
+        <?php $content_id = 'product-faq-' . $post_id . '-' . $index; ?>
 
-            <div class="product-terms__body">
-                <?= wp_kses_post($item['text']); ?>
+        <div class="product-faq__item">
+            <button
+                    id="<?= esc_attr($content_id); ?>-trigger"
+                    class="product-faq__trigger"
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls="<?= esc_attr($content_id); ?>"
+            >
+                <h3 class="product-faq__title"><?= esc_html($item['title']); ?></h3>
 
-                <?php if ($item['more']): ?>
-                    <p class="product-terms__more">
-                        <a href="<?= esc_url($item['more']); ?>"><?= esc_html($item['label']); ?></a>
-                    </p>
-                <?php endif; ?>
+                <span class="product-faq__icon" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M4 6.5 8 10.5 12 6.5" stroke="currentColor" stroke-width="1.5"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+            </button>
+
+            <div
+                    class="product-faq__content"
+                    id="<?= esc_attr($content_id); ?>"
+                    role="region"
+                    aria-labelledby="<?= esc_attr($content_id); ?>-trigger"
+            >
+                <div class="product-faq__body">
+                    <?= wp_kses_post($item['text']); ?>
+
+                    <?php if ($item['more']): ?>
+                        <p class="product-faq__more">
+                            <a href="<?= esc_url($item['more']); ?>"><?= esc_html($item['label']); ?></a>
+                        </p>
+                    <?php endif; ?>
+                </div>
             </div>
-        </details>
+        </div>
     <?php endforeach; ?>
 </div>

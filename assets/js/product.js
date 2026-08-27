@@ -359,4 +359,65 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+
+    /* ---------------- FAQ ACCORDION ---------------- */
+
+    // Same mechanics as the image-list block: the panel's height is set in
+    // pixels, so it animates closed as well as open. One item open at a time.
+    document.querySelectorAll('[data-accordion]').forEach((accordion) => {
+
+        const items = Array.from(accordion.querySelectorAll('.product-faq__item'));
+
+        const close = (item) => {
+            const content = item.querySelector('.product-faq__content');
+            const trigger = item.querySelector('.product-faq__trigger');
+
+            item.classList.remove('is-open');
+            if (content) content.style.height = '0px';
+            if (trigger) trigger.setAttribute('aria-expanded', 'false');
+        };
+
+        const open = (item) => {
+            const content = item.querySelector('.product-faq__content');
+            const trigger = item.querySelector('.product-faq__trigger');
+
+            item.classList.add('is-open');
+            if (content) content.style.height = content.scrollHeight + 'px';
+            if (trigger) trigger.setAttribute('aria-expanded', 'true');
+        };
+
+        items.forEach((item) => {
+            const trigger = item.querySelector('.product-faq__trigger');
+            if (!trigger) return;
+
+            item.classList.contains('is-open') ? open(item) : close(item);
+
+            trigger.addEventListener('click', () => {
+                const wasOpen = item.classList.contains('is-open');
+
+                items.forEach((other) => {
+                    if (other !== item) close(other);
+                });
+
+                wasOpen ? close(item) : open(item);
+            });
+        });
+
+        // Text rewraps at a new width, so a pinned height would clip it.
+        let resizeTimer = null;
+
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+
+            resizeTimer = setTimeout(() => {
+                items.forEach((item) => {
+                    if (!item.classList.contains('is-open')) return;
+
+                    const content = item.querySelector('.product-faq__content');
+                    if (content) content.style.height = content.scrollHeight + 'px';
+                });
+            }, 200);
+        });
+    });
+
 });
