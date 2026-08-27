@@ -8,8 +8,18 @@
 
 	document.addEventListener('DOMContentLoaded', function () {
 		recordCurrent();
+		initServerRenderedSliders();
 		renderSection();
 	});
+
+	/**
+	 * Sections rendered by PHP (e.g. "Схожі вироби") already have their cards in
+	 * the markup — they only need the slider and the flip behaviour, which is
+	 * exactly what the history section uses once its cards arrive.
+	 */
+	function initServerRenderedSliders() {
+		document.querySelectorAll('[data-cards-section]').forEach(initSlider);
+	}
 
 	/* ---------------- STORAGE ---------------- */
 

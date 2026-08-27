@@ -42,6 +42,19 @@ function knot_get_ring_sizes(): array {
     return $sizes;
 }
 
+/**
+ * Coating options, single source for the product page, the order popup and the
+ * cart. The first entry is the "nothing chosen" placeholder.
+ */
+function knot_get_coatings(): array {
+    return ['Тип покриття', 'Родій (білий)', 'Позолота'];
+}
+
+/** Notice shown once a coating is picked — the price depends on it. */
+function knot_get_coating_notice(): string {
+    return '⚠️ Фінальна вартість залежить від типу покриття та ваги виробу. Я з радістю розрахую точну ціну й підтверджу її під час оформлення замовлення.';
+}
+
 function knot_get_privacy_policy_url(): string {
     $pages = get_pages([
         'meta_key'   => '_wp_page_template',
@@ -77,6 +90,7 @@ function knot_order_form_config(): array {
         'thankYouUrl'      => home_url('/thank-you-page/'),
         'needsRingSize'    => knot_product_needs_ring_size(get_the_ID()),
         'ringSizes'        => knot_get_ring_sizes(),
+        'coatings'         => knot_get_coatings(),
         'minFormTime'      => 2500,
         'resendDelay'      => 10000,
     ];
@@ -93,6 +107,7 @@ function knot_cart_config(): array {
         'telegramChatId'   => $chat_id,
         'thankYouUrl'      => home_url('/thank-you-page/'),
         'ringSizes'        => knot_get_ring_sizes(),
+        'coatings'         => knot_get_coatings(),
         'privacyUrl'       => knot_get_privacy_policy_url(),
         'currency'         => '₴',
         'minFormTime'      => 2500,

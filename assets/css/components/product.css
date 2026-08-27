@@ -9,6 +9,130 @@
         grid-template-columns: 1fr;
     }
 
+    /* ===== FAQ ACCORDION (delivery / coating / size) ===== */
+
+    .product-faq {
+        display: flex;
+        flex-direction: column;
+        border-top: 1px solid var(--label);
+    }
+
+    .product-terms {
+        border-bottom: 1px solid var(--label);
+
+        /* Lets the panel transition to its natural height. */
+        interpolate-size: allow-keywords;
+    }
+
+    /* The browser animates the panel itself — no script, so nothing can fight
+       the layout. Where ::details-content is not supported the item simply
+       opens instantly. */
+    .product-terms::details-content {
+        block-size: 0;
+        overflow: hidden;
+        transition: block-size .3s ease, content-visibility .3s allow-discrete;
+    }
+
+    .product-terms[open]::details-content {
+        block-size: auto;
+    }
+
+    .product-terms__summary {
+        cursor: pointer;
+        list-style: none;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 8px 0;
+        font-family: var(--title-font), serif;
+        font-size: 13px;
+        line-height: 1.4;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: var(--text-color);
+        transition: color .25s ease;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .product-terms__summary:hover,
+    .product-terms[open] .product-terms__summary {
+        color: var(--title-color);
+    }
+
+    .product-terms__summary::-webkit-details-marker {
+        display: none;
+    }
+
+    /* Thin circled chevron — echoes the ○ markers used on the care page. */
+    .product-terms__summary::after {
+        content: '';
+        flex: none;
+        width: 26px;
+        height: 26px;
+        border: 1px solid var(--label);
+        border-radius: 50%;
+        background-image:
+            linear-gradient(currentColor, currentColor),
+            linear-gradient(currentColor, currentColor);
+        background-size: 9px 1px, 1px 9px;
+        background-position: center, center;
+        background-repeat: no-repeat;
+        transition: transform .3s ease, background-size .3s ease, border-color .25s ease;
+    }
+
+    .product-terms__summary:hover::after {
+        border-color: var(--text-second);
+    }
+
+    /* Plus becomes a minus — the vertical bar collapses while the icon spins
+       a half turn, which keeps the horizontal bar horizontal. */
+    .product-terms[open] .product-terms__summary::after {
+        transform: rotate(180deg);
+        background-size: 9px 1px, 1px 0;
+    }
+
+    .product-terms__body {
+        padding-bottom: 18px;
+        font-size: 14px;
+        line-height: 1.65;
+        color: var(--text-color);
+
+        p {
+            margin-bottom: 10px;
+        }
+
+        p:last-child {
+            margin-bottom: 0;
+        }
+
+        blockquote {
+            margin: 10px 0;
+            padding-left: 12px;
+            border-left: 2px solid var(--label);
+            color: var(--text-second);
+        }
+
+        a {
+            color: var(--title-color);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+    }
+
+    /* ===== PROPS AS LINKS ===== */
+
+    .product-props a {
+        color: inherit;
+        text-decoration: unset;
+        text-underline-offset: 3px;
+        transition: opacity .2s;
+    }
+
+    .product-props a:hover {
+        opacity: .6;
+    }
+
     /* ===== GALLERY: PRE-INIT =====
        swiper.css is loaded asynchronously and swiper.min.js runs from the
        footer, so until both land the slides are ordinary blocks — the gallery
@@ -224,6 +348,8 @@
             display: flex;
             align-items: baseline;
             gap: 15px;
+            flex-direction: row;
+            flex-wrap: wrap;
 
             .current {
                 font-weight: 700;
@@ -266,6 +392,7 @@
             background: #f0fff6;
             border-radius: 20px;
             width: fit-content;
+            margin: auto 0 auto auto;
         }
 
         .product-stock::before{

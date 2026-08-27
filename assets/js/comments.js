@@ -73,6 +73,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if(countEl){
                     countEl.textContent = parseInt(countEl.textContent) + 1
+
+                    // First review just arrived: reveal the counter and drop
+                    // the "no reviews yet" invitation.
+                    const wrap = countEl.closest(".comments-title__count")
+                    if(wrap) wrap.hidden = false
+
+                    const empty = document.querySelector(".comments-empty")
+                    if(empty) empty.remove()
                 }
 
                 document.querySelector("#comment-text").value = ""

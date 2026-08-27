@@ -19,10 +19,55 @@
         </div>
     <?php endif; ?>
 
-    <!-- Наличие -->
-    <?php if (has_category('in-stock') && !empty($in_stock)): ?>
-        <p class="product-stock "><?=$in_stock?></p>
-    <?php endif; ?>
+    <?php
+    // Everything a visitor tends to ask before ordering, folded away so the page
+    // stays short. Size and coating are still *chosen* in the cart and the order
+    // form — here we only explain them. Long-form versions live on the care &
+    // sizing page, which each item links to.
+    $order_terms = get_field('single_form_steps', 'option')['step1_text'] ?? '';
+    $care_url    = function_exists('knot_page_url_with_block') ? knot_page_url_with_block('acf/care-sizing') : '';
+
+    // Defined here rather than next to the cart button: the sizing item below
+    // needs it first, and the button reads the same value further down.
+    $needs_ring_size = knot_product_needs_ring_size(get_the_ID());
+    ?>
+
+    <div class="product-faq">
+
+        <?php if ($order_terms): ?>
+            <details class="product-terms" name="product-faq">
+                <summary class="product-terms__summary">Оплата, доставка та терміни</summary>
+                <div class="product-terms__body"><?= wp_kses_post($order_terms); ?></div>
+            </details>
+        <?php endif; ?>
+
+        <details class="product-terms" name="product-faq">
+            <summary class="product-terms__summary">Тип покриття: родій або позолота</summary>
+            <div class="product-terms__body">
+                <p>Срібло з часом природно темніє. Родій — метал платинової групи: тонкий шар створює захисний бар’єр від поту, косметики та побутової хімії, додає дзеркального білого блиску, краще тримається проти дрібних подряпин і не викликає алергії.</p>
+                <p>Позолота працює так само, але дає теплий золотистий відтінок.</p>
+                <p>Покриття обираєте під час оформлення замовлення. Воно впливає на фінальну вартість — я розрахую точну ціну й підтверджу її перед оплатою.</p>
+                <?php if ($care_url): ?>
+                    <p><a href="<?= esc_url($care_url . '#care-section_2'); ?>">Докладніше про родіювання</a></p>
+                <?php endif; ?>
+            </div>
+        </details>
+
+        <?php if ($needs_ring_size): ?>
+            <details class="product-terms" name="product-faq">
+                <summary class="product-terms__summary">Як визначити свій розмір</summary>
+                <div class="product-terms__body">
+                    <p>Найточніше — приміряти тоненьку класичну каблучку в ювелірній крамниці або скористатись пальцеміром.</p>
+                    <p>Другий варіант — застосунок на телефоні (наприклад, Ring Sizer): прикладаєте рівну, недеформовану каблучку до екрана й підганяєте коло під її внутрішній діаметр.</p>
+                    <p>Якщо нічого з цього немає — обгорніть палець ниточкою або смужкою паперу, зробіть позначку на місці стику й повідомте мені довжину. Вимірюйте наприкінці дня, коли палець найбільший, і повторіть заміри 2–3 рази.</p>
+                    <?php if ($care_url): ?>
+                        <p><a href="<?= esc_url($care_url . '#care-section_0'); ?>">Таблиця розмірів і поради</a></p>
+                    <?php endif; ?>
+                </div>
+            </details>
+        <?php endif; ?>
+
+    </div>
 
     <!-- Цена -->
     <div class="product-price  product-price--js">
@@ -33,32 +78,49 @@
         <?php if (!empty($old_price)): ?>
             <h3 class="old " ><?= esc_html($old_price); ?> ₴</h3>
         <?php endif; ?>
+
+        <!-- Наличие -->
+        <?php if (has_category('in-stock') && !empty($in_stock)): ?>
+            <p class="product-stock "><?=$in_stock?></p>
+        <?php endif; ?>
     </div>
+
+
 
     <!-- Свойства продукта -->
     <ul class="product-props ">
-        <!-- Кастомные таксономии -->
         <?php
-        // Матеріал
-        $material_terms = get_the_terms(get_the_ID(), 'material');
-        if ($material_terms && !is_wp_error($material_terms)) {
-            $material_names = wp_list_pluck($material_terms, 'name');
-            echo '<li class="">Матеріал: <span class="product-material--js">' . esc_html(implode(', ', $material_names)) . '</span></li>';
-        }
+        // Each property links into the catalog pre-filtered by that term, so the
+        // page is a starting point rather than a dead end.
+        $catalog_url = function_exists('knot_catalog_url') ? knot_catalog_url() : home_url('/');
 
-        // Камінь
-        $stone_terms = get_the_terms(get_the_ID(), 'stone');
-        if ($stone_terms && !is_wp_error($stone_terms)) {
-            $stone_names = wp_list_pluck($stone_terms, 'name');
-            echo '<li class="">Камінь: <span class="product-stone--js">' . esc_html(implode(', ', $stone_names)) . '</span></li>';
-        }
+        $render_prop = static function (string $taxonomy, string $label, string $param, string $js_class) use ($catalog_url) {
+            $terms = get_the_terms(get_the_ID(), $taxonomy);
 
-        // Тип виробу
-        $type_terms = get_the_terms(get_the_ID(), 'product_type');
-        if ($type_terms && !is_wp_error($type_terms)) {
-            $type_names = wp_list_pluck($type_terms, 'name');
-            echo '<li class="">Тип виробу: <span class="product-type--js">' . esc_html(implode(', ', $type_names)) . '</span></li>';
-        }
+            if (!$terms || is_wp_error($terms)) {
+                return;
+            }
+
+            $links = [];
+            foreach ($terms as $term) {
+                $links[] = sprintf(
+                    '<a href="%s">%s</a>',
+                    esc_url(add_query_arg($param, $term->slug, $catalog_url)),
+                    esc_html($term->name)
+                );
+            }
+
+            printf(
+                '<li>%s: <span class="%s">%s</span></li>',
+                esc_html($label),
+                esc_attr($js_class),
+                implode(', ', $links)
+            );
+        };
+
+        $render_prop('material', 'Матеріал', 'material', 'product-material--js');
+        $render_prop('stone', 'Камінь', 'stone', 'product-stone--js');
+        $render_prop('product_type', 'Тип виробу', 'type', 'product-type--js');
         ?>
     </ul>
 
@@ -81,8 +143,7 @@
     <?php endif; ?>
 
     <?php
-    $needs_ring_size = knot_product_needs_ring_size(get_the_ID());
-    $product_image   = get_the_post_thumbnail_url(get_the_ID(), 'large')
+    $product_image = get_the_post_thumbnail_url(get_the_ID(), 'large')
         ?: get_the_post_thumbnail_url(get_the_ID(), 'medium');
 
     $term_names = static function (string $taxonomy): string {
@@ -113,6 +174,6 @@
                 data-needs-size="<?= $needs_ring_size ? '1' : '0'; ?>"
         >Додати в кошик</button>
 
-        <button class="btn-buy main-btn third" data-action="togglePopup" data-target="#example_popup">Замовити виріб</button>
+        <button class="btn-buy main-btn third" data-action="togglePopup" data-target="#example_popup">Купити зараз</button>
     </div>
 </div>

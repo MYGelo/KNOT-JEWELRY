@@ -10,16 +10,28 @@ $label_text = get_field('comments_label_text','option') ?: 'Коментар';
 $placeholder_text = get_field('comments_label_text_placeholder','option') ?: 'Ваші враження, думки або просто “вау” — мені справді важливо це знати';
 
 $button_text = get_field('comments_button_text','option') ?: 'Надіслати коментар';
+
+// Shown instead of an empty list — announcing "(0)" reads as "nobody bought
+// this", which is the opposite of what a hand-made jewellery page needs.
+$empty_text = get_field('comments_empty_text','option')
+    ?: 'Тут ще немає відгуків. Буду щиро рада, якщо Ви залишите перший.';
+
+$comments_count = (int) get_comments_number();
 ?>
 
 <section class="comments">
     <div class="container">
     <div class="comments__title-wrapper">
         <h3 class="comments-title scroll-animate">
-            <?=$title?> (<span id="comments-count"><?= get_comments_number(); ?></span>)
+            <?= esc_html($title) ?><?php // counter only once there is something to count ?>
+            <span class="comments-title__count" <?= $comments_count ? '' : 'hidden' ?>>(<span id="comments-count"><?= esc_html($comments_count) ?></span>)</span>
         </h3>
         <p class="diary-subtitle scroll-animate"><?=$subtitle?></p>
     </div>
+
+    <?php if (!$comments_count): ?>
+        <p class="comments-empty scroll-animate"><?= wp_kses_post($empty_text) ?></p>
+    <?php endif; ?>
 
     <div id="comments-list">
         <?php

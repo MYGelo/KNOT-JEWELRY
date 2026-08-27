@@ -93,6 +93,62 @@ function knot_localize_once(string $handle, string $object_name, array $data): v
 }
 
 /**
+ * URL of the published page that contains a given block.
+ *
+ * Lets templates link to the catalog or the size guide without hard-coding a
+ * slug. Cached, and the cache is dropped whenever a page is saved.
+ */
+function knot_page_url_with_block(string $block_name): string
+{
+	$cache_key = 'knot_page_with_block_' . md5($block_name);
+	$cached    = get_transient($cache_key);
+
+	if (is_string($cached)) {
+		return $cached;
+	}
+
+	$url = '';
+
+	$pages = get_posts([
+		'post_type'      => 'page',
+		'post_status'    => 'publish',
+		'posts_per_page' => 50,
+		'fields'         => 'ids',
+		'no_found_rows'  => true,
+	]);
+
+	// The front page is the most likely host, so check it first.
+	$front = (int) get_option('page_on_front');
+	if ($front) {
+		array_unshift($pages, $front);
+	}
+
+	foreach (array_unique($pages) as $page_id) {
+		if (has_block($block_name, $page_id)) {
+			$url = (string) get_permalink($page_id);
+			break;
+		}
+	}
+
+	set_transient($cache_key, $url, DAY_IN_SECONDS);
+
+	return $url;
+}
+
+add_action('save_post_page', function () {
+	global $wpdb;
+	$wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_knot_page_with_block_%'");
+});
+
+/** Catalog page URL (the page holding the all-posts block). */
+function knot_catalog_url(): string
+{
+	$url = knot_page_url_with_block('acf/all-posts');
+
+	return $url ?: home_url('/');
+}
+
+/**
  * Does the current request actually render a Swiper slider?
  *
  * swiper.min.js is ~150 KB, so it should not be shipped to pages that have no

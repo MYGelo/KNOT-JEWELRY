@@ -89,7 +89,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (coatingSelect && coatingNotice) {
         coatingSelect.addEventListener('change', function () {
-            coatingNotice.hidden = !(coatingSelect.value && coatingSelect.value !== 'Без');
+            // Empty value = no coating chosen (the placeholder option).
+            coatingNotice.hidden = !coatingSelect.value;
         });
     }
 
@@ -333,8 +334,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const ringSizeLine = needsRingSize
             ? buildRingSizeLine(data['ring-size'])
             : '';
-        const coating = data.coating || 'Без';
-        const coatingLine = coating !== 'Без'
+        const coating = data.coating || '';
+        const coatingLine = coating
             ? '🎨 Покриття: ' + coating + '\n⚠️ Обрано покриття — ціна може змінитися'
             : '🎨 Покриття: Без';
 
