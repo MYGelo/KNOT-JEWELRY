@@ -76,7 +76,8 @@ $logo = get_field( 'header_logo', 'option' );
                             aria-label="Кошик"
                     >
 
-                        <img class="header__cart-icon" src="<?= get_template_directory_uri(); ?>/assets/images/trash2.webp" alt="Кошик" width="40" height="40" loading="lazy" decoding="async">
+                        <?php // Above the fold — lazy loading only delays it. ?>
+                        <img class="header__cart-icon" src="<?= esc_url(get_template_directory_uri() . '/assets/images/trash2.webp'); ?>" alt="Кошик" width="40" height="40" decoding="async">
                         <span class="header__cart-count" data-cart-count hidden>0</span>
                     </button>
                 </div>
