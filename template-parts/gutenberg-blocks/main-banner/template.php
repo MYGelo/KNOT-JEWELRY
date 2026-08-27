@@ -172,6 +172,9 @@ if (!empty($block['className'])) {
                             loop
                             playsinline
                             preload="none"
+                            <?php // Native fallback: shows the same frame the
+                                  // poster image uses if CSS or JS misbehaves. ?>
+                            poster="<?= esc_url($poster['sizes']['large'] ?? $poster['url'] ?? ''); ?>"
                             data-banner-video="<?= esc_url($video); ?>"
                     ></video>
                 <?php endif; ?>

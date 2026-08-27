@@ -217,9 +217,12 @@
         z-index: -1;
         border-radius: 0 0 32px 32px;
         object-position: top;
+    }
 
-        /* Loaded lazily — stay transparent so the poster image shows through
-           until there are real frames to display. */
+    /* The video is attached lazily, so it must stay transparent until there are
+       real frames — otherwise it covers the poster with a blank box. Only the
+       video: the image underneath has to be visible from the first paint. */
+    .main-banner__video {
         opacity: 0;
         transition: opacity .6s ease;
     }
