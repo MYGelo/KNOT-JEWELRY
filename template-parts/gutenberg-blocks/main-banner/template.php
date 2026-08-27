@@ -107,11 +107,16 @@ if (!empty($block['className'])) {
                 <?php endif; ?>
             </div>
 
-            <?php if (is_array($poster_png) && !empty($poster_png['url'])): ?>
+            <?php if (is_array($poster_png) && !empty($poster_png['url'])):
+                $png_srcset = !empty($poster_png['ID']) ? wp_get_attachment_image_srcset($poster_png['ID'], 'full') : '';
+                ?>
                 <div class="main-banner__png">
                     <picture>
                         <!-- Mobile --> <source srcset="<?= esc_url($poster_png['sizes']['medium_large']); ?>" media="(max-width: 551px)">
-                        <!-- Desktop --><source srcset="<?= esc_url($poster_png['url']); ?>" media="(min-width: 552px)">
+                        <!-- Desktop --><source
+                                srcset="<?= esc_attr($png_srcset ?: $poster_png['url']); ?>"
+                                sizes="(max-width: 991px) 60vw, 40vw"
+                                media="(min-width: 552px)">
                         <img
                                 src="<?= esc_url($poster_png['sizes']['medium_large']); ?>"
                                 alt="<?= esc_attr($poster_png['alt'] ?: $poster_png['title']); ?>"
@@ -126,11 +131,26 @@ if (!empty($block['className'])) {
         </div>
 
 
-        <?php if (is_array($poster) && !empty($poster['url'])): ?>
+        <?php if (is_array($poster) && !empty($poster['url'])):
+
+            // Hand the browser every generated size instead of one hard-coded
+            // URL — otherwise every screen above 552px downloads the full
+            // original (2048px, ~470 KB) no matter how small it is displayed.
+            $poster_srcset     = !empty($poster['ID']) ? wp_get_attachment_image_srcset($poster['ID'], 'full') : '';
+            $poster_mob_id     = $poster_mob['ID'] ?? 0;
+            $poster_mob_srcset = $poster_mob_id ? wp_get_attachment_image_srcset($poster_mob_id, 'large') : '';
+            $poster_mob_src    = $poster_mob['sizes']['large'] ?? $poster['sizes']['medium_large'];
+            ?>
             <div class="main-banner__bg">
                 <picture>
-                    <!-- Mobile --> <source srcset="<?= esc_url($poster_mob['sizes']['large'] ?? $poster['sizes']['medium_large']); ?>" media="(max-width: 551px)">
-                    <!-- Desktop --><source srcset="<?= esc_url($poster['url']); ?>" media="(min-width: 552px)">
+                    <!-- Mobile --> <source
+                            srcset="<?= esc_attr($poster_mob_srcset ?: $poster_mob_src); ?>"
+                            sizes="100vw"
+                            media="(max-width: 551px)">
+                    <!-- Desktop --><source
+                            srcset="<?= esc_attr($poster_srcset ?: $poster['url']); ?>"
+                            sizes="100vw"
+                            media="(min-width: 552px)">
                     <img
                             src="<?= esc_url($poster['sizes']['large'] ?: $poster['sizes']['medium_large']); ?>"
                             alt="<?= esc_attr($poster['alt'] ?: $poster['title']); ?>"
@@ -142,16 +162,18 @@ if (!empty($block['className'])) {
 
                 <!-- VIDEO -->
                 <?php if (!empty($video)): ?>
+                    <?php // No <source> and preload="none": the file is several
+                          // megabytes, so the script attaches it only on wide
+                          // screens, on a decent connection and once visible.
+                          // The poster image above stands in everywhere else. ?>
                     <video
                             class="main-banner__video"
-                            autoplay
                             muted
                             loop
                             playsinline
-                            preload="auto"
-                    >
-                        <source src="<?= esc_url($video); ?>" type="video/mp4">
-                    </video>
+                            preload="none"
+                            data-banner-video="<?= esc_url($video); ?>"
+                    ></video>
                 <?php endif; ?>
             </div>
         <?php endif; ?>
