@@ -14,96 +14,72 @@
     .product-faq {
         display: flex;
         flex-direction: column;
-        border-top: 1px solid var(--label);
+        row-gap: 8px;
+        margin: clamp(20px, 2.8vw, 32px) 0;
     }
 
-    .product-terms {
-        border-bottom: 1px solid var(--label);
-
-        /* Lets the panel transition to its natural height. */
-        interpolate-size: allow-keywords;
-    }
-
-    /* The browser animates the panel itself — no script, so nothing can fight
-       the layout. Where ::details-content is not supported the item simply
-       opens instantly. */
-    .product-terms::details-content {
-        block-size: 0;
+    .product-faq__item {
+        border-radius: 20px;
+        box-shadow: 0 0 10px rgb(0 0 0 / 15%);
         overflow: hidden;
-        transition: block-size .3s ease, content-visibility .3s allow-discrete;
     }
 
-    .product-terms[open]::details-content {
-        block-size: auto;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .product-terms::details-content,
-        .product-terms__summary,
-        .product-terms__summary::after {
-            transition: none;
-        }
-    }
-
-    .product-terms__summary {
-        cursor: pointer;
-        list-style: none;
+    .product-faq__trigger {
+        width: 100%;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 16px;
-        /* 26px icon + padding keeps the row at ~44px — a comfortable tap target. */
-        padding: 9px 0;
-        min-height: 44px;
-        font-family: var(--title-font), serif;
-        font-size: 13px;
-        line-height: 1.4;
-        letter-spacing: .08em;
-        text-transform: uppercase;
-        color: var(--text-color);
-        transition: color .25s ease;
+        gap: 5px;
+        padding: 8px;
+        border: none;
+        background: transparent;
+        text-align: left;
+        cursor: pointer;
         -webkit-tap-highlight-color: transparent;
     }
 
-    .product-terms__summary:hover,
-    .product-terms[open] .product-terms__summary {
+    .product-faq__title {
+        font-family: var(--title-font), serif;
+        font-size: 11px;
+        line-height: 1.4;
+        letter-spacing: .06em;
+        text-transform: uppercase;
         color: var(--title-color);
+        margin: 0;
     }
 
-    .product-terms__summary::-webkit-details-marker {
-        display: none;
-    }
-
-    /* Thin circled chevron — echoes the ○ markers used on the care page. */
-    .product-terms__summary::after {
-        content: '';
+    .product-faq__icon {
         flex: none;
-        width: 26px;
-        height: 26px;
-        border: 1px solid var(--label);
+        width: 25px;
+        height: 25px;
+        padding: 4px;
         border-radius: 50%;
-        background-image:
-            linear-gradient(currentColor, currentColor),
-            linear-gradient(currentColor, currentColor);
-        background-size: 9px 1px, 1px 9px;
-        background-position: center, center;
-        background-repeat: no-repeat;
-        transition: transform .3s ease, background-size .3s ease, border-color .25s ease;
+        background-color: #f0c0774d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--title-color);
+
+        svg {
+            width: 100%;
+            height: 100%;
+            transition: transform .3s ease;
+        }
     }
 
-    .product-terms__summary:hover::after {
-        border-color: var(--text-second);
-    }
-
-    /* Plus becomes a minus — the vertical bar collapses while the icon spins
-       a half turn, which keeps the horizontal bar horizontal. */
-    .product-terms[open] .product-terms__summary::after {
+    .product-faq__item.is-open .product-faq__icon svg {
         transform: rotate(180deg);
-        background-size: 9px 1px, 1px 0;
     }
 
-    .product-terms__body {
-        padding-bottom: 18px;
+    /* Height is set in pixels by the script, so both directions animate. */
+    .product-faq__content {
+        height: 0;
+        overflow: hidden;
+        transition: height .3s ease;
+    }
+
+    .product-faq__body {
+        padding: 0 18px 18px;
         font-size: 14px;
         line-height: 1.65;
         color: var(--text-color);
@@ -114,11 +90,6 @@
 
         p:last-child {
             margin-bottom: 0;
-        }
-
-        /* The "read the full version" link, set apart from the answer. */
-        .product-terms__more {
-            margin-top: 14px;
         }
 
         blockquote {
@@ -134,6 +105,19 @@
             text-underline-offset: 3px;
         }
     }
+
+    /* The "read the full version" link, set apart from the answer. */
+    .product-faq__more {
+        margin-top: 14px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .product-faq__content,
+        .product-faq__icon svg {
+            transition: none;
+        }
+    }
+
 
     /* ===== PROPS AS LINKS ===== */
 
