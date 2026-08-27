@@ -119,6 +119,11 @@ function add_comment_ajax() {
             $upload_dir['baseurl'],
             $webp_path
         );
+
+        // The uploads base URL follows the `siteurl` option, which can still be
+        // http:// — storing that produces mixed-content warnings on an HTTPS
+        // page. Pin it to the scheme this request is actually using.
+        $photo_url = set_url_scheme($photo_url);
     }
 
     $comment_id = wp_insert_comment([
@@ -222,8 +227,10 @@ function render_comment_html($comment) {
                     </svg>
                 </div>
 
+                <?php // Comments saved before HTTPS hold an http:// URL — normalise
+                      // on output to avoid mixed content. ?>
                 <img class="comment-photo-img"
-                     src="<?php echo esc_url($photo); ?>"
+                     src="<?php echo esc_url(set_url_scheme($photo)); ?>"
                      loading="lazy">
             </div>
         <?php endif; ?>

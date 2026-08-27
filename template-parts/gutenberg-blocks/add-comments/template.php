@@ -122,8 +122,10 @@ if ($comments_data) :
                                     <!-- PHOTO -->
                                     <div class="comment-photo image-wrapper">
                                         <?php if ($photo): ?>
+                                            <?php // Comments saved before the site moved to HTTPS hold an http:// URL —
+                                                  // normalise on output so they don't trigger mixed content. ?>
                                             <img
-                                                    src="<?= esc_url($photo); ?>"
+                                                    src="<?= esc_url(set_url_scheme($photo)); ?>"
                                                     loading="lazy"
                                                     decoding="async"
                                                     alt="<?= esc_attr($comment->comment_author ?: 'Аноним'); ?>"
