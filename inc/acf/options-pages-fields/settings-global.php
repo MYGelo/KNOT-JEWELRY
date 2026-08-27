@@ -432,6 +432,64 @@ acf_add_local_field_group(array(
             'default_value' => 'Усі замовлення обробляються вручну. Після заповнення форми я зв’яжуся з вами для підтвердження та уточнення деталей.Щоб пришвидшити обробку, залиште Instagram, Telegram username.'
         ),
 
+        /*
+        |--------------------------------------------------------------------------
+        | PRODUCT FAQ (accordion under the description)
+        |--------------------------------------------------------------------------
+        | Delivery terms come from the order form's Step 1 text below; these two
+        | items are the short answers about coating and sizing. Leave a text
+        | empty to hide that item.
+        */
+        array(
+            'key'    => 'field_product_faq',
+            'label'  => 'Product FAQ',
+            'name'   => 'product_faq',
+            'type'   => 'group',
+            'layout' => 'block',
+            'sub_fields' => array(
+
+                array(
+                    'key'   => 'field_product_faq_coating_title',
+                    'label' => 'Coating — Title',
+                    'name'  => 'coating_title',
+                    'type'  => 'text',
+                    'default_value' => 'Тип покриття: родій або позолота',
+                ),
+
+                array(
+                    'key'   => 'field_product_faq_coating_text',
+                    'label' => 'Coating — Text',
+                    'name'  => 'coating_text',
+                    'type'  => 'wysiwyg',
+                    'media_upload' => 0,
+                    'default_value' =>
+                        '<p>Срібло з часом природно темніє. Родій — метал платинової групи: тонкий шар створює захисний бар’єр від поту, косметики та побутової хімії, додає дзеркального білого блиску, краще тримається проти дрібних подряпин і не викликає алергії.</p>'
+                        . '<p>Позолота працює так само, але дає теплий золотистий відтінок.</p>'
+                        . '<p>Покриття обираєте під час оформлення замовлення. Воно впливає на фінальну вартість — я розрахую точну ціну й підтверджу її перед оплатою.</p>',
+                ),
+
+                array(
+                    'key'   => 'field_product_faq_size_title',
+                    'label' => 'Ring Size — Title (rings only)',
+                    'name'  => 'size_title',
+                    'type'  => 'text',
+                    'default_value' => 'Як визначити свій розмір',
+                ),
+
+                array(
+                    'key'   => 'field_product_faq_size_text',
+                    'label' => 'Ring Size — Text (rings only)',
+                    'name'  => 'size_text',
+                    'type'  => 'wysiwyg',
+                    'media_upload' => 0,
+                    'default_value' =>
+                        '<p>Найточніше — приміряти тоненьку класичну каблучку в ювелірній крамниці або скористатись пальцеміром.</p>'
+                        . '<p>Другий варіант — застосунок на телефоні (наприклад, Ring Sizer): прикладаєте рівну, недеформовану каблучку до екрана й підганяєте коло під її внутрішній діаметр.</p>'
+                        . '<p>Якщо нічого з цього немає — обгорніть палець ниточкою або смужкою паперу, зробіть позначку на місці стику й повідомте мені довжину. Вимірюйте наприкінці дня, коли палець найбільший, і повторіть заміри 2–3 рази.</p>',
+                ),
+            ),
+        ),
+
         array(
             'key' => 'field_single_form_settings',
             'label' => 'Form Steps',

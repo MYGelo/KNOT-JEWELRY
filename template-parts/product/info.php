@@ -20,54 +20,13 @@
     <?php endif; ?>
 
     <?php
-    // Everything a visitor tends to ask before ordering, folded away so the page
-    // stays short. Size and coating are still *chosen* in the cart and the order
-    // form — here we only explain them. Long-form versions live on the care &
-    // sizing page, which each item links to.
-    $order_terms = get_field('single_form_steps', 'option')['step1_text'] ?? '';
-    $care_url    = function_exists('knot_page_url_with_block') ? knot_page_url_with_block('acf/care-sizing') : '';
-
-    // Defined here rather than next to the cart button: the sizing item below
-    // needs it first, and the button reads the same value further down.
+    // Also read by the cart button further down, so it is resolved once here.
     $needs_ring_size = knot_product_needs_ring_size(get_the_ID());
+
+    get_template_part('template-parts/product/faq', null, [
+        'needs_ring_size' => $needs_ring_size,
+    ]);
     ?>
-
-    <div class="product-faq">
-
-        <?php if ($order_terms): ?>
-            <details class="product-terms" name="product-faq">
-                <summary class="product-terms__summary">Оплата, доставка та терміни</summary>
-                <div class="product-terms__body"><?= wp_kses_post($order_terms); ?></div>
-            </details>
-        <?php endif; ?>
-
-        <details class="product-terms" name="product-faq">
-            <summary class="product-terms__summary">Тип покриття: родій або позолота</summary>
-            <div class="product-terms__body">
-                <p>Срібло з часом природно темніє. Родій — метал платинової групи: тонкий шар створює захисний бар’єр від поту, косметики та побутової хімії, додає дзеркального білого блиску, краще тримається проти дрібних подряпин і не викликає алергії.</p>
-                <p>Позолота працює так само, але дає теплий золотистий відтінок.</p>
-                <p>Покриття обираєте під час оформлення замовлення. Воно впливає на фінальну вартість — я розрахую точну ціну й підтверджу її перед оплатою.</p>
-                <?php if ($care_url): ?>
-                    <p><a href="<?= esc_url($care_url . '#care-section_2'); ?>">Докладніше про родіювання</a></p>
-                <?php endif; ?>
-            </div>
-        </details>
-
-        <?php if ($needs_ring_size): ?>
-            <details class="product-terms" name="product-faq">
-                <summary class="product-terms__summary">Як визначити свій розмір</summary>
-                <div class="product-terms__body">
-                    <p>Найточніше — приміряти тоненьку класичну каблучку в ювелірній крамниці або скористатись пальцеміром.</p>
-                    <p>Другий варіант — застосунок на телефоні (наприклад, Ring Sizer): прикладаєте рівну, недеформовану каблучку до екрана й підганяєте коло під її внутрішній діаметр.</p>
-                    <p>Якщо нічого з цього немає — обгорніть палець ниточкою або смужкою паперу, зробіть позначку на місці стику й повідомте мені довжину. Вимірюйте наприкінці дня, коли палець найбільший, і повторіть заміри 2–3 рази.</p>
-                    <?php if ($care_url): ?>
-                        <p><a href="<?= esc_url($care_url . '#care-section_0'); ?>">Таблиця розмірів і поради</a></p>
-                    <?php endif; ?>
-                </div>
-            </details>
-        <?php endif; ?>
-
-    </div>
 
     <!-- Цена -->
     <div class="product-price  product-price--js">

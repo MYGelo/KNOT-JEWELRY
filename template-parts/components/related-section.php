@@ -4,8 +4,8 @@
  *
  * Unlike "Ви переглядали" (which mirrors the visitor's own history and is empty
  * on a first visit) this is always populated: it is derived from the product
- * itself. Products of the same type come first, with a matching stone ranked
- * above the rest, so the page never dead-ends.
+ * itself, so the page never dead-ends. Matches are ranked type + stone, then
+ * stone, then type.
  *
  * @var array $args ['post_id', 'title', 'tap', 'limit']
  */
@@ -43,32 +43,40 @@ $base_args = [
     'update_post_term_cache' => false,
 ];
 
-// Closest match first: same type AND same stone.
-$ids = [];
+// Ranked from the closest match down. Each tier only tops up what the previous
+// ones left room for, so the strongest matches always lead:
+//   1. same type *and* same stone
+//   2. same stone, any type
+//   3. same type, any stone
+$type_clause  = ['taxonomy' => 'product_type', 'field' => 'slug', 'terms' => $types];
+$stone_clause = ['taxonomy' => 'stone', 'field' => 'slug', 'terms' => $stones];
+
+$tiers = [];
 
 if ($types && $stones) {
-    $ids = get_posts(array_merge($base_args, [
-        'tax_query' => [
-            'relation' => 'AND',
-            ['taxonomy' => 'product_type', 'field' => 'slug', 'terms' => $types],
-            ['taxonomy' => 'stone', 'field' => 'slug', 'terms' => $stones],
-        ],
-    ]));
+    $tiers[] = ['relation' => 'AND', $type_clause, $stone_clause];
+}
+if ($stones) {
+    $tiers[] = [$stone_clause];
+}
+if ($types) {
+    $tiers[] = [$type_clause];
 }
 
-// Then top up with the same type (or, failing that, the same stone).
-if (count($ids) < $limit) {
-    $fallback_tax = $types
-        ? ['taxonomy' => 'product_type', 'field' => 'slug', 'terms' => $types]
-        : ['taxonomy' => 'stone', 'field' => 'slug', 'terms' => $stones];
+$ids = [];
 
-    $more = get_posts(array_merge($base_args, [
-        'posts_per_page' => $limit - count($ids),
+foreach ($tiers as $tax_query) {
+    $remaining = $limit - count($ids);
+
+    if ($remaining < 1) {
+        break;
+    }
+
+    $ids = array_merge($ids, get_posts(array_merge($base_args, [
+        'posts_per_page' => $remaining,
         'post__not_in'   => array_merge([$post_id], $ids),
-        'tax_query'      => [$fallback_tax],
-    ]));
-
-    $ids = array_merge($ids, $more);
+        'tax_query'      => $tax_query,
+    ])));
 }
 
 if (!$ids) {

@@ -1,5 +1,24 @@
 <?php
 
+/**
+ * Cache-busting version for a theme asset, from its modification time.
+ *
+ * Passing null as the version leaves the URL without ?ver=, so browsers and the
+ * host keep serving the copy they already have after a deploy. That is how an
+ * updated stylesheet can silently fail to reach visitors while the markup is
+ * already new. The mtime changes with every upload, so the URL changes with it.
+ *
+ * @param string $relative_path Path inside the theme, e.g. 'assets/js/cart.js'.
+ * @return string|int Version string for wp_enqueue_*.
+ */
+function knot_asset_version(string $relative_path) {
+	$file = get_stylesheet_directory() . '/' . ltrim($relative_path, '/');
+
+	return file_exists($file)
+		? filemtime($file)
+		: (wp_get_theme()->get('Version') ?: '1.0');
+}
+
 function auto_enqueue_styles()
 {
 	$base_dir = get_stylesheet_directory() . '/assets/css';
@@ -56,9 +75,9 @@ function theme_scripts()
 	}
 
 	//styles
-	wp_enqueue_style('style', get_stylesheet_uri(), array(), null);
-	wp_enqueue_style('fonts', get_stylesheet_directory_uri() . '/assets/font/fonts.css', array(), null);
-    wp_enqueue_style('popup', get_stylesheet_directory_uri() . '/assets/css/components/popup.css', array(), null);
+	wp_enqueue_style('style', get_stylesheet_uri(), array(), knot_asset_version('style.css'));
+	wp_enqueue_style('fonts', get_stylesheet_directory_uri() . '/assets/font/fonts.css', array(), knot_asset_version('assets/font/fonts.css'));
+    wp_enqueue_style('popup', get_stylesheet_directory_uri() . '/assets/css/components/popup.css', array(), knot_asset_version('assets/css/components/popup.css'));
 	auto_enqueue_styles();
 
 	//scripts
@@ -97,8 +116,8 @@ function theme_scripts()
 
 
     if (is_singular('post')) {
-        wp_enqueue_style('product', get_stylesheet_directory_uri() . '/assets/css/components/product.css', array(), null);
-        wp_enqueue_style('single-comments', get_stylesheet_directory_uri() . '/assets/css/components/single-comments.css', array(), null);
+        wp_enqueue_style('product', get_stylesheet_directory_uri() . '/assets/css/components/product.css', array(), knot_asset_version('assets/css/components/product.css'));
+        wp_enqueue_style('single-comments', get_stylesheet_directory_uri() . '/assets/css/components/single-comments.css', array(), knot_asset_version('assets/css/components/single-comments.css'));
 
         // Recently-viewed section (auto-rendered before comments) reuses in-stock card styles.
         $in_stock_style = get_template_directory() . '/template-parts/gutenberg-blocks/in-stock/assets/style.css';
@@ -114,7 +133,7 @@ function theme_scripts()
         wp_enqueue_script( 'order-form-js', get_template_directory_uri() . '/assets/js/order-form.js', [], filemtime( get_template_directory() . '/assets/js/order-form.js' ), true );
         wp_localize_script( 'order-form-js', 'knotOrderForm', knot_order_form_config() );
 
-        wp_enqueue_script('comments-js', get_template_directory_uri().'/assets/js/comments.js', [], null, true);
+        wp_enqueue_script('comments-js', get_template_directory_uri().'/assets/js/comments.js', [], knot_asset_version('assets/js/comments.js'), true);
         wp_localize_script('comments-js','comment_ajax',['url'=>admin_url('admin-ajax.php'), 'post_id'=>get_the_ID()]);
     }
 }
