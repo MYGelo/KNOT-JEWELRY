@@ -401,6 +401,15 @@ acf_add_local_field_group(array(
             'default_value' => 'Ваші враження, думки або просто “вау” — мені справді важливо це знати',
         ),
         array(
+            'key'           => 'field_comments_empty_text',
+            'label'         => 'Text When No Reviews',
+            'name'          => 'comments_empty_text',
+            'type'          => 'textarea',
+            'rows'          => 2,
+            'new_lines'     => 'br',
+            'default_value' => 'Тут ще немає відгуків. Буду щиро рада, якщо Ви залишите перший.',
+        ),
+        array(
             'key'     => 'field_comments_button_text',
             'label'   => 'Form Button Text',
             'name'    => 'comments_button_text',
@@ -541,6 +550,15 @@ acf_add_local_field_group(array(
             'key'   => 'tab_viewed_section',
             'label' => 'Переглянуті товари',
             'type'  => 'tab',
+        ),
+
+        array(
+            'key'           => 'field_related_section_title',
+            'label'         => 'Заголовок секції «Схожі вироби»',
+            'name'          => 'related_section_title',
+            'type'          => 'text',
+            'default_value' => 'Схожі вироби',
+            'instructions'  => 'Добірка за типом виробу та каменем на сторінках товару.',
         ),
 
         array(

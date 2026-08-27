@@ -22,13 +22,19 @@ if (have_posts()) :
                 </div>
             </section>
 
+            <?php get_template_part('template-parts/components/related-section', null, [
+                'post_id' => get_the_ID(),
+                'title'   => get_field('related_section_title', 'option') ?: 'Схожі вироби',
+                'tap'     => get_field('viewed_section_tap_text', 'option') ?: 'Більше про виріб',
+            ]); ?>
+
+            <?php get_template_part('template-parts/product/comment', null, $product); ?>
+
             <?php get_template_part('template-parts/components/viewed-section', null, [
                 'title'   => get_field('viewed_section_title', 'option') ?: 'Ви переглядали',
                 'tap'     => get_field('viewed_section_tap_text', 'option') ?: 'Більше про виріб',
                 'exclude' => get_the_ID(),
             ]); ?>
-
-            <?php get_template_part('template-parts/product/comment', null, $product); ?>
 
             <?php get_template_part('template-parts/product/product-popup', null, $product); ?>
 

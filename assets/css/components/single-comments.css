@@ -5,6 +5,21 @@
     flex-direction: column;
     gap: 24px;
 
+    /* Invitation shown while there are no reviews yet. */
+    .comments-empty {
+        padding: 16px 18px;
+        border-radius: 0 16px 16px 0;
+        border-left: 2px solid var(--label);
+        background: #faf8f5a3;
+        font-size: 15px;
+        line-height: 1.6;
+        color: var(--text-second);
+    }
+
+    .comments-title__count[hidden] {
+        display: none;
+    }
+
     .comment {
         margin-bottom: 10px;
         border-radius: 0 16px  16px 0 ;

@@ -14,7 +14,10 @@
 		if (!drawer) return;
 
 		const RING_SIZES = Array.isArray(config.ringSizes) ? config.ringSizes : [];
-		const COATINGS = ['Тип покриття ', 'Родій (білий)', 'Позолота'];
+		// Same list the product page and the order form use (see PHP config).
+		const COATINGS = Array.isArray(config.coatings) && config.coatings.length
+			? config.coatings
+			: ['Тип покриття', 'Родій (білий)', 'Позолота'];
 		// The first option means "no coating chosen".
 		const NO_COATING = COATINGS[0];
 
@@ -596,7 +599,6 @@
 				stone: btn.dataset.stone,
 				type: btn.dataset.type,
 				needsSize: btn.dataset.needsSize === '1',
-				size: '',
 				qty: 1
 			});
 

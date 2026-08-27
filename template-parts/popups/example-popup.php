@@ -90,13 +90,17 @@ $privacy_url     = knot_get_privacy_policy_url();
 
                             <div class="styled coating-field">
                                 <label class="styled-label" for="order-coating">Тип покриття</label>
+                                <?php // Options come from knot_get_coatings() so the product page,
+                                      // this form and the cart always offer the same list. ?>
                                 <select class="styled__input" id="order-coating" name="coating">
-                                    <option value="Без" selected>Без</option>
-                                    <option value="Родій (білий)">Родій (білий)</option>
-                                    <option value="Позолота">Позолота</option>
+                                    <?php foreach (knot_get_coatings() as $i => $coating): ?>
+                                        <option value="<?= $i === 0 ? '' : esc_attr($coating); ?>" <?= $i === 0 ? 'selected' : '' ?>>
+                                            <?= esc_html($i === 0 ? 'Без' : $coating); ?>
+                                        </option>
+                                    <?php endforeach; ?>
                                 </select>
                                 <p class="ring-size-notice" id="coating-notice" hidden>
-                                    ⚠️Фінальна вартість залежить від типу покриття та ваги виробу. Я з радістю розрахую точну ціну й підтверджу її під час оформлення замовлення.
+                                    <?= esc_html(knot_get_coating_notice()); ?>
                                 </p>
                             </div>
 
