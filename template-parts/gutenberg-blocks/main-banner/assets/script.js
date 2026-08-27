@@ -23,12 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         video.load();
 
-        // Reveal only once there are actual frames — avoids a black flash
-        // over the poster image.
-        video.addEventListener('canplay', () => {
-            video.classList.add('is-ready');
-        }, { once: true });
-
+        // No fade-in: the element is already visible showing its poster, and
+        // revealing it late would register a second, very slow LCP candidate.
         const play = video.play();
         if (play && typeof play.catch === 'function') {
             play.catch(() => { /* autoplay blocked — poster stays */ });

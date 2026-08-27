@@ -142,41 +142,47 @@ if (!empty($block['className'])) {
             $poster_mob_src    = $poster_mob['sizes']['large'] ?? $poster['sizes']['medium_large'];
             ?>
             <div class="main-banner__bg">
-                <picture>
-                    <!-- Mobile --> <source
-                            srcset="<?= esc_attr($poster_mob_srcset ?: $poster_mob_src); ?>"
-                            sizes="100vw"
-                            media="(max-width: 551px)">
-                    <!-- Desktop --><source
-                            srcset="<?= esc_attr($poster_srcset ?: $poster['url']); ?>"
-                            sizes="100vw"
-                            media="(min-width: 552px)">
-                    <img
-                            src="<?= esc_url($poster['sizes']['large'] ?: $poster['sizes']['medium_large']); ?>"
-                            alt="<?= esc_attr($poster['alt'] ?: $poster['title']); ?>"
-                            width="<?= esc_attr($poster['width'] ?? ''); ?>"
-                            height="<?= esc_attr($poster['height'] ?? ''); ?>"
-                            fetchpriority="high"
-                    >
-                </picture>
 
-                <!-- VIDEO -->
                 <?php if (!empty($video)): ?>
-                    <?php // No <source> and preload="none": the file is several
-                          // megabytes, so the script attaches it only on wide
-                          // screens, on a decent connection and once visible.
-                          // The poster image above stands in everywhere else. ?>
+
+                    <?php // With a hero video the <video> is the only painted layer:
+                          // its `poster` shows immediately, so Largest Contentful
+                          // Paint is measured on that image instead of waiting for
+                          // the multi-megabyte file. A separate <img> underneath
+                          // would just be an invisible extra download, and fading
+                          // the video in later made it a second, very late LCP
+                          // candidate (21 s). The file itself is attached by JS
+                          // once the page has settled. ?>
                     <video
                             class="main-banner__video"
                             muted
                             loop
                             playsinline
                             preload="none"
-                            <?php // Native fallback: shows the same frame the
-                                  // poster image uses if CSS or JS misbehaves. ?>
-                            poster="<?= esc_url($poster['sizes']['large'] ?? $poster['url'] ?? ''); ?>"
+                            poster="<?= esc_url($poster['sizes']['large'] ?: $poster['url']); ?>"
                             data-banner-video="<?= esc_url($video); ?>"
                     ></video>
+
+                <?php else: ?>
+
+                    <picture>
+                        <!-- Mobile --> <source
+                                srcset="<?= esc_attr($poster_mob_srcset ?: $poster_mob_src); ?>"
+                                sizes="100vw"
+                                media="(max-width: 551px)">
+                        <!-- Desktop --><source
+                                srcset="<?= esc_attr($poster_srcset ?: $poster['url']); ?>"
+                                sizes="100vw"
+                                media="(min-width: 552px)">
+                        <img
+                                src="<?= esc_url($poster['sizes']['large'] ?: $poster['sizes']['medium_large']); ?>"
+                                alt="<?= esc_attr($poster['alt'] ?: $poster['title']); ?>"
+                                width="<?= esc_attr($poster['width'] ?? ''); ?>"
+                                height="<?= esc_attr($poster['height'] ?? ''); ?>"
+                                fetchpriority="high"
+                        >
+                    </picture>
+
                 <?php endif; ?>
             </div>
         <?php endif; ?>
