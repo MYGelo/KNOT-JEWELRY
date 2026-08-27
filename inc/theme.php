@@ -232,12 +232,23 @@ function get_images_from_first_block_on_page($post_id = null)
 	$nodes = $xpath->query('//body/*[self::section or self::div or self::article or self::header or self::main or self::footer]');
 
 	if ($nodes->length > 0) {
-		$imgNodes = $xpath->query('.//img[@fetchpriority="high"]', $nodes->item(0));
+		$first = $nodes->item(0);
+
+		$imgNodes = $xpath->query('.//img[@fetchpriority="high"]', $first);
 
 		foreach ($imgNodes as $img) {
 			$src = $img->getAttribute('src');
 			if ($src) {
 				$images[] = $src;
+			}
+		}
+
+		// A hero <video> paints its poster first, so that image is the LCP
+		// candidate and deserves the same head start as a hero <img>.
+		foreach ($xpath->query('.//video[@poster]', $first) as $video) {
+			$poster = $video->getAttribute('poster');
+			if ($poster) {
+				$images[] = $poster;
 			}
 		}
 	}

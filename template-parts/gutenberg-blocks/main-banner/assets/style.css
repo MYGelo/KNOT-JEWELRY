@@ -219,17 +219,9 @@
         object-position: top;
     }
 
-    /* The video is attached lazily, so it must stay transparent until there are
-       real frames — otherwise it covers the poster with a blank box. Only the
-       video: the image underneath has to be visible from the first paint. */
-    .main-banner__video {
-        opacity: 0;
-        transition: opacity .6s ease;
-    }
-
-    .main-banner__video.is-ready {
-        opacity: 1;
-    }
+    /* Visible from the first paint: the `poster` attribute renders straight
+       away, which is what LCP measures. Hiding the element until the file had
+       downloaded turned the video into a very late (21 s) LCP candidate. */
 
     .main-banner__png {
         position: relative;
