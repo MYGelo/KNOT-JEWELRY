@@ -35,7 +35,11 @@ if ($thumb_id) {
     $width    = $meta_img['width'] ?? '';
     $height   = $meta_img['height'] ?? '';
 
-    $alt       = get_post_meta($thumb_id, '_wp_attachment_image_alt', true);
+    // Product name beats the attachment's own title (often "IMG_1234").
+    $alt = function_exists('knot_image_alt')
+        ? knot_image_alt($thumb_id, get_the_title($post_id))
+        : get_post_meta($thumb_id, '_wp_attachment_image_alt', true);
+
     $title_img = get_the_title($thumb_id);
 }
 ?>

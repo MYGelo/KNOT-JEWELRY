@@ -6,6 +6,9 @@
     $has_gallery = $thumb || !empty($gallery);
 
     $slide_index = 0;
+
+    // Product name is the alt fallback; the qualifier keeps each one unique.
+    $alt_base = get_the_title();
     ?>
 
     <?php if ($has_gallery): ?>
@@ -28,6 +31,7 @@
                                     'large',
                                     false,
                                     [
+                                        'alt' => knot_image_alt($thumb, $alt_base),
                                         'fetchpriority' => 'high',
                                         'loading' => 'eager',
                                         'decoding' => 'async'
@@ -48,13 +52,15 @@
 
                                 <?php
                                 $is_first = $slide_index === 0;
+                                $img_alt  = knot_image_alt($img, $alt_base, sprintf('фото %d', $slide_index + 1));
+
                                 echo wp_get_attachment_image(
                                     $img,
                                     'large',
                                     false,
                                     $is_first
-                                        ? ['fetchpriority'=>'high','loading'=>'eager','decoding'=>'async']
-                                        : ['loading'=>'lazy','decoding'=>'async']
+                                        ? ['alt'=>$img_alt,'fetchpriority'=>'high','loading'=>'eager','decoding'=>'async']
+                                        : ['alt'=>$img_alt,'loading'=>'lazy','decoding'=>'async']
                                 );
                                 ?>
                             </div>
@@ -78,18 +84,26 @@
                 <div class="swiper gallery-thumbs">
                     <div class="swiper-wrapper">
 
+                        <?php $thumb_index = 0; ?>
+
                         <?php if ($thumb): ?>
                             <div class="swiper-slide">
                                 <div class="product-gallery__img-wrapper">
-                                    <?= wp_get_attachment_image($thumb, 'thumbnail', false, ['loading'=>'lazy']); ?>
+                                    <?= wp_get_attachment_image($thumb, 'thumbnail', false, [
+                                        'alt'     => knot_image_alt($thumb, $alt_base, 'мініатюра 1'),
+                                        'loading' => 'lazy',
+                                    ]); ?>
                                 </div>
                             </div>
-                        <?php endif; ?>
+                            <?php $thumb_index++; endif; ?>
 
-                        <?php foreach ($gallery as $img): ?>
+                        <?php foreach ($gallery as $img): $thumb_index++; ?>
                             <div class="swiper-slide">
                                 <div class="product-gallery__img-wrapper">
-                                    <?= wp_get_attachment_image($img, 'thumbnail', false, ['loading'=>'lazy']); ?>
+                                    <?= wp_get_attachment_image($img, 'thumbnail', false, [
+                                        'alt'     => knot_image_alt($img, $alt_base, sprintf('мініатюра %d', $thumb_index)),
+                                        'loading' => 'lazy',
+                                    ]); ?>
                                 </div>
                             </div>
                         <?php endforeach; ?>
