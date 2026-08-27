@@ -163,16 +163,16 @@ if (!empty($block['className'])) {
 
                 <!-- VIDEO -->
                 <?php if (!empty($video)): ?>
-                    <?php // Attached by JS once the page has settled, then faded in
-                          // over the poster image above. ?>
                     <video
                             class="main-banner__video"
+                            autoplay
                             muted
                             loop
                             playsinline
-                            preload="none"
-                            data-banner-video="<?= esc_url($video); ?>"
-                    ></video>
+                            preload="auto"
+                    >
+                        <source src="<?= esc_url($video); ?>" type="video/mp4">
+                    </video>
                 <?php endif; ?>
             </div>
         <?php endif; ?>
