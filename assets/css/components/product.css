@@ -44,7 +44,7 @@
         align-items: center;
         justify-content: space-between;
         gap: 16px;
-        padding: 16px 0;
+        padding: 8px 0;
         font-family: var(--title-font), serif;
         font-size: 13px;
         line-height: 1.4;
@@ -348,6 +348,8 @@
             display: flex;
             align-items: baseline;
             gap: 15px;
+            flex-direction: row;
+            flex-wrap: wrap;
 
             .current {
                 font-weight: 700;
@@ -390,6 +392,7 @@
             background: #f0fff6;
             border-radius: 20px;
             width: fit-content;
+            margin: auto 0 auto auto;
         }
 
         .product-stock::before{

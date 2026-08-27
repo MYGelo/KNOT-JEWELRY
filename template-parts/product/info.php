@@ -78,12 +78,14 @@
         <?php if (!empty($old_price)): ?>
             <h3 class="old " ><?= esc_html($old_price); ?> ₴</h3>
         <?php endif; ?>
+
+        <!-- Наличие -->
+        <?php if (has_category('in-stock') && !empty($in_stock)): ?>
+            <p class="product-stock "><?=$in_stock?></p>
+        <?php endif; ?>
     </div>
 
-    <!-- Наличие -->
-    <?php if (has_category('in-stock') && !empty($in_stock)): ?>
-        <p class="product-stock "><?=$in_stock?></p>
-    <?php endif; ?>
+
 
     <!-- Свойства продукта -->
     <ul class="product-props ">
