@@ -242,15 +242,6 @@ function get_images_from_first_block_on_page($post_id = null)
 				$images[] = $src;
 			}
 		}
-
-		// A hero <video> paints its poster first, so that image is the LCP
-		// candidate and deserves the same head start as a hero <img>.
-		foreach ($xpath->query('.//video[@poster]', $first) as $video) {
-			$poster = $video->getAttribute('poster');
-			if ($poster) {
-				$images[] = $poster;
-			}
-		}
 	}
 
 	update_post_meta($post_id, '_knot_preload_images', ['stamp' => $stamp, 'images' => $images]);
