@@ -16,12 +16,14 @@
         flex-direction: column;
         row-gap: 8px;
         margin: clamp(20px, 2.8vw, 32px) 0;
+        border-top: 1px solid var(--label);
     }
 
     .product-faq__item {
-        border-radius: 20px;
-        box-shadow: 0 0 10px rgb(0 0 0 / 15%);
+        /*border-radius: 20px;*/
+        /*box-shadow: 0 0 10px rgb(0 0 0 / 15%);*/
         overflow: hidden;
+        border-bottom: 1px solid var(--label);
     }
 
     .product-faq__trigger {
@@ -30,7 +32,7 @@
         align-items: center;
         justify-content: space-between;
         gap: 5px;
-        padding: 8px;
+        padding: 8px 0;
         border: none;
         background: transparent;
         text-align: left;
