@@ -219,16 +219,6 @@
         object-position: top;
     }
 
-    /* Transparent until the file can actually play, so the poster image below
-       shows through instead of an empty box. */
-    .main-banner__video {
-        opacity: 0;
-        transition: opacity .6s ease;
-    }
-
-    .main-banner__video.is-ready {
-        opacity: 1;
-    }
 
     .main-banner__png {
         position: relative;
