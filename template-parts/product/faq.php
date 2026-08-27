@@ -38,7 +38,7 @@ $copy = static fn(string $key): string => trim((string) ($faq[$key] ?? '')) ?: $
 // Anchors into the care & sizing page: 0 — sizing, 1 — care, 2 — coating.
 $items = [
     [
-        'title' => 'Оплата, доставка та терміни',
+        'title' => 'Оплата, доставка та терміни виготовлення',
         'text'  => $terms,
         'more'  => '',
         'label' => '',
@@ -69,8 +69,11 @@ if (!$items) {
 
 <div class="product-faq">
     <?php foreach ($items as $item): ?>
-        <?php // name= keeps a single item open, natively — no script involved. ?>
-        <details class="product-terms" name="product-faq">
+        <?php // Deliberately no name= grouping: closing a neighbour at the same
+              // time as one opens moves everything between them, and that
+              // collision is what read as a jerky animation. Each item now only
+              // pushes what is below it. ?>
+        <details class="product-terms">
             <summary class="product-terms__summary"><?= esc_html($item['title']); ?></summary>
 
             <div class="product-terms__body">
