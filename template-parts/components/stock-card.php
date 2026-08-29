@@ -110,6 +110,8 @@ if ($thumb_id) {
                         <p class="product-stock"><?= esc_html($in_stock) ?></p>
                     <?php endif; ?>
 
+                    <p class="stock-text"><?= esc_html($desc) ?></p>
+
                     <?php if ($specs): ?>
                         <dl class="stock-specs">
                             <?php foreach ($specs as $label => $value): ?>
@@ -120,8 +122,6 @@ if ($thumb_id) {
                             <?php endforeach; ?>
                         </dl>
                     <?php endif; ?>
-
-                    <p class="stock-text"><?= esc_html($desc) ?></p>
                 </div>
 
                 <?php // The one element that navigates. Everything else on this
