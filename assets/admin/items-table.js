@@ -34,15 +34,30 @@ document.addEventListener('DOMContentLoaded', () => {
     table.addEventListener('change', (e) => {
         if (!e.target.classList.contains('knot-items__input')) return;
 
-        // The optional "уточнення" only applies while the item is in stock.
-        if (e.target.dataset.field === 'in_stock') {
-            const note = e.target.closest('.knot-items__stock')
-                ?.querySelector('[data-field="in_stock_note"]');
+        // The size list only exists for pieces that come in sizes.
+        if (e.target.dataset.field === 'has_sizes') {
+            const field = e.target.closest('.knot-items__stock')
+                ?.querySelector('[data-sizes-field]');
 
-            if (note) {
-                note.disabled = !e.target.checked;
-                if (!e.target.checked) note.value = '';
+            if (field) {
+                field.hidden = !e.target.checked;
+
+                if (!e.target.checked) {
+                    field.querySelectorAll('[data-field="stock_sizes"]')
+                        .forEach(box => { box.checked = false; });
+                }
             }
+        }
+
+        // Sizes only mean anything while the item is in stock.
+        if (e.target.dataset.field === 'in_stock') {
+            const sizes = e.target.closest('.knot-items__stock')
+                ?.querySelectorAll('[data-field="stock_sizes"]') || [];
+
+            sizes.forEach(box => {
+                box.disabled = !e.target.checked;
+                if (!e.target.checked) box.checked = false;
+            });
         }
 
         const row = rowOf(e.target);
@@ -71,12 +86,22 @@ document.addEventListener('DOMContentLoaded', () => {
     function collect(row) {
         const item = { id: Number(row.dataset.itemId), tax: {} };
 
+        // Present even when nothing is ticked, so clearing every size saves.
+        if (row.querySelector('[data-field="stock_sizes"]')) item.stock_sizes = [];
+
         row.querySelectorAll('.knot-items__input').forEach(input => {
             const field = input.dataset.field;
 
             if (field === 'tax') {
                 item.tax[input.dataset.taxonomy] =
                     Array.from(input.selectedOptions).map(o => Number(o.value));
+                return;
+            }
+
+            // One entry per checkbox, so collect them into a single array.
+            if (field === 'stock_sizes') {
+                item.stock_sizes = item.stock_sizes || [];
+                if (input.checked) item.stock_sizes.push(input.value);
                 return;
             }
 

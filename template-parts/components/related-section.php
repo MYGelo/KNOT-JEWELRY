@@ -84,7 +84,8 @@ if (!$ids) {
 }
 
 // One pass for posts + meta, one for their images — no per-card queries.
-_prime_post_caches($ids, false, true);
+// Terms too: each card prints stone / material / type.
+_prime_post_caches($ids, true, true);
 
 $thumb_ids = [];
 foreach ($ids as $id) {

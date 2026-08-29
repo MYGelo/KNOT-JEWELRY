@@ -46,7 +46,8 @@ if (is_array($post_ids)) {
 if ($post_ids) {
 
     // One query for the posts + their meta; get_post() below is then free.
-    _prime_post_caches($post_ids, false, true);
+    // Terms too: each card now prints stone / material / type.
+    _prime_post_caches($post_ids, true, true);
 
     // Drop anything deleted or unpublished since the cache was written.
     $post_ids = array_values(array_filter($post_ids, static function ($id) {
@@ -69,7 +70,9 @@ if ($post_ids) {
 if ($post_ids) :
     ?>
 
-    <section class="<?= esc_attr($block_classes) ?>"<?= $block_anchor ? ' id="' . esc_attr($block_anchor) . '"' : '' ?>>
+    <?php // data-cards-section hands the slider + flip behaviour to viewed.js,
+          // which is the single implementation for every strip of these cards. ?>
+    <section class="<?= esc_attr($block_classes) ?>" data-cards-section<?= $block_anchor ? ' id="' . esc_attr($block_anchor) . '"' : '' ?>>
         <div class="container">
             <div class="stock__wrapper">
 

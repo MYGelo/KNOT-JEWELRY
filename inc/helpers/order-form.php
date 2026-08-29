@@ -28,15 +28,16 @@ function knot_product_needs_ring_size(int $post_id): bool {
     return false;
 }
 
+/**
+ * 13.0 … 24.0 in half steps, one decimal throughout — the same notation the
+ * sizing table on the care page uses, and the same list the availability
+ * selector in wp-admin offers, so a stored size always matches an option.
+ */
 function knot_get_ring_sizes(): array {
     $sizes = [];
 
-    for ($size = 15; $size <= 24; $size++) {
-        $sizes[] = (string) $size;
-
-        if ($size < 24) {
-            $sizes[] = $size . '.5';
-        }
+    for ($half = 26; $half <= 48; $half++) {
+        $sizes[] = number_format($half / 2, 1, '.', '');
     }
 
     return $sizes;

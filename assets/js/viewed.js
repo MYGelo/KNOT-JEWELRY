@@ -114,7 +114,9 @@
 	/* ---------------- SLIDER + FLIP (mirrors in-stock) ---------------- */
 
 	function initSlider(section) {
-		const slider = section.querySelector('.viewed-slider');
+		// Both strips share the card markup, so they share this code: the
+		// in-stock block keeps its own class for styling only.
+		const slider = section.querySelector('.viewed-slider, .in-stock-slider');
 		let swiper = null;
 		let inView = false;
 
@@ -156,39 +158,31 @@
 		bindFlip(section, swiper, syncAutoplay);
 	}
 
+	/**
+	 * Tap flips the card open, tap again flips it back — including the ✕, which
+	 * needs no handler of its own. The only way to the product is the link on
+	 * the back face; the card itself never navigates, because people tapping a
+	 * second time mean "close", not "take me away".
+	 */
 	function bindFlip(section, swiper, syncAutoplay) {
 		const cards = section.querySelectorAll('.stock-card');
 
 		cards.forEach(function (card) {
-			let flipped = false;
-			const closeBtn = card.querySelector('.stock-close--js');
-			const link = card.dataset.link;
-			const hasLink = typeof link === 'string' && link.length > 0;
+			const back = card.querySelector('.stock-card-back');
+
+			// While the card is face down its link is off-screen; keep it out of
+			// the tab order and the accessibility tree too.
+			if (back) back.inert = !card.classList.contains('flipped');
 
 			card.addEventListener('click', function (event) {
-				if (event.target.closest('.stock-close--js')) return;
+				// Let the browser follow the one real link.
+				if (event.target.closest('.stock-card-cta')) return;
 
-				if (!flipped) {
-					card.classList.add('flipped');
-					flipped = true;
-					syncAutoplay();
-					return;
-				}
+				const flipped = card.classList.toggle('flipped');
+				if (back) back.inert = !flipped;
 
-				if (hasLink) window.location.href = link;
+				syncAutoplay();
 			});
-
-			if (closeBtn) {
-				closeBtn.addEventListener('click', function (event) {
-					event.preventDefault();
-					event.stopPropagation();
-					if (card.classList.contains('flipped')) {
-						card.classList.remove('flipped');
-						flipped = false;
-						syncAutoplay();
-					}
-				});
-			}
 		});
 	}
 })();
