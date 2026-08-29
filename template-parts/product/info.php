@@ -1,6 +1,7 @@
 <?php
     extract($args);
-    $in_stock = get_field('in-stock');
+    $in_stock    = knot_product_in_stock(get_the_ID());
+    $stock_sizes = $in_stock ? knot_get_stock_sizes(get_the_ID()) : [];
     $product_note = get_field('single_p_settings_product-note','option');
 
     $note_mode = $args['note_mode'];
@@ -39,8 +40,10 @@
         <?php endif; ?>
 
         <!-- Наличие -->
-        <?php if (has_category('in-stock') && !empty($in_stock)): ?>
-            <p class="product-stock "><?=$in_stock?></p>
+        <?php // Status only — the sizes are a fact about the product, so they
+              // sit with the other facts below. ?>
+        <?php if ($in_stock): ?>
+            <p class="product-stock"><?= esc_html(knot_stock_label()); ?></p>
         <?php endif; ?>
     </div>
 
@@ -81,6 +84,11 @@
         $render_prop('stone', 'Камінь', 'stone', 'product-stone--js');
         $render_prop('product_type', 'Тип виробу', 'type', 'product-type--js');
         ?>
+
+        <?php // Not a link: a size is not something the catalogue filters by. ?>
+        <?php if ($stock_sizes): ?>
+            <li>Розміри в наявності: <span><?= esc_html(implode(', ', $stock_sizes)); ?></span></li>
+        <?php endif; ?>
     </ul>
 
     <?php if ($note_mode !== 'off'): ?>

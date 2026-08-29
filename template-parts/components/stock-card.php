@@ -14,20 +14,48 @@ if (!$post_id) {
 
 $meta     = get_post_meta($post_id);
 $price    = $meta['price'][0] ?? '';
-$in_stock = $meta['in-stock'][0] ?? '';
+$in_stock = knot_product_in_stock($post_id);
 
 $desc = get_the_excerpt($post_id);
 $link = get_permalink($post_id);
 
 // Served from the term cache primed by whoever renders the strip — see the
 // _prime_post_caches() calls with the term flag on.
+// Stone only. Material is silver on every piece and the type is obvious from
+// the photo and the name — both were taking a row to say nothing.
 $specs = [];
-foreach (['stone' => 'Камінь', 'material' => 'Матеріал', 'product_type' => 'Тип'] as $taxonomy => $label) {
-    $terms = get_the_terms($post_id, $taxonomy);
+$stones = get_the_terms($post_id, 'stone');
 
-    if ($terms && !is_wp_error($terms)) {
-        $specs[$label] = implode(', ', wp_list_pluck($terms, 'name'));
+if ($stones && !is_wp_error($stones)) {
+    $specs['Камінь'] = implode(', ', wp_list_pluck($stones, 'name'));
+}
+
+// Sizes belong with the other facts rather than inside the availability badge,
+// where a long list wrapped onto two lines and pushed the layout around. They
+// lead the list — after "is it available", "which sizes" is the next question.
+$stock_sizes = $in_stock ? knot_get_stock_sizes($post_id) : [];
+
+if ($stock_sizes) {
+    $specs = ['Розміри' => implode(', ', $stock_sizes)] + $specs;
+}
+
+// 1 розмір / 2–4 розміри / 5 розмірів
+$size_count = '';
+
+if ($stock_sizes) {
+    $total = count($stock_sizes);
+    $last  = $total % 10;
+    $tens  = $total % 100;
+
+    if ($last === 1 && $tens !== 11) {
+        $word = 'розмір';
+    } elseif ($last >= 2 && $last <= 4 && ($tens < 12 || $tens > 14)) {
+        $word = 'розміри';
+    } else {
+        $word = 'розмірів';
     }
+
+    $size_count = $total . ' ' . $word;
 }
 
 $thumb_id   = get_post_thumbnail_id($post_id);
@@ -106,14 +134,19 @@ if ($thumb_id) {
                 <div class="stock-card-scroll">
                     <h3><?= esc_html(get_the_title($post_id)) ?></h3>
 
-                    <?php if ($in_stock): ?>
-                        <p class="product-stock"><?= esc_html($in_stock) ?></p>
-                    <?php endif; ?>
+                    <?php // Availability is the first row of the same list, not a
+                          // pill of its own: one column of facts reads calmer
+                          // than a badge competing with the name. ?>
+                    <?php if ($in_stock || $specs): ?>
+                        <dl class=" stock-specs">
 
-                    <p class="stock-text"><?= esc_html($desc) ?></p>
+                            <?php if ($in_stock): ?>
+                                <div class="stock-specs__row stock-specs__row--status">
+                                    <dt class="stock-status"><?= esc_html(knot_stock_label()) ?></dt>
+                                    <dd class="stock-specs__count"><?= esc_html($size_count) ?></dd>
+                                </div>
+                            <?php endif; ?>
 
-                    <?php if ($specs): ?>
-                        <dl class="stock-specs">
                             <?php foreach ($specs as $label => $value): ?>
                                 <div class="stock-specs__row">
                                     <dt><?= esc_html($label) ?></dt>
@@ -122,6 +155,8 @@ if ($thumb_id) {
                             <?php endforeach; ?>
                         </dl>
                     <?php endif; ?>
+
+                    <p class="stock-text"><?= esc_html($desc) ?></p>
                 </div>
 
                 <?php // The one element that navigates. Everything else on this

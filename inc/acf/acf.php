@@ -6,3 +6,5 @@ if (!class_exists('ACF')) return;
 require_once 'options-pages.php';
 
 require_once 'registration.php';
+
+require_once 'post-fields.php';

@@ -234,9 +234,61 @@
 	font-weight: 600;
 }
 
-.knot-items__stock input[type="text"]:disabled {
-	background: #f0f0f1;
-	color: #8c8f94;
+/* ---------- SIZES ---------- */
+
+.knot-items__sizes-field[hidden] {
+	display: none;
+}
+
+.knot-items__sizes {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-top: 6px;
+}
+
+/* The checkbox itself is hidden but still focusable — the pill is the target. */
+.knot-items__size {
+	position: relative;
+	cursor: pointer;
+	user-select: none;
+
+	& input {
+		position: absolute;
+		inset: 0;
+		margin: 0;
+		opacity: 0;
+		cursor: pointer;
+	}
+
+	& span {
+		display: block;
+		min-width: 44px;
+		padding: 6px 10px;
+		border: 1px solid #c3c4c7;
+		border-radius: 20px;
+		background: #fff;
+		font-size: 13px;
+		text-align: center;
+		color: #50575e;
+		transition: all .15s ease;
+	}
+
+	& input:checked + span {
+		border-color: #2271b1;
+		background: #2271b1;
+		color: #fff;
+	}
+
+	& input:focus-visible + span {
+		outline: 2px solid #2271b1;
+		outline-offset: 2px;
+	}
+
+	& input:disabled + span {
+		opacity: .5;
+		cursor: not-allowed;
+	}
 }
 
 /* ---------- MOBILE ---------- */

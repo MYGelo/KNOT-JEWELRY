@@ -53,35 +53,6 @@ add_action('admin_enqueue_scripts', function ($hook) {
 });
 
 /* -------------------------------------------------------------
-| STOCK VALUE
-------------------------------------------------------------- */
-
-/**
- * The front end prints the `in-stock` meta as-is, so it stays a plain string:
- * "В наявності" plus an optional tail like "– 15.5 розмір". The table edits it
- * as a toggle + free-text tail and recomposes the string on save.
- */
-function knot_items_stock_label(): string {
-    return (string) apply_filters('knot_items_stock_label', 'В наявності');
-}
-
-function knot_items_stock_compose(string $note): string {
-    $note = trim($note);
-    return $note === '' ? knot_items_stock_label() : knot_items_stock_label() . ' ' . $note;
-}
-
-/** Split a stored string back into its optional tail. */
-function knot_items_stock_note(string $stored): string {
-    $label = knot_items_stock_label();
-
-    if ($stored === '' || mb_strpos($stored, $label) !== 0) {
-        return '';
-    }
-
-    return trim(mb_substr($stored, mb_strlen($label)));
-}
-
-/* -------------------------------------------------------------
 | DATA
 ------------------------------------------------------------- */
 
@@ -136,10 +107,12 @@ function knot_items_get_rows(int $paged, string $search): array {
             'id'    => $id,
             'title' => get_the_title($id),
             'price' => get_post_meta($id, 'price', true),
-            // Availability is the `in-stock` category; the meta holds the text
-            // shown next to it ("В наявності – 15.5 розмір").
-            'in_stock'      => has_term(KNOT_ITEMS_STOCK_SLUG, 'category', $id),
-            'in_stock_note' => knot_items_stock_note((string) get_post_meta($id, 'in-stock', true)),
+            // Availability is the `in-stock` category; the sizes that are in
+            // stock live in their own meta (see inc/helpers/stock.php).
+            'in_stock'    => knot_product_in_stock($id),
+            'stock_sizes' => knot_get_stock_sizes($id),
+            // Same switch the editor sets, with the product type as the default.
+            'needs_size'  => knot_product_has_sizes($id),
             'status' => get_post_status($id),
             'thumb'  => get_the_post_thumbnail_url($id, 'thumbnail'),
             'edit'   => get_edit_post_link($id, ''),
@@ -257,13 +230,35 @@ function knot_items_render_page(): void {
                                     <span class="knot-items__check-text">В наявності</span>
                                 </label>
 
-                                <label class="knot-items__field">
-                                    <span>Уточнення (необов’язково)</span>
-                                    <input type="text" class="knot-items__input" data-field="in_stock_note"
-                                           value="<?= esc_attr($row['in_stock_note']) ?>"
-                                           placeholder="– 15.5 розмір"
-                                           <?= $row['in_stock'] ? '' : 'disabled' ?>>
+                                <?php // Same switch as in the post editor, writing
+                                      // the same meta — rings and sets default to
+                                      // on, everything else to off. ?>
+                                <label class="knot-items__check">
+                                    <input type="checkbox" class="knot-items__input knot-items__switch-input" data-field="has_sizes" <?= checked($row['needs_size'], true, false) ?>>
+                                    <span class="knot-items__switch" aria-hidden="true"></span>
+                                    <span class="knot-items__check-text">Має розміри</span>
                                 </label>
+
+                                <div class="knot-items__field knot-items__sizes-field" data-sizes-field <?= $row['needs_size'] ? '' : 'hidden' ?>>
+                                    <span>Розміри в наявності</span>
+
+                                    <?php // Checkboxes, not a multi-select: picking
+                                          // several values in a <select multiple>
+                                          // needs Ctrl/Cmd-click. ?>
+                                    <div class="knot-items__sizes">
+                                        <?php foreach (knot_get_ring_sizes() as $size): ?>
+                                            <label class="knot-items__size">
+                                                <input type="checkbox"
+                                                       class="knot-items__input"
+                                                       data-field="stock_sizes"
+                                                       value="<?= esc_attr($size) ?>"
+                                                       <?= in_array($size, $row['stock_sizes'], true) ? 'checked' : '' ?>
+                                                       <?= $row['in_stock'] ? '' : 'disabled' ?>>
+                                                <span><?= esc_html($size) ?></span>
+                                            </label>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
                             </div>
 
                             <?php foreach ($taxonomies as $tax => $conf):
@@ -385,8 +380,21 @@ function knot_items_save(WP_REST_Request $request) {
             }
         }
 
+        // Whether the piece is made in sizes at all — the same meta the editor
+        // writes, so the two screens always agree.
+        if (array_key_exists('has_sizes', $item)) {
+            $has_sizes = !empty($item['has_sizes']) && $item['has_sizes'] !== 'false';
+
+            update_post_meta($id, KNOT_STOCK_HAS_SIZES_META, $has_sizes ? '1' : '0');
+
+            if (!$has_sizes) {
+                delete_post_meta($id, KNOT_STOCK_SIZES_META);
+                delete_post_meta($id, KNOT_STOCK_LEGACY_META);
+            }
+        }
+
         // Availability = membership in the `in-stock` category (other categories
-        // are left untouched) + the display text kept in the `in-stock` meta.
+        // are left untouched) + the list of sizes that are in stock.
         if (array_key_exists('in_stock', $item)) {
             $in_stock = !empty($item['in_stock']) && $item['in_stock'] !== 'false';
             $stock_term = get_term_by('slug', KNOT_ITEMS_STOCK_SLUG, 'category');
@@ -405,10 +413,22 @@ function knot_items_save(WP_REST_Request $request) {
             }
 
             if (!$in_stock) {
-                delete_post_meta($id, 'in-stock');
-            } else {
-                $note = sanitize_text_field((string) ($item['in_stock_note'] ?? ''));
-                update_post_meta($id, 'in-stock', knot_items_stock_compose($note));
+                delete_post_meta($id, KNOT_STOCK_SIZES_META);
+                // The old free-text value would otherwise keep showing sizes for
+                // a product that is no longer in stock.
+                delete_post_meta($id, KNOT_STOCK_LEGACY_META);
+            } elseif (array_key_exists('stock_sizes', $item)) {
+                $sizes = knot_sanitize_stock_sizes((array) $item['stock_sizes']);
+
+                if ($sizes) {
+                    update_post_meta($id, KNOT_STOCK_SIZES_META, $sizes);
+                } else {
+                    delete_post_meta($id, KNOT_STOCK_SIZES_META);
+                }
+
+                // Saving through the selector retires the legacy string for this
+                // product, so the two can never disagree.
+                delete_post_meta($id, KNOT_STOCK_LEGACY_META);
             }
         }
 

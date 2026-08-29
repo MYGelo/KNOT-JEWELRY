@@ -152,7 +152,7 @@
         gap: 10px;
     }
 
-    /* Stone / material / type — the same facts people filter the catalogue by. */
+    /* Availability, sizes, stone, material, type — one column of facts. */
     .stock-specs {
         margin: 2px 0 0;
         font-size: 13px;
@@ -161,9 +161,10 @@
     .stock-specs__row {
         display: flex;
         justify-content: space-between;
+        align-items: baseline;
         gap: 12px;
-        padding: 6px 0;
-        border-top: 1px solid rgb(0 0 0 / 8%);
+        padding: 8px 0;
+        border-bottom: 1px solid rgb(0 0 0 / 8%);
 
         & dt {
             color: var(--text-second);
@@ -173,6 +174,42 @@
             margin: 0;
             text-align: right;
         }
+    }
+
+    /* First row, so no rule above it. */
+    .stock-specs__row--status {
+        border-bottom: 0;
+        padding-top: 0;
+    }
+
+    /* The pulsing dot moved here from the old pill. */
+    .stock-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        color: #1e7e34;
+
+
+        padding: 8px 14px;
+        background: #f0fff6;
+        border-radius: 20px;
+        width: fit-content;
+
+        &:before {
+            content: "";
+            flex: none;
+            width: 10px;
+            height: 10px;
+            background: #2ecc71;
+            border-radius: 50%;
+            box-shadow: 0 0 0 rgba(46, 204, 113, .7);
+            animation: stockPulse 2s infinite;
+        }
+    }
+
+    .stock-specs__count {
+        color: var(--text-second);
     }
 
     .stock-price{
@@ -286,29 +323,6 @@
         }
     }
 
-    .product-stock {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 14px;
-        font-weight: 600;
-        color: #1e7e34;
-        background: #f0fff6;
-        border-radius: 20px;
-        width: fit-content;
-        /*box-shadow: 0px 0px 5px 0px #2ecc71;*/
-
-        &:before{
-            content: "";
-            flex: 1 0 10px;
-            width: 10px;
-            height: 10px;
-            background: #2ecc71;
-            border-radius: 50%;
-            box-shadow: 0 0 0 rgba(46,204,113,0.7);
-            animation: stockPulse 2s infinite;
-        }
-    }
     .stock-close {
         position: absolute;
         top: 0;

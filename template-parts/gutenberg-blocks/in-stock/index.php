@@ -22,10 +22,9 @@ if ( function_exists( 'acf_register_block_type' ) ) {
 				wp_enqueue_style( 'block-in-stock-style', "{$uri_base}/assets/style.css", array(), filemtime( $style ) );
 			}
 
-			$script = __DIR__ . '/assets/script.js';
-			if ( file_exists( $script ) ) {
-				wp_enqueue_script( 'block-in-stock-script', "{$uri_base}/assets/script.js", array(), filemtime( $script ), true );
-			}
+			// No script of its own any more: the slider, autoplay and card flip
+			// come from assets/js/viewed.js, which drives every strip of these
+			// cards. assets/script.js can be deleted.
 
 		},
 	) );
