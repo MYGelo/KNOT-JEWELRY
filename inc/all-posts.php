@@ -61,7 +61,8 @@ function site_viewed_posts(WP_REST_Request $request) {
         'orderby'                => 'post__in',
         'posts_per_page'         => count($ids),
         'no_found_rows'          => true,
-        'update_post_term_cache' => false,
+        // Terms are needed: each card prints stone / material / type.
+        'update_post_term_cache' => true,
         'ignore_sticky_posts'    => true,
     ]);
 
