@@ -22,9 +22,8 @@ if ( function_exists( 'acf_register_block_type' ) ) {
 				wp_enqueue_style( 'block-in-stock-style', "{$uri_base}/assets/style.css", array(), filemtime( $style ) );
 			}
 
-			// No script of its own any more: the slider, autoplay and card flip
-			// come from assets/js/viewed.js, which drives every strip of these
-			// cards. assets/script.js can be deleted.
+			// No script of its own: the slider, autoplay and card flip come from
+			// assets/js/viewed.js, which drives every strip of these cards.
 
 		},
 	) );

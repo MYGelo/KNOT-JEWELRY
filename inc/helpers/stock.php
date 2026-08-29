@@ -14,7 +14,7 @@ const KNOT_STOCK_SIZES_META = 'stock_sizes';
 const KNOT_STOCK_HAS_SIZES_META = 'has_sizes';
 
 function knot_stock_label(): string {
-    return (string) apply_filters('knot_stock_label', 'В наявності');
+    return 'В наявності';
 }
 
 function knot_product_in_stock(int $post_id): bool {

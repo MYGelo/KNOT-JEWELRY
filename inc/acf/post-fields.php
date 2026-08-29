@@ -94,14 +94,6 @@ add_action('admin_enqueue_scripts', static function ($hook) {
     }
 });
 
-/**
- * The old "Single Post In-Stock" group (created in the ACF UI) edits the same
- * availability as a free-text field, so leaving it on screen means two controls
- * disagreeing about one thing. Hidden here; the group itself can be deleted in
- * Custom Fields → Field Groups, along with the leftover `in-stock` meta.
- */
-add_filter('acf/prepare_field/name=in-stock', '__return_false');
-
 /** Unset switch: fall back to the guess made from the product type. */
 add_filter('acf/load_value/key=field_knot_has_sizes', static function ($value, $post_id) {
     $id = (int) $post_id;
