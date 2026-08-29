@@ -10,7 +10,6 @@
 const KNOT_ITEMS_PAGE       = 'items-info';
 const KNOT_ITEMS_CAP        = 'manage_options';
 const KNOT_ITEMS_PER_PAGE   = 50;
-const KNOT_ITEMS_STOCK_SLUG = 'in-stock';
 
 /* -------------------------------------------------------------
 | MENU + FRIENDLY URL
@@ -397,7 +396,7 @@ function knot_items_save(WP_REST_Request $request) {
         // are left untouched) + the list of sizes that are in stock.
         if (array_key_exists('in_stock', $item)) {
             $in_stock = !empty($item['in_stock']) && $item['in_stock'] !== 'false';
-            $stock_term = get_term_by('slug', KNOT_ITEMS_STOCK_SLUG, 'category');
+            $stock_term = get_term_by('slug', KNOT_STOCK_CATEGORY, 'category');
 
             if ($stock_term && !is_wp_error($stock_term)) {
                 $current = wp_get_object_terms($id, 'category', ['fields' => 'ids']);
