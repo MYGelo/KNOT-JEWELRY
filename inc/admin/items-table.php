@@ -388,7 +388,6 @@ function knot_items_save(WP_REST_Request $request) {
 
             if (!$has_sizes) {
                 delete_post_meta($id, KNOT_STOCK_SIZES_META);
-                delete_post_meta($id, KNOT_STOCK_LEGACY_META);
             }
         }
 
@@ -413,9 +412,6 @@ function knot_items_save(WP_REST_Request $request) {
 
             if (!$in_stock) {
                 delete_post_meta($id, KNOT_STOCK_SIZES_META);
-                // The old free-text value would otherwise keep showing sizes for
-                // a product that is no longer in stock.
-                delete_post_meta($id, KNOT_STOCK_LEGACY_META);
             } elseif (array_key_exists('stock_sizes', $item)) {
                 $sizes = knot_sanitize_stock_sizes((array) $item['stock_sizes']);
 
@@ -424,10 +420,6 @@ function knot_items_save(WP_REST_Request $request) {
                 } else {
                     delete_post_meta($id, KNOT_STOCK_SIZES_META);
                 }
-
-                // Saving through the selector retires the legacy string for this
-                // product, so the two can never disagree.
-                delete_post_meta($id, KNOT_STOCK_LEGACY_META);
             }
         }
 

@@ -98,9 +98,9 @@ add_action('admin_enqueue_scripts', static function ($hook) {
  * The old "Single Post In-Stock" group (created in the ACF UI) edits the same
  * availability as a free-text field, so leaving it on screen means two controls
  * disagreeing about one thing. Hidden here; the group itself can be deleted in
- * Custom Fields → Field Groups once every product has been moved over.
+ * Custom Fields → Field Groups, along with the leftover `in-stock` meta.
  */
-add_filter('acf/prepare_field/name=' . KNOT_STOCK_LEGACY_META, '__return_false');
+add_filter('acf/prepare_field/name=in-stock', '__return_false');
 
 /** Unset switch: fall back to the guess made from the product type. */
 add_filter('acf/load_value/key=field_knot_has_sizes', static function ($value, $post_id) {
@@ -119,19 +119,12 @@ add_filter('acf/update_value/key=field_knot_has_sizes', static function ($value,
 
     if ($id && !$value) {
         delete_post_meta($id, KNOT_STOCK_SIZES_META);
-        delete_post_meta($id, KNOT_STOCK_LEGACY_META);
     }
 
     return $value;
 }, 10, 2);
 
 /** Keep only real sizes, sorted — same rule the table applies. */
-add_filter('acf/update_value/key=field_knot_stock_sizes', static function ($value, $post_id) {
-    $sizes = knot_sanitize_stock_sizes((array) $value);
-
-    if ($sizes && (int) $post_id) {
-        delete_post_meta((int) $post_id, KNOT_STOCK_LEGACY_META);
-    }
-
-    return $sizes ?: null;
-}, 10, 2);
+add_filter('acf/update_value/key=field_knot_stock_sizes', static function ($value) {
+    return knot_sanitize_stock_sizes((array) $value) ?: null;
+});
