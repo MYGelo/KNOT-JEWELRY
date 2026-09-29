@@ -34,6 +34,17 @@ acf_add_local_field_group(array(
             ),
         ),
         array(
+            'key'           => 'field_back_button_label',
+            'label'         => 'Back Button Text',
+            'name'          => 'back_button_label',
+            'type'          => 'text',
+            'default_value' => 'Назад',
+            'instructions'  => 'Label of the floating back button (shown on all pages except the front page).',
+            'wrapper'       => array(
+                'width' => '50%',
+            ),
+        ),
+        array(
             'key'     => 'field_post_form_title',
             'label'   => 'Contact Form 7',
             'name'    => 'post_form_shortcode',
