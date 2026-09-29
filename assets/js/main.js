@@ -188,19 +188,54 @@
 		// ===== BTN TO TOP =====
 		const btn = document.querySelector('.scroll-top-btn');
 		if (btn) {
-			window.addEventListener('scroll', () => {
-				if (window.scrollY > 300) {
-					btn.classList.add('show');
-				} else {
-					btn.classList.remove('show');
+			let ticking = false;
+			let visible = false;
+
+			const updateTopBtn = () => {
+				ticking = false;
+				const shouldShow = window.scrollY > 300;
+				if (shouldShow !== visible) {
+					visible = shouldShow;
+					btn.classList.toggle('show', shouldShow);
 				}
-			});
+			};
+
+			window.addEventListener('scroll', () => {
+				if (!ticking) {
+					ticking = true;
+					requestAnimationFrame(updateTopBtn);
+				}
+			}, {passive: true});
+
+			updateTopBtn();
 
 			btn.addEventListener('click', () => {
+				const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 				window.scrollTo({
 					top: 0,
-					behavior: 'smooth'
+					behavior: reduce ? 'auto' : 'smooth'
 				});
+			});
+		}
+
+		// ===== BTN BACK =====
+		// Real link (fallback URL) for no-JS / direct visits; go back in history when the user came from this site.
+		const backBtn = document.querySelector('.back-btn');
+		if (backBtn) {
+			backBtn.addEventListener('click', (e) => {
+				// let modified clicks (new tab / window) open the fallback link as usual
+				if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+				if (backBtn.hasAttribute('data-no-history')) return;
+
+				let sameSite = false;
+				try {
+					sameSite = !!document.referrer && new URL(document.referrer).origin === location.origin;
+				} catch (err) {}
+
+				if (sameSite && history.length > 1) {
+					e.preventDefault();
+					history.back();
+				}
 			});
 		}
 
