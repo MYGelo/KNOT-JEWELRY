@@ -42,11 +42,13 @@ $data = array(
             <div class="author__info">
 
                 <div class="author__text-content">
-                    <?php knot_eyebrow(get_field('author_eyebrow')); ?>
+                    <div>
+                        <?php knot_eyebrow(get_field('author_eyebrow')); ?>
 
-                    <?php if(!empty($data['title'])): ?>
-                        <h2><?= esc_html($data['title']); ?></h2>
-                    <?php endif; ?>
+                        <?php if(!empty($data['title'])): ?>
+                            <h2><?= esc_html($data['title']); ?></h2>
+                        <?php endif; ?>
+                    </div>
 
                     <?php if ($data['position']): ?>
                         <p class="author__position"><?= esc_html($data['position']); ?></p>
