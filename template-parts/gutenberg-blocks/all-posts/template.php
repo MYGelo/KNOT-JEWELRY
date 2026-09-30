@@ -46,11 +46,13 @@ $active_types     = array_flip($catalog['product_type']);
          <?= $catalog_has_filters ? 'data-available="' . esc_attr(wp_json_encode($catalog_results['available'])) . '"' : '' ?>>
     <div class="container">
         <div class="all-posts__wrapper">
-            <?php knot_eyebrow(get_field('all-posts_eyebrow')); ?>
+            <div>
+                <?php knot_eyebrow(get_field('all-posts_eyebrow')); ?>
 
-            <?php if ($main_title): ?>
-                <h2><?= wp_kses_post($main_title); ?></h2>
-            <?php endif; ?>
+                <?php if ($main_title): ?>
+                    <h2><?= wp_kses_post($main_title); ?></h2>
+                <?php endif; ?>
+            </div>
 
             <div class="all-posts__title-wrapper">
                 <!-- ПОИСК -->

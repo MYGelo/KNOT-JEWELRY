@@ -621,22 +621,73 @@ acf_add_local_field_group(array(
             'type'  => 'tab',
         ),
 
+        // ---------- Схожі вироби ----------
+        array(
+            'key'       => 'field_related_section_heading',
+            'label'     => '',
+            'name'      => '',
+            'type'      => 'message',
+            'message'   => '<strong style="font-size:15px">Секція «Схожі вироби»</strong><br>Добірка за типом виробу та каменем на сторінках товару.',
+            'esc_html'  => 0,
+            'new_lines' => '',
+        ),
+
+        array(
+            'key'           => 'field_related_section_eyebrow',
+            'label'         => 'Eyebrow (текст над заголовком)',
+            'name'          => 'related_section_eyebrow',
+            'type'          => 'text',
+            'instructions'  => 'Порожньо — не показувати.',
+            'wrapper'       => array( 'width' => '50' ),
+        ),
+
         array(
             'key'           => 'field_related_section_title',
-            'label'         => 'Заголовок секції «Схожі вироби»',
+            'label'         => 'Заголовок',
             'name'          => 'related_section_title',
             'type'          => 'text',
             'default_value' => 'Схожі вироби',
-            'instructions'  => 'Добірка за типом виробу та каменем на сторінках товару.',
+            'wrapper'       => array( 'width' => '50' ),
+        ),
+
+        // ---------- Ви переглядали ----------
+        array(
+            'key'       => 'field_viewed_section_heading',
+            'label'     => '',
+            'name'      => '',
+            'type'      => 'message',
+            'message'   => '<strong style="font-size:15px">Секція «Ви переглядали»</strong><br>Блок «Переглянуті товари» на сторінках товару.',
+            'esc_html'  => 0,
+            'new_lines' => '',
+        ),
+
+        array(
+            'key'           => 'field_viewed_section_eyebrow',
+            'label'         => 'Eyebrow (текст над заголовком)',
+            'name'          => 'viewed_section_eyebrow',
+            'type'          => 'text',
+            'instructions'  => 'Порожньо — не показувати.',
+            'wrapper'       => array( 'width' => '50' ),
         ),
 
         array(
             'key'           => 'field_viewed_section_title',
-            'label'         => 'Заголовок секції',
+            'label'         => 'Заголовок',
             'name'          => 'viewed_section_title',
             'type'          => 'text',
             'default_value' => 'Ви переглядали',
-            'instructions'  => 'Заголовок блоку «Переглянуті товари» на сторінках товару.',
+            'wrapper'       => array( 'width' => '50' ),
+        ),
+
+        // ---------- Спільне для обох секцій ----------
+        array(
+            'key'       => 'field_viewed_section_common_heading',
+            'label'     => '',
+            'name'      => '',
+            'type'      => 'message',
+            'message'   => '<strong style="font-size:15px">Спільне для обох секцій</strong>',
+            'esc_html'  => 0,
+            'new_lines' => '',
         ),
 
         array(
