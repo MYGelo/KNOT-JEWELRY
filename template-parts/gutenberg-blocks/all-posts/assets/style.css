@@ -342,6 +342,7 @@
             font-size: clamp(14px, 1.667vw, 22px);
             /*min-height: calc(clamp(14px, 1.667vw, 22px) * 3);*/
             text-transform: uppercase;
+            text-align: start;
 
             overflow-wrap: break-word;
             word-break: break-word;
