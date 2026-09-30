@@ -95,7 +95,7 @@ h2 {
 	letter-spacing: 0.22em;
 	text-transform: uppercase;
 	color: var(--text-second);
-	margin-bottom: 14px;
+	margin-bottom: clamp(8px,1vw,14px);
 
 	.eyebrow__rule {
 		width: 26px;

@@ -49,11 +49,8 @@
     .author__text-content {
         display: flex;
         flex-direction: column;
-        gap: clamp(6px,1.667vw,16px);
-
-        h2 {
-            text-align: start;
-        }
+        /*gap: clamp(6px,1.667vw,16px);*/
+        gap: 16px;
     }
 
     .author__position {
