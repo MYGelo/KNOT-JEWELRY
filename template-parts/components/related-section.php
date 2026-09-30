@@ -11,6 +11,7 @@
  */
 
 $post_id = (int) ($args['post_id'] ?? get_the_ID());
+$eyebrow = $args['eyebrow'] ?? '';
 $title   = $args['title'] ?? 'Схожі вироби';
 $tap     = $args['tap']   ?? 'Більше про виріб';
 $limit   = (int) ($args['limit'] ?? 8);
@@ -105,6 +106,8 @@ if ($thumb_ids) {
 <section class="in-stock viewed-posts related-posts" data-cards-section>
     <div class="container">
         <div class="stock__wrapper">
+
+            <?php knot_eyebrow($eyebrow); ?>
 
             <?php if ($title): ?>
                 <h2><?= esc_html($title) ?></h2>
