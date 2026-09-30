@@ -6,6 +6,7 @@ if (!empty($block['className'])) {
 	$block_classes .= ' ' . $block['className'];
 }
 
+$hero_eyebrow  = get_field('hero_eyebrow');
 $hero_title    = get_field('hero_title');
 $hero_subtitle = get_field('hero_subtitle');
 $sections      = get_field('sections') ?: [];
@@ -17,8 +18,10 @@ $show_margin   = get_field('show_margin') ?? '';
 	<?= $block_anchor ? 'id="' . esc_attr($block_anchor) . '"' : ''; ?>
 >
 	<div class="container">
-		<?php if ($hero_title || $hero_subtitle): ?>
+		<?php if ($hero_eyebrow || $hero_title || $hero_subtitle): ?>
 			<div class="care__hero">
+				<?php knot_eyebrow($hero_eyebrow); ?>
+
 				<?php if ($hero_title): ?>
 					<h2 class="care__hero-title"><?= esc_html($hero_title); ?></h2>
 				<?php endif; ?>

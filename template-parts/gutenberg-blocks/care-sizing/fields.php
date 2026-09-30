@@ -7,6 +7,14 @@ acf_add_local_field_group(array(
 
 		// ---------- HERO ----------
 		array(
+			'key'          => 'field_care_hero_eyebrow',
+			'label'        => 'Eyebrow',
+			'name'         => 'hero_eyebrow',
+			'type'         => 'text',
+			'instructions' => 'Small text above the title. Leave empty to hide.',
+		),
+
+		array(
 			'key'           => 'field_care_hero_title',
 			'label'         => 'Hero Title',
 			'name'          => 'hero_title',

@@ -69,6 +69,8 @@ $block_classes = 'reviews' . (!empty($block['className']) ? ' ' . $block['classN
     <div class="container">
         <div class="stock__wrapper">
 
+            <?php knot_eyebrow(get_field('reviews_eyebrow')); ?>
+
             <?php if ($title): ?>
                 <h2><?= esc_html($title); ?></h2>
             <?php endif; ?>

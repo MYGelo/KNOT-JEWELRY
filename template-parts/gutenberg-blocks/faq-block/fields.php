@@ -4,6 +4,14 @@ acf_add_local_field_group(array(
 	'title'    => 'FAQ',
 	'fields'   => array(
         array(
+        	'key'          => 'field_faq_eyebrow_key',
+        	'label'        => 'Eyebrow',
+        	'name'         => 'faq_eyebrow',
+        	'type'         => 'text',
+        	'instructions' => 'Small text above the title. Leave empty to hide.',
+        ),
+
+        array(
             'key' => 'field_faq_title_key',
             'label' => __('FAQ Title', 'dnt'),
             'name' => 'faq_title',

@@ -30,9 +30,7 @@ if ( $img_ids ) {
 <section class="<?= esc_attr( $block_classes ); ?>"<?= $block_anchor ? ' id="' . esc_attr( $block_anchor ) . '"' : ''; ?>>
 	<div class="container">
 		<div class="repair__head">
-			<?php if ( !empty($eyebrow) ) : ?>
-				<div class="repair__eyebrow"><span class="repair__rule"></span><?= wp_kses_post( $eyebrow ); ?><span class="repair__rule"></div>
-			<?php endif; ?>
+			<?php knot_eyebrow( $eyebrow ); ?>
 
 			<?php if ( !empty($title) ) : ?>
 				<h2 class="repair__title"><?= wp_kses_post( $title ); ?></h2>

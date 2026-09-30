@@ -14,6 +14,14 @@ acf_add_local_field_group(array(
         ),
 
         array(
+        	'key'          => 'field_author_eyebrow',
+        	'label'        => 'Eyebrow',
+        	'name'         => 'author_eyebrow',
+        	'type'         => 'text',
+        	'instructions' => 'Small text above the title. Leave empty to hide.',
+        ),
+
+        array(
             'key' => 'field_author_title',
             'label' => 'Name',
             'name' => 'title',

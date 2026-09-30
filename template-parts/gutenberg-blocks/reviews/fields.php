@@ -6,6 +6,14 @@ acf_add_local_field_group(array(
 
         // MAIN TITLE
         array(
+        	'key'          => 'field_reviews_eyebrow',
+        	'label'        => 'Eyebrow',
+        	'name'         => 'reviews_eyebrow',
+        	'type'         => 'text',
+        	'instructions' => 'Small text above the title. Leave empty to hide.',
+        ),
+
+        array(
             'key'   => 'field_reviews_main_title',
             'label' => 'In Stock',
             'name'  => 'reviews_main_title',

@@ -5,6 +5,14 @@ acf_add_local_field_group(array(
 	'title'  => 'Viewed Posts',
 	'fields' => array(
 		array(
+			'key'          => 'field_viewed_eyebrow',
+			'label'        => 'Eyebrow',
+			'name'         => 'viewed_eyebrow',
+			'type'         => 'text',
+			'instructions' => 'Small text above the title. Leave empty to hide.',
+		),
+
+		array(
 			'key'           => 'field_viewed_title',
 			'label'         => 'Title',
 			'name'          => 'viewed_title',

@@ -83,6 +83,25 @@ h1 {
 h2 {
 	font-size: clamp(32px,3.89vw,56px);
 	line-height: 1;
+	text-align: center;
+}
+
+.eyebrow {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 8px;
+	font-size: 12px;
+	letter-spacing: 0.22em;
+	text-transform: uppercase;
+	color: var(--text-second);
+	margin-bottom: 14px;
+
+	.eyebrow__rule {
+		width: 26px;
+		height: 1px;
+		background: var(--text-second);
+	}
 }
 
 h3 {
