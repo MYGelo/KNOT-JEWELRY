@@ -17,6 +17,14 @@ acf_add_local_field_group(array(
 
         // MAIN TITLE
         array(
+        	'key'          => 'field_all-posts_eyebrow',
+        	'label'        => 'Eyebrow',
+        	'name'         => 'all-posts_eyebrow',
+        	'type'         => 'text',
+        	'instructions' => 'Small text above the title. Leave empty to hide.',
+        ),
+
+        array(
             'key'   => 'field_all-posts_main_title',
             'label' => 'Main Title',
             'name'  => 'all-posts_main_title',

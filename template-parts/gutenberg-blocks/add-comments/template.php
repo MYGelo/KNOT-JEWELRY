@@ -95,6 +95,8 @@ if ($comments_data) :
 
         <div class="container">
 
+            <?php knot_eyebrow(get_field('add_comments_eyebrow')); ?>
+
             <?php if(!empty($title)): ?>
                 <h2><?= wp_kses_post($title); ?></h2>
             <?php endif; ?>

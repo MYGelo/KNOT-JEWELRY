@@ -5,6 +5,7 @@
  *
  * @var array $args ['title','tap','exclude','extra','anchor']
  */
+$eyebrow = $args['eyebrow'] ?? '';
 $title   = $args['title']   ?? 'Ви переглядали';
 $tap     = $args['tap']     ?? 'Більше про виріб';
 $exclude = (int) ($args['exclude'] ?? 0);
@@ -22,6 +23,8 @@ $anchor  = $args['anchor']  ?? '';
 >
 	<div class="container">
 		<div class="stock__wrapper">
+
+			<?php knot_eyebrow($eyebrow); ?>
 
 			<?php if ($title): ?>
 				<h2 data-viewed-title><?= esc_html($title) ?></h2>

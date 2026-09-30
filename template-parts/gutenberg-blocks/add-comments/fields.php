@@ -6,6 +6,14 @@ acf_add_local_field_group(array(
     'fields'   => array(
 
         array(
+        	'key'          => 'field_add_comments_eyebrow',
+        	'label'        => 'Eyebrow',
+        	'name'         => 'add_comments_eyebrow',
+        	'type'         => 'text',
+        	'instructions' => 'Small text above the title. Leave empty to hide.',
+        ),
+
+        array(
             'key'   => 'field_add_comments_main_title',
             'label' => 'Main Title',
             'name'  => 'add_comments_main_title',

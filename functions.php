@@ -31,4 +31,6 @@ require_once __DIR__ . '/inc/helpers/comments.php';
 
 require_once __DIR__ . '/inc/helpers/seo.php';
 
+require_once __DIR__ . '/inc/helpers/eyebrow.php';
+
 require_once __DIR__ . '/inc/helpers/cash.php';

@@ -5,6 +5,14 @@ acf_add_local_field_group(array(
     'fields'   => array(
         // MAIN TITLE
         array(
+        	'key'          => 'field_select-post_eyebrow',
+        	'label'        => 'Eyebrow',
+        	'name'         => 'select-post_eyebrow',
+        	'type'         => 'text',
+        	'instructions' => 'Small text above the title. Leave empty to hide.',
+        ),
+
+        array(
             'key'   => 'field_select-post_main_title',
             'label' => 'Main Title',
             'name'  => 'select-post_main_title',

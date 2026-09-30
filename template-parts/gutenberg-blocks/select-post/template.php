@@ -9,6 +9,8 @@ if (!empty($block['className'])) $block_classes .= ' ' . $block['className'];
 
 <section class="<?= esc_attr($block_classes) ?>" id="<?= esc_attr($block_anchor) ?>">
     <div class="container">
+        <?php knot_eyebrow(get_field('select-post_eyebrow')); ?>
+
         <?php if ($main_title): ?>
             <h2 class="select-post__title"><?= wp_kses_post($main_title); ?></h2>
         <?php endif; ?>

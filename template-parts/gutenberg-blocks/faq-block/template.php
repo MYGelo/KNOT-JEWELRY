@@ -15,6 +15,8 @@ if (!empty($block['className'])) {
 	id="<?= esc_attr($block_anchor) ?>"
 >
     <div class="container">
+        <?php knot_eyebrow(get_field('faq_eyebrow')); ?>
+
         <?php if ($title): ?>
             <h2 class="text-title"><?=$title ?></h2>
         <?php endif; ?>
