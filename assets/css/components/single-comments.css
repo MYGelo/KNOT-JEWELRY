@@ -32,12 +32,22 @@
     .comments__title-wrapper {
         display: flex;
         flex-direction: column;
-        gap: 5px;
+        align-items: center;
+        /*gap: 5px;*/
         margin-bottom: 20px;
+
+        .eyebrow {
+            text-align: center;
+        }
     }
 
     .comment-form {
         margin-top: 20px;
+        text-align: center;
+
+        .comment-form__title {
+            margin-bottom: 10px;
+        }
     }
 
     .diary-subtitle {
