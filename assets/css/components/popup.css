@@ -171,6 +171,10 @@
 		padding: 0 4px;
 		top: -8px;
 		left: 16px;
+		max-width: calc(100% - 32px);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 		background-color: white;
 		color: #c0392b;
 		z-index: 1;
@@ -192,6 +196,8 @@
 	.order-form__privacy .field-error{
 		top: 0;
 		left: 19px;
+		max-width: none;
+		white-space: normal;
 
 		& a {
 			text-decoration: underline;
@@ -205,11 +211,6 @@
 		font-size: 14px;
 		line-height: 1.4;
 		cursor: pointer;
-
-		input {
-			margin-top: 3px;
-			flex-shrink: 0;
-		}
 
 		a {
 			text-decoration: underline;

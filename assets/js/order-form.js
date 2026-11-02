@@ -179,13 +179,13 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!data['full-name']) {
             errors['full-name'] = 'Вкажіть ім\'я та прізвище';
         } else if (data['full-name'].length > 100 || !NAME_REGEX.test(data['full-name'])) {
-            errors['full-name'] = 'Вкажіть коректне ім\'я та прізвище (мінімум 2 символи, лише літери)';
+            errors['full-name'] = 'Некоректне ім\'я';
         }
 
         if (!data['your-phone']) {
             errors['your-phone'] = 'Вкажіть номер телефону';
         } else if (!PHONE_REGEX.test(data['your-phone'])) {
-            errors['your-phone'] = 'Використовуйте формат +380 XX XXX XX XX';
+            errors['your-phone'] = 'Невірний формат номера';
         }
 
         if (needsRingSize) {
@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (data['your-message'].length > 1000) {
-            errors['your-message'] = 'Коментар занадто довгий (максимум 1000 символів)';
+            errors['your-message'] = 'Коментар занадто довгий';
         }
 
         if (!data['privacy-policy']) {

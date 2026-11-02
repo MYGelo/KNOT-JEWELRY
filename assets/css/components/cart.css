@@ -469,6 +469,8 @@ a.cart-item__media:hover img {
 .cart-order-form .order-form__privacy .field-error{
 	top: 0;
 	left: 19px;
+	max-width: none;
+	white-space: normal;
 
 	& a {
 		text-decoration: underline;
@@ -511,6 +513,10 @@ a.cart-item__media:hover img {
 	padding: 0 4px;
 	top: -8px;
 	left: 16px;
+	max-width: calc(100% - 32px);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 	background-color: white;
 	color: #c0392b;
 	z-index: 1;
