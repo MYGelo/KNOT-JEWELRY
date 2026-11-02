@@ -1091,3 +1091,37 @@ form {
 		color: #fff;
 	}
 }
+/* Custom privacy checkbox — shared by order, cart and repair forms.
+   Replaces the native blue control with a theme-coloured box + checkmark. */
+.order-form__privacy-label input[type="checkbox"] {
+	appearance: none;
+	-webkit-appearance: none;
+	position: relative;
+	width: 18px;
+	height: 18px;
+	flex-shrink: 0;
+	border: 1.5px solid var(--btn-color);
+	border-radius: 4px;
+	background-color: var(--white);
+	cursor: pointer;
+	outline: none;
+	transition: background-color .15s ease, border-color .15s ease;
+}
+
+.order-form__privacy-label input[type="checkbox"]:checked {
+	background-color: var(--btn-color);
+	border-color: var(--btn-color);
+}
+
+.order-form__privacy-label input[type="checkbox"]:checked::after {
+	content: '';
+	position: absolute;
+	left: 5px;
+	top: 1px;
+	width: 4px;
+	height: 9px;
+	border: solid var(--white);
+	border-width: 0 2px 2px 0;
+	transform: rotate(45deg);
+}
+
