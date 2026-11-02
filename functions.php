@@ -11,6 +11,10 @@ require_once __DIR__ . '/inc/helpers/order-form.php';
 // KNOT_LEADS_ENABLED=false in wp-config.php) to switch it off.
 require_once __DIR__ . '/inc/leads/leads.php';
 
+// Holidays module: seasonal site decoration, toggled from the Свята admin page.
+// Remove this line (or set KNOT_HOLIDAYS_ENABLED=false in wp-config.php) to switch off.
+require_once __DIR__ . '/inc/holidays/holidays.php';
+
 require_once __DIR__ . '/inc/helpers/stock.php';
 
 require_once __DIR__ . '/inc/acf/acf.php';
