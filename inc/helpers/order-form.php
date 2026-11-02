@@ -85,7 +85,7 @@ function knot_telegram_credentials(): array {
 function knot_order_form_config(): array {
     [$bot_token, $chat_id] = knot_telegram_credentials();
 
-    return [
+    $config = [
         'telegramBotToken' => $bot_token,
         'telegramChatId'   => $chat_id,
         'thankYouUrl'      => home_url('/thank-you-page/'),
@@ -95,6 +95,8 @@ function knot_order_form_config(): array {
         'minFormTime'      => 2500,
         'resendDelay'      => 10000,
     ];
+
+    return apply_filters('knot_form_frontend_config', $config, 'order');
 }
 
 /**
@@ -103,7 +105,7 @@ function knot_order_form_config(): array {
 function knot_cart_config(): array {
     [$bot_token, $chat_id] = knot_telegram_credentials();
 
-    return [
+    $config = [
         'telegramBotToken' => $bot_token,
         'telegramChatId'   => $chat_id,
         'thankYouUrl'      => home_url('/thank-you-page/'),
@@ -116,4 +118,6 @@ function knot_cart_config(): array {
         'maxItems'         => 50,
         'maxQty'           => 99,
     ];
+
+    return apply_filters('knot_form_frontend_config', $config, 'cart');
 }

@@ -774,10 +774,33 @@
 
 		/* ---------------- TELEGRAM ---------------- */
 
+		/**
+		 * Server-side submission (leads module): the site stores the request in
+		 * WordPress and relays it to Telegram itself. Used whenever the page config
+		 * carries leadsEndpoint; otherwise the old direct-to-Telegram path runs.
+		 */
+		function postLead(fields) {
+			const body = new URLSearchParams();
+			body.append('action', config.leadsAction || 'knot_submit_lead');
+			Object.keys(fields).forEach(function (key) {
+				const value = fields[key];
+				body.append(key, value !== null && typeof value === 'object' ? JSON.stringify(value) : (value == null ? '' : value));
+			});
+
+			return fetch(config.leadsEndpoint, { method: 'POST', body: body, credentials: 'same-origin' })
+				.then(function (response) { return response.json(); })
+				.then(function (result) {
+					if (!result || !result.success) {
+						throw new Error((result && result.data && result.data.message) || 'Lead error');
+					}
+					return result;
+				});
+		}
+
 		function sendToTelegram(data) {
 			const token = config.telegramBotToken;
 			const chatId = config.telegramChatId;
-			if (!token || !chatId) {
+			if (!config.leadsEndpoint && (!token || !chatId)) {
 				return Promise.reject(new Error('No telegram config'));
 			}
 
@@ -826,6 +849,33 @@
 			});
 
 			lines.push('💰 Разом: ' + formatMoney(totalSum()));
+
+			if (config.leadsEndpoint) {
+				return postLead({
+					type: 'cart',
+					name: data['full-name'],
+					phone: data['your-phone'],
+					telegram: telegram,
+					instagram: instagram,
+					comment: data['your-message'],
+					page: window.location.href,
+					message: lines.join('\n'),
+					total: formatMoney(totalSum()),
+					items: state.map(function (item) {
+						return {
+							title: item.title,
+							price: formatMoney(item.price),
+							qty: item.qty,
+							size: item.size || '',
+							coating: (item.coating || NO_COATING) !== NO_COATING ? item.coating : '',
+							material: item.material || '',
+							stone: item.stone || '',
+							type: item.type || '',
+							link: item.link || ''
+						};
+					})
+				});
+			}
 
 			return fetch('https://api.telegram.org/bot' + token + '/sendMessage', {
 				method: 'POST',
