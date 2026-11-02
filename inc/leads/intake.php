@@ -111,9 +111,14 @@ function knot_lead_intake(): void {
 		update_post_meta( $id, $key, wp_slash( $value ) );
 	}
 
-	// The lead is safe in the database at this point; Telegram is best effort
-	// and is retried by cron if it fails.
-	knot_lead_send_telegram( $id );
+	// The lead is safe in the database at this point. In relay mode the server
+	// sends it to Telegram (best effort, retried by cron); otherwise the browser
+	// delivers it and we just mark the record so the admin knows.
+	if ( knot_leads_server_relay() ) {
+		knot_lead_send_telegram( $id );
+	} else {
+		update_post_meta( $id, '_lead_tg_status', 'client' );
+	}
 
 	wp_send_json_success( array( 'id' => $id ) );
 }

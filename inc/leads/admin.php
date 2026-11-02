@@ -32,7 +32,7 @@ function knot_lead_meta_filters( array $src ): array {
 	}
 
 	$tg = sanitize_key( $src['lead_tg'] ?? '' );
-	if ( in_array( $tg, array( 'sent', 'error', 'pending' ), true ) ) {
+	if ( in_array( $tg, array( 'sent', 'client', 'error', 'pending' ), true ) ) {
 		$clauses[] = array( 'key' => '_lead_tg_status', 'value' => $tg );
 	}
 
@@ -100,6 +100,8 @@ function knot_lead_tg_badge( array $lead ): string {
 	switch ( $lead['tg_status'] ) {
 		case 'sent':
 			return knot_lead_badge( '✓ Надіслано', 'green' );
+		case 'client':
+			return knot_lead_badge( '✓ Браузер', 'green', 'Доставку в Telegram виконує браузер відвідувача' );
 		case 'error':
 			return knot_lead_badge( '! Помилка', 'red', $lead['tg_error'] );
 		default:
@@ -212,7 +214,7 @@ add_action( 'restrict_manage_posts', static function ( $post_type ) {
 		printf( '<option value="%s"%s>%s</option>', esc_attr( $key ), selected( $type, $key, false ), esc_html( $label ) );
 	}
 	echo '</select><select name="lead_tg"><option value="">Telegram: усі</option>';
-	foreach ( array( 'sent' => 'Надіслано', 'error' => 'Помилка', 'pending' => 'Очікує' ) as $key => $label ) {
+	foreach ( array( 'sent' => 'Надіслано', 'client' => 'Браузер', 'error' => 'Помилка', 'pending' => 'Очікує' ) as $key => $label ) {
 		printf( '<option value="%s"%s>%s</option>', esc_attr( $key ), selected( $tg, $key, false ), esc_html( $label ) );
 	}
 	echo '</select>';
