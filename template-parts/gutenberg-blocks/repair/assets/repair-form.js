@@ -201,6 +201,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	/* -------------------- SEND -------------------- */
 
+	/**
+	 * Server-side submission (leads module): the site stores the request in
+	 * WordPress and relays it to Telegram itself. Used whenever the page config
+	 * carries leadsEndpoint; otherwise the old direct-to-Telegram path runs.
+	 */
+	function postLead(fields) {
+		const body = new URLSearchParams();
+		body.append('action', config.leadsAction || 'knot_submit_lead');
+		Object.keys(fields).forEach(function (key) {
+			const value = fields[key];
+			body.append(key, value !== null && typeof value === 'object' ? JSON.stringify(value) : (value == null ? '' : value));
+		});
+
+		return fetch(config.leadsEndpoint, { method: 'POST', body: body, credentials: 'same-origin' })
+			.then(function (response) { return response.json(); })
+			.then(function (result) {
+				if (!result || !result.success) {
+					throw new Error((result && result.data && result.data.message) || 'Lead error');
+				}
+				return result;
+			});
+	}
+
 	function sendToTelegram(data) {
 		const telegram = formatTelegram(data['your-telegram']);
 		const instagramLink = formatInstagramLink(data['your-instagram']);
@@ -218,6 +241,19 @@ document.addEventListener('DOMContentLoaded', function () {
 			'',
 			'🔗 Сторінка: ' + data['page-link'],
 		].filter(Boolean).join('\n');
+
+		if (config.leadsEndpoint) {
+			return postLead({
+				type: 'repair',
+				name: data['full-name'],
+				phone: data['your-phone'],
+				telegram: telegram,
+				instagram: instagramLink,
+				comment: data['your-message'],
+				page: data['page-link'],
+				message: message,
+			});
+		}
 
 		const url = 'https://api.telegram.org/bot' + config.telegramBotToken + '/sendMessage';
 

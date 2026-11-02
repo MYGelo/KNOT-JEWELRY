@@ -328,6 +328,29 @@ document.addEventListener('DOMContentLoaded', function () {
         return username ? 'https://www.instagram.com/' + username : '-';
     }
 
+    /**
+     * Server-side submission (leads module): the site stores the request in
+     * WordPress and relays it to Telegram itself. Used whenever the page config
+     * carries leadsEndpoint; otherwise the old direct-to-Telegram path runs.
+     */
+    function postLead(fields) {
+        const body = new URLSearchParams();
+        body.append('action', config.leadsAction || 'knot_submit_lead');
+        Object.keys(fields).forEach(function (key) {
+            const value = fields[key];
+            body.append(key, value !== null && typeof value === 'object' ? JSON.stringify(value) : (value == null ? '' : value));
+        });
+
+        return fetch(config.leadsEndpoint, { method: 'POST', body: body, credentials: 'same-origin' })
+            .then(function (response) { return response.json(); })
+            .then(function (result) {
+                if (!result || !result.success) {
+                    throw new Error((result && result.data && result.data.message) || 'Lead error');
+                }
+                return result;
+            });
+    }
+
     function sendToTelegram(data) {
         const telegram = formatTelegram(data['your-telegram']);
         const instagramLink = formatInstagramLink(data['your-instagram']);
@@ -361,6 +384,31 @@ document.addEventListener('DOMContentLoaded', function () {
             '',
             '🔗 Посилання: ' + data['product-link'],
         ].filter(Boolean).join('\n');
+
+        if (config.leadsEndpoint) {
+            return postLead({
+                type: 'product',
+                name: data['full-name'],
+                phone: data['your-phone'],
+                telegram: telegram,
+                instagram: instagramLink === '-' ? '' : instagramLink,
+                comment: data['your-message'],
+                page: data['product-link'],
+                message: message,
+                total: data['product-price'],
+                items: [{
+                    title: data['product-title'],
+                    price: data['product-price'],
+                    qty: 1,
+                    size: needsRingSize ? data['ring-size'] : '',
+                    coating: coating,
+                    material: data['product-material'],
+                    stone: data['product-stone'],
+                    type: data['product-type'],
+                    link: data['product-link'],
+                }],
+            });
+        }
 
         const url = 'https://api.telegram.org/bot' + config.telegramBotToken + '/sendMessage';
 

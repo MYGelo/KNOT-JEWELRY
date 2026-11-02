@@ -7,6 +7,10 @@ require_once __DIR__ . '/inc/theme.php';
 // hook must already have the functions it builds its choices from.
 require_once __DIR__ . '/inc/helpers/order-form.php';
 
+// Leads module: stores form submissions in WP. Remove this line (or set
+// KNOT_LEADS_ENABLED=false in wp-config.php) to switch it off.
+require_once __DIR__ . '/inc/leads/leads.php';
+
 require_once __DIR__ . '/inc/helpers/stock.php';
 
 require_once __DIR__ . '/inc/acf/acf.php';

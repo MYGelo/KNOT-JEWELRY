@@ -35,14 +35,14 @@ if ( function_exists( 'acf_register_block_type' ) ) {
 				$credentials = function_exists( 'knot_telegram_credentials' ) ? knot_telegram_credentials() : array( '', '' );
 
 				// Once only: this callback also runs early (see inc/theme.php).
-				knot_localize_once( 'block-repair-form', 'knotRepairForm', array(
+				knot_localize_once( 'block-repair-form', 'knotRepairForm', apply_filters( 'knot_form_frontend_config', array(
 					'telegramBotToken' => $credentials[0] ?? '',
 					'telegramChatId'   => $credentials[1] ?? '',
 					'thankYouUrl'      => home_url( '/thank-you-page/' ),
 					'privacyUrl'       => function_exists( 'knot_get_privacy_policy_url' ) ? knot_get_privacy_policy_url() : '/privacy-policy/',
 					'minFormTime'      => 2500,
 					'resendDelay'      => 10000,
-				) );
+				), 'repair' ) );
 			}
 
 		},
