@@ -341,7 +341,7 @@ document.addEventListener('DOMContentLoaded', function () {
             body.append(key, value !== null && typeof value === 'object' ? JSON.stringify(value) : (value == null ? '' : value));
         });
 
-        return fetch(config.leadsEndpoint, { method: 'POST', body: body, credentials: 'same-origin' })
+        return fetch(config.leadsEndpoint, { method: 'POST', body: body, credentials: 'same-origin', keepalive: true })
             .then(function (response) { return response.json(); })
             .then(function (result) {
                 if (!result || !result.success) {
@@ -385,8 +385,7 @@ document.addEventListener('DOMContentLoaded', function () {
             '🔗 Посилання: ' + data['product-link'],
         ].filter(Boolean).join('\n');
 
-        if (config.leadsEndpoint) {
-            return postLead({
+                const leadPayload = {
                 type: 'product',
                 name: data['full-name'],
                 phone: data['your-phone'],
@@ -407,7 +406,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     type: data['product-type'],
                     link: data['product-link'],
                 }],
-            });
+            };
+        if (config.leadsEndpoint) {
+        	// Server relay (good hosting): store only, server sends to Telegram.
+        	if (config.leadsRelay) {
+        		return postLead(leadPayload);
+        	}
+        	// Dual mode (InfinityFree etc.): save a durable copy in WP, then
+        	// fall through so the browser still delivers it to Telegram.
+        	postLead(leadPayload).catch(function () {});
         }
 
         const url = 'https://api.telegram.org/bot' + config.telegramBotToken + '/sendMessage';

@@ -787,7 +787,7 @@
 				body.append(key, value !== null && typeof value === 'object' ? JSON.stringify(value) : (value == null ? '' : value));
 			});
 
-			return fetch(config.leadsEndpoint, { method: 'POST', body: body, credentials: 'same-origin' })
+			return fetch(config.leadsEndpoint, { method: 'POST', body: body, credentials: 'same-origin', keepalive: true })
 				.then(function (response) { return response.json(); })
 				.then(function (result) {
 					if (!result || !result.success) {
@@ -850,8 +850,7 @@
 
 			lines.push('💰 Разом: ' + formatMoney(totalSum()));
 
-			if (config.leadsEndpoint) {
-				return postLead({
+						const leadPayload = {
 					type: 'cart',
 					name: data['full-name'],
 					phone: data['your-phone'],
@@ -874,7 +873,15 @@
 							link: item.link || ''
 						};
 					})
-				});
+				};
+			if (config.leadsEndpoint) {
+				// Server relay (good hosting): store only, server sends to Telegram.
+				if (config.leadsRelay) {
+					return postLead(leadPayload);
+				}
+				// Dual mode (InfinityFree etc.): save a durable copy in WP, then
+				// fall through so the browser still delivers it to Telegram.
+				postLead(leadPayload).catch(function () {});
 			}
 
 			return fetch('https://api.telegram.org/bot' + token + '/sendMessage', {
