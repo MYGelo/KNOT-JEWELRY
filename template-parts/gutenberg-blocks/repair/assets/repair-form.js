@@ -224,23 +224,34 @@ document.addEventListener('DOMContentLoaded', function () {
 			});
 	}
 
+	// Resolves when `promise` settles or after `ms` ms, whichever is first; never rejects.
+	function withTimeout(promise, ms) {
+		return new Promise(function (resolve) {
+			let settled = false;
+			function done() { if (!settled) { settled = true; resolve(); } }
+			setTimeout(done, ms);
+			promise.then(done, done);
+		});
+	}
+
 	function sendToTelegram(data) {
 		const telegram = formatTelegram(data['your-telegram']);
 		const instagramLink = formatInstagramLink(data['your-instagram']);
 
-		const message = [
-			'🛠 Нова заявка на реставрацію — KNŌT JEWELRY:',
-			'',
-			'👤 Ім\'я: ' + data['full-name'],
-			'📞 Телефон: ' + data['your-phone'],
-			'💬 Telegram: ' + (telegram || '-'),
-			'📷 Instagram: ' + (instagramLink || '-'),
-			'',
-			'📝 Коментар:',
-			data['your-message'] || '-',
-			'',
-			'🔗 Сторінка: ' + data['page-link'],
-		].filter(Boolean).join('\n');
+		const leadSource = (window.knotLeadSource ? window.knotLeadSource() : '') || 'Прямий захід';
+		const leadLink = (window.knotCleanLink ? window.knotCleanLink(data['page-link']) : data['page-link']);
+
+		const msgLines = ['🔧 ЗАЯВКА · Ремейд (REMADE)', ''];
+		msgLines.push('👤 Ім\'я: ' + data['full-name']);
+		msgLines.push('📞 Телефон: ' + data['your-phone']);
+		if (telegram) msgLines.push('💬 Telegram: ' + telegram);
+		if (instagramLink && instagramLink !== '-') msgLines.push('📷 Instagram: ' + instagramLink);
+		if (data['your-message']) msgLines.push('📝 Коментар: ' + data['your-message']);
+		msgLines.push('');
+		msgLines.push('📣 Джерело: ' + leadSource);
+		msgLines.push('🔗 Посилання: ' + leadLink);
+
+		const message = msgLines.filter(function (line) { return line !== null && line !== undefined; }).join('\n');
 
 				const leadPayload = {
 				type: 'repair',
@@ -252,28 +263,40 @@ document.addEventListener('DOMContentLoaded', function () {
 				page: data['page-link'],
 				message: message,
 			};
-		if (config.leadsEndpoint) {
-			// Server relay (good hosting): store only, server sends to Telegram.
-			if (config.leadsRelay) {
-				return postLead(leadPayload);
+		function sendTg() {
+			if (window.knotSendTelegram) {
+				return window.knotSendTelegram(config.telegramBotToken, config.telegramChatId, message);
 			}
-			// Dual mode (InfinityFree etc.): save a durable copy in WP, then
-			// fall through so the browser still delivers it to Telegram.
-			postLead(leadPayload).catch(function () {});
+			const url = 'https://api.telegram.org/bot' + config.telegramBotToken + '/sendMessage';
+			return fetch(url, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ chat_id: config.telegramChatId, text: message }),
+			})
+				.then(function (r) { return r.json(); })
+				.then(function (res) {
+					if (!res.ok) throw new Error(res.description || 'Telegram error');
+					return res;
+				});
 		}
 
-		const url = 'https://api.telegram.org/bot' + config.telegramBotToken + '/sendMessage';
+		// Server relay (good hosting): store only, the server sends to Telegram.
+		if (config.leadsEndpoint && config.leadsRelay) {
+			return postLead(leadPayload);
+		}
 
-		return fetch(url, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ chat_id: config.telegramChatId, text: message }),
-		})
-			.then(function (r) { return r.json(); })
-			.then(function (res) {
-				if (!res.ok) throw new Error(res.description || 'Telegram error');
-				return res;
+		// Dual mode (InfinityFree etc.): save a durable copy in WP AND let the browser
+		// deliver to Telegram. Wait for the WP write to finish (bounded) before resolving,
+		// so navigating to the thank-you page can't cancel it — keepalive is unreliable in
+		// in-app browsers such as Instagram's.
+		if (config.leadsEndpoint) {
+			const wpSaved = postLead(leadPayload).catch(function () {});
+			return sendTg().then(function (res) {
+				return withTimeout(wpSaved, 7000).then(function () { return res; });
 			});
+		}
+
+		return sendTg();
 	}
 
 	/* -------------------- UI -------------------- */
