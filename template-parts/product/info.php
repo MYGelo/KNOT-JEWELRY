@@ -141,6 +141,6 @@
                 data-needs-size="<?= $needs_ring_size ? '1' : '0'; ?>"
         >Додати в кошик</button>
 
-        <button class="btn-buy main-btn third" data-action="togglePopup" data-target="#example_popup">Купити зараз</button>
+        <button class="btn-buy main-btn third" data-action="togglePopup" data-target="#example_popup">Придбати зараз</button>
     </div>
 </div>

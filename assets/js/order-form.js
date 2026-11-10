@@ -351,39 +351,49 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
+    // Resolves when `promise` settles or after `ms` ms, whichever is first; never rejects.
+    function withTimeout(promise, ms) {
+        return new Promise(function (resolve) {
+            let settled = false;
+            function done() { if (!settled) { settled = true; resolve(); } }
+            setTimeout(done, ms);
+            promise.then(done, done);
+        });
+    }
+
     function sendToTelegram(data) {
         const telegram = formatTelegram(data['your-telegram']);
         const instagramLink = formatInstagramLink(data['your-instagram']);
-        const ringSizeLine = needsRingSize
-            ? buildRingSizeLine(data['ring-size'])
-            : '';
         const coating = data.coating || '';
-        const coatingLine = coating
-            ? '🎨 Покриття: ' + coating + '\n⚠️ Обрано покриття — ціна може змінитися'
-            : '🎨 Покриття: Без';
+        const leadSource = (window.knotLeadSource ? window.knotLeadSource() : '') || 'Прямий захід';
+        const leadLink = (window.knotCleanLink ? window.knotCleanLink(data['product-link']) : data['product-link']);
 
-        const message = [
-            '💎 Нове замовлення з сайту KNŌT JEWELRY:',
-            '',
-            '👤 Ім\'я: ' + data['full-name'],
-            '',
-            '📞 Телефон: ' + data['your-phone'],
-            '💬 Telegram: ' + (telegram || '-'),
-            '📷 Instagram: ' + (instagramLink || '-'),
-            '',
-            '📝 Коментар:',
-            data['your-message'] || '-',
-            '',
-            '💍 Товар: ' + data['product-title'],
-            '💰 Ціна: ' + (data['product-price'] || '-'),
-            ringSizeLine,
-            coatingLine,
-            '⚙️ Матеріал: ' + (data['product-material'] || '-'),
-            '💎 Камінь: ' + (data['product-stone'] || '-'),
-            '📦 Тип: ' + (data['product-type'] || '-'),
-            '',
-            '🔗 Посилання: ' + data['product-link'],
-        ].filter(Boolean).join('\n');
+        // Price-affecting alerts go to the top (right under the order type) so the admin sees them first.
+        const warns = [];
+        if (needsRingSize && parseFloat(data['ring-size']) > 19) warns.push('⚠️ Розмір > 19 — ціна може змінитися');
+        if (coating) warns.push('⚠️ Обрано покриття — ціна залежить від покриття та ваги');
+
+        const msgLines = ['🆕 ЗАМОВЛЕННЯ · Придбати зараз'];
+        warns.forEach(function (w) { msgLines.push(w); });
+        msgLines.push('');
+        msgLines.push('👤 Ім\'я: ' + data['full-name']);
+        msgLines.push('📞 Телефон: ' + data['your-phone']);
+        if (telegram) msgLines.push('💬 Telegram: ' + telegram);
+        if (instagramLink && instagramLink !== '-') msgLines.push('📷 Instagram: ' + instagramLink);
+        if (data['your-message']) msgLines.push('📝 Коментар: ' + data['your-message']);
+        msgLines.push('');
+        msgLines.push('💍 Виріб: ' + data['product-title']);
+        msgLines.push('💰 Ціна: ' + (data['product-price'] || '-'));
+        if (data['product-type']) msgLines.push('📦 Тип: ' + data['product-type']);
+        if (data['product-material']) msgLines.push('⚙️ Матеріал: ' + data['product-material']);
+        if (data['product-stone']) msgLines.push('💎 Камінь: ' + data['product-stone']);
+        if (needsRingSize) msgLines.push('📏 Розмір: ' + (data['ring-size'] || '-'));
+        msgLines.push('🎨 Покриття: ' + (coating ? coating : 'Без'));
+        msgLines.push('');
+        msgLines.push('📣 Джерело: ' + leadSource);
+        msgLines.push('🔗 Посилання: ' + leadLink);
+
+        const message = msgLines.filter(function (line) { return line !== null && line !== undefined; }).join('\n');
 
                 const leadPayload = {
                 type: 'product',
@@ -407,36 +417,40 @@ document.addEventListener('DOMContentLoaded', function () {
                     link: data['product-link'],
                 }],
             };
-        if (config.leadsEndpoint) {
-        	// Server relay (good hosting): store only, server sends to Telegram.
-        	if (config.leadsRelay) {
-        		return postLead(leadPayload);
-        	}
-        	// Dual mode (InfinityFree etc.): save a durable copy in WP, then
-        	// fall through so the browser still delivers it to Telegram.
-        	postLead(leadPayload).catch(function () {});
+        function sendTg() {
+            if (window.knotSendTelegram) {
+                return window.knotSendTelegram(config.telegramBotToken, config.telegramChatId, message);
+            }
+            const url = 'https://api.telegram.org/bot' + config.telegramBotToken + '/sendMessage';
+            return fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: config.telegramChatId, text: message }),
+            })
+                .then(function (response) { return response.json(); })
+                .then(function (result) {
+                    if (!result.ok) { throw new Error(result.description || 'Telegram error'); }
+                    return result;
+                });
         }
 
-        const url = 'https://api.telegram.org/bot' + config.telegramBotToken + '/sendMessage';
+        // Server relay (good hosting): store only, the server sends to Telegram.
+        if (config.leadsEndpoint && config.leadsRelay) {
+            return postLead(leadPayload);
+        }
 
-        return fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: config.telegramChatId,
-                text: message,
-            }),
-        })
-            .then(function (response) {
-                return response.json();
-            })
-            .then(function (result) {
-                if (!result.ok) {
-                    throw new Error(result.description || 'Telegram error');
-                }
-
-                return result;
+        // Dual mode (InfinityFree etc.): save a durable copy in WP AND let the browser
+        // deliver to Telegram. Wait for the WP write to finish (bounded) before resolving,
+        // so navigating to the thank-you page can't cancel it — keepalive is unreliable in
+        // in-app browsers such as Instagram's.
+        if (config.leadsEndpoint) {
+            const wpSaved = postLead(leadPayload).catch(function () {});
+            return sendTg().then(function (result) {
+                return withTimeout(wpSaved, 7000).then(function () { return result; });
             });
+        }
+
+        return sendTg();
     }
 
     function buildRingSizeLine(size) {

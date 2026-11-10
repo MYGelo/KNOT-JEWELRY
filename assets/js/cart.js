@@ -797,6 +797,16 @@
 				});
 		}
 
+		// Resolves when `promise` settles or after `ms` ms, whichever is first; never rejects.
+		function withTimeout(promise, ms) {
+			return new Promise(function (resolve) {
+				let settled = false;
+				function done() { if (!settled) { settled = true; resolve(); } }
+				setTimeout(done, ms);
+				promise.then(done, done);
+			});
+		}
+
 		function sendToTelegram(data) {
 			const token = config.telegramBotToken;
 			const chatId = config.telegramChatId;
@@ -807,48 +817,46 @@
 			const telegram = formatTelegram(data['your-telegram']);
 			const instagram = formatInstagramLink(data['your-instagram']);
 
-			const lines = [
-				'🛒 Нове замовлення з КОШИКА — KNŌT JEWELRY:',
-				'👤 Ім\'я: ' + data['full-name'],
-				'📞 Телефон: ' + data['your-phone'],
-				'💬 Telegram: ' + (telegram || '-'),
-				'📷 Instagram: ' + (instagram || '-'),
-				'📝 Коментар:',
-				data['your-message'] || '-',
-				'',
-				'Позиції:'
-			];
+			const leadSource = (window.knotLeadSource ? window.knotLeadSource() : '') || 'Прямий захід';
 
+			// Build items first and collect price-affecting alerts (with position) to show on top.
+			const warns = [];
+			const itemLines = [];
 			state.forEach(function (item, index) {
-				lines.push((index + 1) + ') 💍 Товар: ' + item.title);
-				lines.push('💰 Ціна: ' + formatMoney(item.price));
-
+				const pos = index + 1;
+				itemLines.push('');
+				itemLines.push(pos + ') 💍 Виріб: ' + item.title);
+				itemLines.push('💰 Ціна: ' + formatMoney(item.price));
 				if (item.qty > 1) {
-					lines.push('🔢 Кількість: ' + item.qty + ' шт');
-					lines.push('🧮 Сума: ' + formatMoney(item.price * item.qty));
+					itemLines.push('🔢 Кількість: ' + item.qty + ' шт');
+					itemLines.push('🧮 Сума: ' + formatMoney(item.price * item.qty));
 				}
-
+				itemLines.push('📦 Тип: ' + (item.type || '-'));
+				itemLines.push('⚙️ Матеріал: ' + (item.material || '-'));
+				itemLines.push('💎 Камінь: ' + (item.stone || '-'));
 				if (item.size) {
-					lines.push('📏 Розмір: ' + item.size);
-					if (parseFloat(item.size) > 19) {
-						lines.push('⚠️ Розмір > 19 — ціна може змінитися');
-					}
+					itemLines.push('📏 Розмір: ' + item.size);
+					if (parseFloat(item.size) > 19) warns.push('⚠️ Поз. ' + pos + ': розмір > 19 — ціна може змінитися');
 				}
-
 				const hasCoating = (item.coating || NO_COATING) !== NO_COATING;
-				lines.push('🎨 Покриття: ' + (hasCoating ? item.coating : 'Без'));
-				if (hasCoating) {
-					lines.push('⚠️ Обрано покриття — ціна залежить від покриття та ваги');
-				}
-
-				lines.push('⚙️ Матеріал: ' + (item.material || '-'));
-				lines.push('💎 Камінь: ' + (item.stone || '-'));
-				lines.push('📦 Тип: ' + (item.type || '-'));
-				if (item.link) lines.push('🔗 Посилання: ' + item.link);
-				lines.push('');
+				itemLines.push('🎨 Покриття: ' + (hasCoating ? item.coating : 'Без'));
+				if (hasCoating) warns.push('⚠️ Поз. ' + pos + ': обрано покриття — ціна залежить від покриття та ваги');
+				if (item.link) itemLines.push('🔗 Посилання: ' + (window.knotCleanLink ? window.knotCleanLink(item.link) : item.link));
 			});
 
+			const lines = ['🆕 ЗАМОВЛЕННЯ · Кошик (' + state.length + ' поз.)'];
+			warns.forEach(function (w) { lines.push(w); });
+			lines.push('');
+			lines.push('👤 Ім\'я: ' + data['full-name']);
+			lines.push('📞 Телефон: ' + data['your-phone']);
+			if (telegram) lines.push('💬 Telegram: ' + telegram);
+			if (instagram && instagram !== '-') lines.push('📷 Instagram: ' + instagram);
+			if (data['your-message']) lines.push('📝 Коментар: ' + data['your-message']);
+			itemLines.forEach(function (l) { lines.push(l); });
+			lines.push('');
 			lines.push('💰 Разом: ' + formatMoney(totalSum()));
+			lines.push('');
+			lines.push('📣 Джерело: ' + leadSource);
 
 						const leadPayload = {
 					type: 'cart',
@@ -858,7 +866,7 @@
 					instagram: instagram,
 					comment: data['your-message'],
 					page: window.location.href,
-					message: lines.join('\n'),
+					message: lines.filter(function (line) { return line !== null && line !== undefined; }).join('\n'),
 					total: formatMoney(totalSum()),
 					items: state.map(function (item) {
 						return {
@@ -874,28 +882,40 @@
 						};
 					})
 				};
-			if (config.leadsEndpoint) {
-				// Server relay (good hosting): store only, server sends to Telegram.
-				if (config.leadsRelay) {
-					return postLead(leadPayload);
+			function sendTg() {
+				const text = lines.filter(function (line) { return line !== null && line !== undefined; }).join('\n');
+				if (window.knotSendTelegram) {
+					return window.knotSendTelegram(token, chatId, text);
 				}
-				// Dual mode (InfinityFree etc.): save a durable copy in WP, then
-				// fall through so the browser still delivers it to Telegram.
-				postLead(leadPayload).catch(function () {});
+				return fetch('https://api.telegram.org/bot' + token + '/sendMessage', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ chat_id: chatId, text: text })
+				})
+					.then(function (response) { return response.json(); })
+					.then(function (result) {
+						if (!result.ok) throw new Error(result.description || 'Telegram error');
+						return result;
+					});
 			}
 
-			return fetch('https://api.telegram.org/bot' + token + '/sendMessage', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ chat_id: chatId, text: lines.join('\n') })
-			})
-				.then(function (response) {
-					return response.json();
-				})
-				.then(function (result) {
-					if (!result.ok) throw new Error(result.description || 'Telegram error');
-					return result;
+			// Server relay (good hosting): store only, the server sends to Telegram.
+			if (config.leadsEndpoint && config.leadsRelay) {
+				return postLead(leadPayload);
+			}
+
+			// Dual mode (InfinityFree etc.): save a durable copy in WP AND let the browser
+			// deliver to Telegram. Wait for the WP write to finish (bounded) before resolving,
+			// so navigating to the thank-you page can't cancel it — keepalive is unreliable in
+			// in-app browsers such as Instagram's.
+			if (config.leadsEndpoint) {
+				const wpSaved = postLead(leadPayload).catch(function () {});
+				return sendTg().then(function (result) {
+					return withTimeout(wpSaved, 7000).then(function () { return result; });
 				});
+			}
+
+			return sendTg();
 		}
 
 		/* ---------------- PHONE MASK ---------------- */
