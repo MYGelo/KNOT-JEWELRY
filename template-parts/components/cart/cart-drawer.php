@@ -62,6 +62,8 @@ $step2_btn  = $form_opt['step2_button'] ?? '← Назад';
             <button type="button" class="btn main-btn third" data-cart-goto="form">
                 <?= wp_kses_post($step1_btn); ?>
             </button>
+
+            <?php knot_form_ig_fallback(); ?>
         </div>
 
         <!-- STEP: contact form -->

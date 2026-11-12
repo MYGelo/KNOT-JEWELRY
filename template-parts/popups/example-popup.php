@@ -44,6 +44,8 @@ $privacy_url     = knot_get_privacy_policy_url();
                         <button type="button" class="btn main-btn third" data-action="nextStep">
                             <?= wp_kses_post($step1_btn) ?>
                         </button>
+
+                        <?php knot_form_ig_fallback(); ?>
                     </div>
 
                     <div class="form-step step-2">

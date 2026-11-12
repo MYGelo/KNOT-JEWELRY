@@ -121,3 +121,48 @@ function knot_cart_config(): array {
 
     return apply_filters('knot_form_frontend_config', $config, 'cart');
 }
+
+/**
+ * Secondary "write in Instagram" fallback for step 1 of the order / cart /
+ * repair forms. One shared source (global options: inst_fallback_link +
+ * inst_fallback_text), one look across all three forms. Prints nothing when no
+ * link is set. The link is an external contact channel, not a form submission.
+ */
+function knot_form_ig_fallback(): void {
+    $link = get_field('inst_fallback_link', 'option');
+    $url  = is_array($link) ? ($link['url'] ?? '') : '';
+    if (empty($url)) {
+        return;
+    }
+
+    $title  = (is_array($link) && !empty($link['title'])) ? $link['title'] : 'Написати в Instagram';
+    $target = (is_array($link) && !empty($link['target'])) ? $link['target'] : '_blank';
+    $hint   = get_field('inst_fallback_text', 'option');
+    if ('' === (string) $hint) {
+        $hint = 'Залишилися питання перед замовленням?';
+    }
+    ?>
+    <div class="form-ig">
+        <div class="form-ig__divider"><span>або</span></div>
+
+        <?php if (!empty($hint)): ?>
+            <p class="form-ig__hint">
+                <svg class="form-ig__hint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 16v-4M12 8h.01"/>
+                </svg>
+                <?= esc_html($hint); ?>
+            </p>
+        <?php endif; ?>
+
+        <a class="form-ig__btn" href="<?= esc_url($url); ?>" target="<?= esc_attr($target); ?>" rel="noopener noreferrer">
+            <svg class="form-ig__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <rect x="2" y="2" width="20" height="20" rx="6" fill="none" stroke="currentColor" stroke-width="2"/>
+                <circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="2"/>
+                <circle cx="17.6" cy="6.4" r="1.5" fill="currentColor"/>
+            </svg>
+            <span><?= esc_html($title); ?></span>
+        </a>
+    </div>
+    <?php
+}

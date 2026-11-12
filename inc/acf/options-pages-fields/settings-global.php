@@ -179,6 +179,35 @@ acf_add_local_field_group(array(
             ),
         ),
 
+        array(
+            'key'   => 'tab_inst_fallback',
+            'label' => 'Instagram (запасний канал)',
+            'name'  => '',
+            'type'  => 'tab',
+            'placement' => 'top',
+        ),
+        array(
+            'key'           => 'field_inst_fallback_link',
+            'label'         => 'Instagram link',
+            'name'          => 'inst_fallback_link',
+            'type'          => 'link',
+            'return_format' => 'array',
+            'instructions'  => 'Запасна кнопка «Написати в Instagram» на кроці 1 усіх форм (замовлення, кошик, ремейд). Одне посилання на всі форми. Вкажіть URL, що відкривається і на ПК, і на телефоні (напр. https://www.instagram.com/USERNAME/).',
+            'default_value' => array(
+                'title'  => 'Написати в Instagram',
+                'url'    => 'https://ig.me/m/knotjewelryy',
+                'target' => '_blank',
+            ),
+        ),
+        array(
+            'key'           => 'field_inst_fallback_text',
+            'label'         => 'Instagram hint text',
+            'name'          => 'inst_fallback_text',
+            'type'          => 'text',
+            'instructions'  => 'Підказка над кнопкою Instagram на кроці 1.',
+            'default_value' => 'Залишилися питання перед замовленням?',
+        ),
+
 //        404
         array(
             'key'   => 'tab_404_page',

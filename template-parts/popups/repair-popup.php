@@ -4,7 +4,6 @@ $title      = $form['repair_form_title'] ?? '';
 $step1_text = $form['repair_step1_text'] ?? '';
 $step1_btn  = $form['repair_step1_button'] ?? 'Продовжити';
 $step2_btn  = $form['repair_step2_button'] ?? '← Назад';
-$inst_link  = $form['repair_step1_inst_link'] ?? [];
 $privacy_url = knot_get_privacy_policy_url();
 ?>
 
@@ -38,22 +37,11 @@ $privacy_url = knot_get_privacy_policy_url();
                             <div class="form-step__text-content"><?= wp_kses_post($step1_text); ?></div>
                         <?php endif; ?>
 
-                        <div class="reviews__cta-wrap">
-                            <?php if (!empty($inst_link['url'])): ?>
-                                <a class="reviews-cta" href="<?= esc_url($inst_link['url']); ?>" target="_blank" rel="noopener noreferrer">
-                                    <svg class="reviews-cta__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                                        <rect x="2" y="2" width="20" height="20" rx="6" ry="6" fill="none" stroke="currentColor" stroke-width="2"/>
-                                        <circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="2"/>
-                                        <circle cx="17.6" cy="6.4" r="1.5" fill="currentColor"/>
-                                    </svg>
-                                    <span><?= esc_html($inst_link['title'] ?: 'Написати у Instagram'); ?></span>
-                                </a>
-                            <?php endif; ?>
+                        <button type="button" class="btn main-btn third" data-action="nextStep">
+                            <?= wp_kses_post($step1_btn) ?>
+                        </button>
 
-                            <button type="button" class="btn main-btn third" data-action="nextStep">
-                                <?= wp_kses_post($step1_btn) ?>
-                            </button>
-                        </div>
+                        <?php knot_form_ig_fallback(); ?>
                     </div>
 
                     <div class="form-step step-2">
